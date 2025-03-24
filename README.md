@@ -29,9 +29,9 @@ npm run dev or npm start
 ```
 ## Acknowledgements
 
- - [Awesome Readme Templates](https://awesomeopensource.com/project/elangosundar/awesome-README-templates)
- - [Awesome README](https://github.com/matiassingers/awesome-readme)
- - [How to write a Good readme](https://bulldogjob.com/news/449-how-to-write-a-good-readme-for-your-github-project)
+ - [Material UI](https://awesomeopensource.com/project/elangosundar/awesome-README-templates)
+ - [Tailwind CSS](https://tailwindcss.com/)
+ - [StackOverFlow](https://stackoverflow.com/questions)
 
 
 ## Authors
@@ -50,4 +50,7 @@ npm run dev or npm start
 | Example Color | ![#f8f8f8](https://via.placeholder.com/10/f8f8f8?text=+) #f8f8f8 |
 | Example Color | ![#00b48a](https://via.placeholder.com/10/00b48a?text=+) #00b48a |
 | Example Color | ![#00d1a0](https://via.placeholder.com/10/00b48a?text=+) #00d1a0 |
+
+
+![Logo](https://res.cloudinary.com/dybxdtcnq/image/upload/v1742811831/CodeBits101_2_cu4y4h.png)
 
