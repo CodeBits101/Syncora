@@ -32,6 +32,7 @@ npm run dev or npm start
  - [Material UI](https://awesomeopensource.com/project/elangosundar/awesome-README-templates)
  - [Tailwind CSS](https://tailwindcss.com/)
  - [StackOverFlow](https://stackoverflow.com/questions)
+ - [Cloudinary](https://cloudinary.com/)
 
 
 ## Authors
