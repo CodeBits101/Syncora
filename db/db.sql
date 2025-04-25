@@ -12,6 +12,7 @@ create table Employees(
     emp_id int primary key auto_increment,
     name varchar(20),
     email varchar(20) unique,
+    phone_number char(10),
     password varchar(100),
     dept_no int,
     doj datetime,
@@ -23,7 +24,7 @@ create table Employees(
 
 create table Projects(
     project_id int primary key auto_increment,
-    emp_id int,
+    manager_id int,
     pname varchar(50) unique,
     description varchar(1000),
     created_timestamp datetime default CURRENT_TIMESTAMP,
@@ -33,7 +34,7 @@ create table Projects(
     end_date datetime,
     project_status varchar(20),
     project_code varchar(20),
-    foreign key(emp_id) references Employees(emp_id)
+    foreign key(manager_id) references Employees(emp_id)
 );
 
 create table Sprints(
@@ -97,6 +98,19 @@ create table Tasks(
     foreign key(story_id) references Stories(story_id)
 );
 
+create table Subtasks(
+    subtask_id int primary key auto_increment,
+    title varchar(50),
+    task_id int,
+    created_by int,
+    status varchar(10),
+    description varchar(1000),
+    created_timestamp datetime default CURRENT_TIMESTAMP,
+    start_date datetime,
+    end_date datetime,
+    foreign key(task_id) references Tasks(task_id)
+);
+
 create table Bugs(
     bug_id int primary key auto_increment,
     project_id int default 0,
@@ -128,8 +142,8 @@ create table Comments(
     user_name varchar(20),
     created_timestamp datetime default CURRENT_TIMESTAMP,
     foreign key(user_id) references Employees(emp_id),
-    foreign key(task_id) references Tasks(task_id),
-    foreign key(bug_id) references Bugs(bug_id)
+    foreign key(task_id) references Tasks(task_id) ON DELETE CASCADE,
+    foreign key(bug_id) references Bugs(bug_id) ON DELETE CASCADE
 );
 
 create table Attachments(
@@ -138,13 +152,16 @@ create table Attachments(
     project_id int default 0,
     story_id int default 0,
     bug_id int default 0,
+    subtask_id int default 0,
     file_name varchar(1000),
     uploader_userId int,
     uploaded_by varchar(20),
     created_timestamp datetime default CURRENT_TIMESTAMP,
-    foreign key(task_id) references Tasks(task_id),
+    foreign key(task_id) references Tasks(task_id) ON DELETE CASCADE,
     foreign key(project_id) references Projects(project_id),
-    foreign key(story_id) references Stories(Story_id),
+    foreign key(story_id) references Stories(Story_id) ON DELETE CASCADE,
     foreign key(uploader_userId) references Employees(emp_id),
-    foreign key(bug_id) references Bugs(bug_id)
+    foreign key(bug_id) references Bugs(bug_id) ON DELETE CASCADE,
+    foreign key(subtask_id) references Subtasks(subtask_id) ON DELETE CASCADE
 );
+
