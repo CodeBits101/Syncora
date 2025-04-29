@@ -1,0 +1,144 @@
+@startuml
+start
+
+:Log in to PM Panel;
+:Navigate to Projects Section;
+
+if (New Project?) then (yes)
+  :Click "Create Project";
+  :Enter Project Name and Details;
+  :Set Timeline and Objectives;
+  :Add Initial Requirements;
+  :Add Team Members;
+  :Save Project;
+else (no)
+  :Select Existing Project;
+endif
+
+:View Project Dashboard;
+
+fork
+partition "Project Updates and Project Editing" {
+
+  fork
+  partition "Edit Project" {
+    :Update Project Name or Description;
+    :Modify Timeline or Deadlines;
+    :Change Team Composition;
+    :Adjust Milestones;
+    :Reassign Tasks if Needed;
+    :Save Changes;
+    :Notify Team of Updates;
+  }
+  fork again
+  partition "Manage Requirements" {
+    :Open Requirements Tab;
+    :Review Existing Requirements;
+    if (Add New?) then (yes)
+      :Click "Add Requirement";
+      :Enter Title, Description, Priority;
+      :Tag with Category (e.g. UI, Backend);
+    else (no)
+      :Select Requirement to Edit;
+      :Update Description or Priority;
+      :Attach Files/Mockups;
+    endif
+    :Save Requirement;
+    :Notify Relevant Team Members;
+  }
+  fork again
+  partition "Change Project State" {
+    :Open Project Overview;
+    :Click "Change Status";
+    :Select New State (Planning, In Progress, Blocked, Completed, On Hold);
+    if (Completed?) then (yes)
+      :Confirm All Tasks are Done;
+      :Archive Project;
+    else (no)
+      :Log Reason for Change (e.g., Delayed, Blocked);
+    endif
+    :Save State;
+  }
+  end fork
+
+}
+
+fork again 
+
+partition Story, Task and Bugs {
+  fork
+    :Create User Story;
+    :Enter Story Details, Priority;
+    :Save to Backlog;
+  fork again
+    :Create Task;
+    :Define Task Details, Priority;
+    :Save to Backlog;
+  fork again
+    :Log Bug;
+    :Describe Bug Details, Severity;
+    :Save to Backlog;
+  end fork
+}
+
+partition "Sprints" {
+  if (Create Sprint?) then (yes)
+    :Create Sprint;
+    :Set Sprint Name, Duration, Goal;
+    :Save Sprint;
+  endif
+  
+  :Go to Backlog;
+  
+  partition "Backlog" {
+    :Create new backlog item (Story/Bug/Task);
+    :Add details: title, description, priority;
+    :Add estimation (story points/hours);
+    :Attach requirements or mockups;
+    :Reorder backlog items by priority;
+    
+    partition "Sprint Planning" {
+      :Select top items for next sprint;
+      :Move items to Sprint Backlog;
+      :Break stories into tasks;
+      :Assign tasks to developers;
+      :Finalize Sprint;
+      :Navigate to Scrum Board;
+      :View and change status (To Do, In Progress, Review, Done);
+      :Notify team;
+    }
+  }
+  
+  partition "Execution" {
+    :Monitor task progress;
+    :Track updates from dev team;
+    if (Issue arises?) then (yes)
+      :Reprioritize backlog;
+    endif
+  }
+  
+  while (Work Progresses) 
+    :Move Items Across Columns;
+    if (Add Sub-Task?) then (yes)
+      :Create Sub-Task under Story/Task/Bug;
+      :Assign Sub-Task;
+    endif
+  endwhile
+}
+
+end fork
+
+:Progress Monitoring;
+:Track Task or Sprint Progress;
+
+partition "Reporting" {
+  :Generate Project Report;
+  :Select Format(pdf, excel(optional));
+  :Export or Share with Stakeholders;
+}
+stop
+@enduml
+
+
+https://www.planttext.com/
+
