@@ -1,0 +1,98 @@
+Mizrofl
+mizrofl
+In voice
+
+🎧𝔾𝕒𝕣𝕣𝕚𝕩 ➕✖ — Yesterday at 8:18 PM
+@startuml
+start
+
+:Login;
+
+if (Login successful?) then (yes)
+    -> [Proceed];
+else (no)
+    if (Forgot Password?) then (yes)
+        :Send OTP;
+        :Verify OTP;
+        if (OTP verification successful?) then (yes)
+            :Login;
+            if (Login successful?) then (yes)
+                -> [Proceed];
+            else (no)
+                stop
+            endif
+        else (no)
+            stop
+        endif
+    else (no)
+        stop
+    endif
+endif
+
+label Proceed
+:View Dashboard;
+repeat
+    fork
+
+    partition "Developer - Task Interaction" {
+        :Change Status of Task;
+        :Create Sub Task;
+        :Merge Subtask to Task;
+        :Deploy to Different Environment or Stage;
+    }
+
+    fork again
+
+    partition "Shared - Profile Management" {
+        :View Profile;
+        if (Wants to update profile?) then (yes)
+            :Update Profile;
+        endif
+    }
+
+    fork again
+
+    partition "Shared - Sprint & Task Overview" {
+        :View All Sprints;
+        :View Backlog;
+        :Add Comments or Attachments;
+        :View Comments or Attachments;
+        :View Current Sprint Tasks;
+        :View Calendar;
+    }
+
+    fork again
+
+    partition "Shared - Bug Management" {
+        :Raise or Create Bug;
+        if (Role == Developer) then (yes)
+          :Fix Bug;
+        else (Role == Tester)
+          :Test Bug;
+        endif
+}
+
+
+    fork again
+
+    partition "Tester - Test Activities" {
+        :Review Requirements;
+        :Create or Design Test Case;
+        :Execute Test Cases;
+        :Create Ticket for Regression Testing;
+        :Generate Test Report;
+    }
+
+    end fork
+
+    :Return to Dashboard;
+repeat while ()
+
+:Log out;
+
+stop
+@enduml
+
+
+
+https://www.planttext.com/
