@@ -104,3 +104,17 @@
   color: #2a5bd7;
   cursor: pointer;
 }
+
+.editButton {
+  background-color: #2a5bd7;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.editButton:hover {
+  background-color: #1f4bb8;
+}

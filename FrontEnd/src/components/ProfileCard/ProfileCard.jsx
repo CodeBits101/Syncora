@@ -1,6 +1,5 @@
-import React from "react";
+import React, { useState } from "react";
 import "./ProfileCard.css";
-import { FaPen } from "react-icons/fa";
 
 const ProfileCard = () => {
   const today = new Date();
@@ -10,6 +9,27 @@ const ProfileCard = () => {
     month: "long",
     year: "numeric"
   });
+
+  // State to manage edit mode
+  const [isEditing, setIsEditing] = useState(false);
+
+  // State to hold profile data
+  const [profileData, setProfileData] = useState({
+    phoneNumber: "93016–93705",
+    managerName: "Lionel Messi",
+    designation: "Developer",
+    joiningDate: "01-01-2001"
+  });
+
+  // Handler for input changes
+  const handleChange = (field, value) => {
+    setProfileData(prevData => ({ ...prevData, [field]: value }));
+  };
+
+  // Handler for toggling edit mode
+  const toggleEdit = () => {
+    setIsEditing(!isEditing);
+  };
 
   return (
     <div className="profile-wrapper">
@@ -46,27 +66,47 @@ const ProfileCard = () => {
           <div className="column">
             <div className="inputGroup">
               <label>Phone Number</label>
-              <div className="inputWithIcon">
-                <input value="93016–93705" readOnly />
-                <FaPen className="icon" />
-              </div>
+              <input
+                value={profileData.phoneNumber}
+                onChange={(e) => handleChange("phoneNumber", e.target.value)}
+                readOnly={!isEditing}
+              />
             </div>
             <div className="inputGroup">
               <label>Manager Name</label>
-              <input value="Lionel Messi" readOnly />
+              <input
+                value={profileData.managerName}
+                onChange={(e) => handleChange("managerName", e.target.value)}
+                readOnly={!isEditing}
+              />
             </div>
           </div>
 
           <div className="column">
             <div className="inputGroup">
               <label>Designation</label>
-              <input value="Developer" readOnly />
+              <input
+                value={profileData.designation}
+                onChange={(e) => handleChange("designation", e.target.value)}
+                readOnly={!isEditing}
+              />
             </div>
             <div className="inputGroup">
               <label>Joining Date</label>
-              <input value="01-01-2001" readOnly />
+              <input
+                value={profileData.joiningDate}
+                onChange={(e) => handleChange("joiningDate", e.target.value)}
+                readOnly={!isEditing}
+              />
             </div>
           </div>
+        </div>
+
+        {/* Edit/Save Button */}
+        <div style={{ textAlign: "right", padding: "1rem" }}>
+          <button onClick={toggleEdit} className="editButton">
+            {isEditing ? "Save" : "Edit"}
+          </button>
         </div>
       </div>
     </div>
