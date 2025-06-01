@@ -8,12 +8,17 @@ import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 
 //import 'bootstrap/dist/css/bootstrap.min.css';
+import ProfileCard from './components/ProfileCard/ProfileCard';
+import { Routes, Route } from 'react-router-dom';
 
 function App() {
   const [count, setCount] = useState(0)
 
   return (
     <>
+    <Routes>
+      <Route path='/profile' element={<ProfileCard />}/>
+    </Routes>
      <div className='p-3'>SYNCORA 
       <p className='px-3'>This is project management system </p>
      </div>
