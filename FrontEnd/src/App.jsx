@@ -19,9 +19,9 @@ function App() {
     <Routes>
       <Route path='/profile' element={<ProfileCard />}/>
     </Routes>
-     <div className='p-3'>SYNCORA 
+     {/* <div className='p-3'>SYNCORA 
       <p className='px-3'>This is project management system </p>
-     </div>
+     </div> */}
     </>
   )
 }
