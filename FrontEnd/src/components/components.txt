@@ -1,0 +1,6 @@
+Profile Page -> Yash 
+NodeJs Backend API -> Priyanshu 
+Project Structure -> Priyanshu 
+Db design->Priyanshu and Bhavik  
+UML and Flow diagram -> Yash and Vinay  
+Figma -> Siddhesh  
