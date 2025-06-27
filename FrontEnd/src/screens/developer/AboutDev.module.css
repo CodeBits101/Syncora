@@ -1,0 +1,31 @@
+.header{
+  display: flex;
+  flex-direction: column;
+}
+
+
+
+.team_tag {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  align-items: center;
+  background-color: #F5F5F5;
+  width: 10%;
+  padding: 2px;
+  border-radius: 7px;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 576px) {
+  .team_tag {
+    width: auto;
+    padding: 6px 12px;
+    gap: 6px;
+  }
+
+  .team_tag p {
+    font-size: 14px;
+    margin-top: 8px;
+  }
+}
