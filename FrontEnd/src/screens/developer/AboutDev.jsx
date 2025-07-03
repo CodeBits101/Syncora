@@ -10,6 +10,7 @@ import { FaInstagram } from "react-icons/fa";
 import { getLang } from "../../services/developer/lang";
 import { Dropdown, DropdownButton, Spinner } from "react-bootstrap";
 import getContentByLanguage from "../../utils/getContentByLang";
+import logoDark from "../../assets/logo_dark.png" ;  
 
 function trimToWords(text, wordLimit) {
   const words = text.split(" ");
@@ -73,6 +74,9 @@ export default function AboutDev() {
   return (
     <div style={{ padding: "20px" }}>
       <div className={styles.header}>
+        {/* <div className={styles.logo}>
+          <img src={logoDark} alt="Logo here..." />
+        </div> */}
         <div style={{ display: "flex", justifyContent: "center" }}>
           <div className={styles.team_tag}>
             <GiTeamIdea color="#725CAD" size={20} />
