@@ -9,7 +9,11 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cors()) ;  
 //rquiring the router here for developers 
 const devRouter = require('./routes/dev');
+const langRouter = require('./routes/language');
+
+
 app.use("/dev", devRouter) 
+app.use("/lang", langRouter)
 
 
 app.listen(process.env.APP_PORT, () => {

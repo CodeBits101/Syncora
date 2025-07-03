@@ -7,6 +7,9 @@ import { Container, Row, Col, Button } from "react-bootstrap";
 import { FaLinkedin } from "react-icons/fa";
 import { FaGithub } from "react-icons/fa";
 import { FaInstagram } from "react-icons/fa";
+import { getLang } from "../../services/developer/lang";
+import { Dropdown, DropdownButton, Spinner } from "react-bootstrap";
+import getContentByLanguage from "../../utils/getContentByLang";
 
 function trimToWords(text, wordLimit) {
   const words = text.split(" ");
@@ -17,21 +20,55 @@ function trimToWords(text, wordLimit) {
 
 export default function AboutDev() {
   const [devData, setDevData] = useState([]);
+  const [languages, setLanguages] = useState([]);
+  const [selectedLanguage, setSelectedLanguage] = useState("English");
+  const[selectedLanguagekey, setSelectedLanguageKey] = useState("en");
+  const [staticData , setStaticData] = useState([]) ;  
 
   const getAboutDevData = async () => {
     try {
-      const response = await getAboutDev();
+      const response = await getAboutDev(selectedLanguagekey);
       console.log(response);
-
       setDevData(response.data);
     } catch (error) {
       console.log("Error fetching developer data:", error);
     }
   };
 
+  const fetchLanguages = async () => {
+    try {
+      const response = await getLang();
+      console.log(response)
+      setLanguages(response);
+    } catch (error) {
+      console.error("Error fetching languages:", error);
+    }
+  };
+
+  const getStaticData = async () => {
+    try {
+      const staticdata = getContentByLanguage(selectedLanguagekey);
+      setStaticData(staticdata);
+    } catch (error) {
+      console.error("Error fetching static data:", error);
+    }
+  }
+
+
+
   useEffect(() => {
     getAboutDevData();
-  }, []);
+    fetchLanguages();
+    getStaticData() ;
+    
+  }, [selectedLanguage , selectedLanguagekey])  ;
+
+  const handleSelect = (lang) => {
+    setSelectedLanguage(lang);
+   
+    console.log("Selected:", lang);
+    console.log("Selected key:", lang.key);
+  };
 
   return (
     <div style={{ padding: "20px" }}>
@@ -39,23 +76,32 @@ export default function AboutDev() {
         <div style={{ display: "flex", justifyContent: "center" }}>
           <div className={styles.team_tag}>
             <GiTeamIdea color="#725CAD" size={20} />
-            <p className="mt-3">Our team</p>
+            <p className="mt-3">{staticData.title}</p>
           </div>
         </div>
+
         <div className="text-center mt-3">
-          <p className="fw-bold fs-1">Meet Our Team Members</p>
+          <p className="fw-bold fs-1">{staticData.heading}</p>
         </div>
 
         <div className="p-2" style={{ fontWeight: "400" }}>
           <p>
-            This task management application is designed specifically for IT
-            organizations, aligning with industry workflows and the Software
-            Development Life Cycle (SDLC). Built on the AGILE methodology, it
-            enables teams to efficiently manage tasks, track progress, and
-            collaborate seamlessly. The application ensures streamlined task
-            handling, fostering adaptability and iterative development, making
-            it an essential tool for IT project management.
+            {staticData.description}
           </p>
+        </div>
+        <div className={styles.langauge}>
+          <DropdownButton
+            id="language-dropdown"
+            title={selectedLanguage}
+            onSelect={handleSelect}
+            variant="secondary"
+          >
+            {languages.map((lang, idx) => (
+              <Dropdown.Item eventKey={lang.name} key={idx} onClick={() => {setSelectedLanguageKey(lang.key)} }>
+                {lang.name}
+              </Dropdown.Item>
+            ))}
+          </DropdownButton>
         </div>
       </div>
 

@@ -16,6 +16,12 @@
   border-radius: 7px;
 }
 
+.langauge{
+  position: absolute;
+  top: 5%; 
+  right: 1%;
+}
+
 /* Mobile responsiveness */
 @media (max-width: 576px) {
   .team_tag {
@@ -27,5 +33,9 @@
   .team_tag p {
     font-size: 14px;
     margin-top: 8px;
+  }
+
+  .langauge{
+    right: 4%;
   }
 }
