@@ -14,7 +14,8 @@ import Autocomplete from '@mui/material/Autocomplete';
 import ProfileCard from './components/ProfileCard/ProfileCard';
 import { Routes, Route } from 'react-router-dom';
 import AboutDev from './screens/developer/AboutDev';
-
+import Signup from './screens/Signup';
+import LoginPage from './screens/Login';
 function App() {
   const [count, setCount] = useState(0)
 
@@ -23,6 +24,8 @@ function App() {
     <Routes>
       <Route path='/profile' element={<ProfileCard />}/>
       <Route path='/dev' element={<AboutDev />}/>
+      <Route path = '/login' element={<LoginPage/>}/>
+      <Route path = '/register' element={<Signup/>}/>
     </Routes>
      {/* <div className='p-3'>SYNCORA 
       <p className='px-3'>This is project management system </p>
