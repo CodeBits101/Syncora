@@ -1,0 +1,53 @@
+Things to include in website -: 
+
+1.Effect on scrolling 
+
+
+
+Entities
+-------------------------------------------------------------------------------------------------------------------------
+Base -: 
+Id 
+CreatedTimeStamp 
+UpdatedTimeStamp  
+
+
+Department + Base  -: 
+
+Id 
+CreatedTimeStamp 
+UpdatedTimeStamp  
+deptName 
+
+Project + base -: 
+Id 
+CreatedTimeStamp  
+UpdatedTimeStamp 
+manager_id  
+pname 
+description 
+start_date 
+end_date 
+actual_start_date 
+actual_end_date  
+project status -> Enum  
+project code -> auto generated 
+
+
+-------------------------------------------------------------------------------------------------------------------------
+
+RelationShips-: 
+-------------------------------------------------------------------------------------------------------------------------
+1 Department -> * Employees
+
+1 Project <-> * Employees 
+
+1 Manager -> * Projects
+
+ALTER TABLE employees
+DROP FOREIGN KEY project_id;
+
+
+
+
+-------------------------------------------------------------------------------------------------------------------------
