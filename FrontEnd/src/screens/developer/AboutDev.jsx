@@ -11,6 +11,7 @@ import { getLang } from "../../services/developer/lang";
 import { Dropdown, DropdownButton, Spinner } from "react-bootstrap";
 import getContentByLanguage from "../../utils/getContentByLang";
 import logoDark from "../../assets/logo_dark.png" ;  
+import NoData from "../main/NoData";
 
 function trimToWords(text, wordLimit) {
   const words = text.split(" ");
@@ -29,7 +30,6 @@ export default function AboutDev() {
   const getAboutDevData = async () => {
     try {
       const response = await getAboutDev(selectedLanguagekey);
-      console.log(response);
       setDevData(response.data);
     } catch (error) {
       console.log("Error fetching developer data:", error);
@@ -39,7 +39,6 @@ export default function AboutDev() {
   const fetchLanguages = async () => {
     try {
       const response = await getLang();
-      console.log(response)
       setLanguages(response);
     } catch (error) {
       console.error("Error fetching languages:", error);
@@ -66,9 +65,6 @@ export default function AboutDev() {
 
   const handleSelect = (lang) => {
     setSelectedLanguage(lang);
-   
-    console.log("Selected:", lang);
-    console.log("Selected key:", lang.key);
   };
 
   return (
@@ -110,7 +106,10 @@ export default function AboutDev() {
       </div>
 
       {devData.length == 0 ? (
-        <p>There is no data for now...</p>
+        <div style={{marginTop:"-15%"}}>
+          <NoData/>
+        </div>
+      
       ) : (
         <Container>
           <Row>

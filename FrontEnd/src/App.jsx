@@ -10,16 +10,12 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 
-//import 'bootstrap/dist/css/bootstrap.min.css';
 import ProfileCard from './components/ProfileCard/ProfileCard';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import AboutDev from './screens/developer/AboutDev';
-import { developer, admin, tester, manager } from './../configs';
-import Signup from './screens/Signup';
-import LoginPage from './screens/Login';
-import Home from './Layout/Home/Home';
-import NotFound from './components/utility/NotFound';
-
+import AboutProject from './screens/main/AboutProject';
+import NotFoundPage from './screens/main/NotFoundPage';
+import NoData from './screens/main/NoData';
 
 function App() {
   const [count, setCount] = useState(0)
@@ -85,16 +81,12 @@ function App() {
 
   return (
     <>
- <Routes>
-  <Route path="/profile" element={<ProfileCard />} />
-  <Route path="/dev" element={<AboutDev />} />
-  <Route path = '/login' element={<LoginPage/>}/>
-  <Route path = '/register' element={<Signup/>}/>
-
-  {getRoleRoutes()}
-
-  <Route path="*" element={<NotFound />} />
-</Routes>
+    <Routes>
+      <Route path='/profile' element={<ProfileCard />}/>
+      <Route path='/dev' element={<AboutDev />}/>
+      <Route path='/' element={<AboutProject />}/>
+      <Route path='*' element={<NotFoundPage />}/>
+    </Routes>
      {/* <div className='p-3'>SYNCORA 
       <p className='px-3'>This is project management system </p>
      </div> */}

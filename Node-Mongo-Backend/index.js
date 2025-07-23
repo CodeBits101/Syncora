@@ -10,10 +10,12 @@ app.use(cors()) ;
 //rquiring the router here for developers 
 const devRouter = require('./routes/dev');
 const langRouter = require('./routes/language');
+const aboutRouter = require('./routes/about') ; 
 
 
 app.use("/dev", devRouter) 
 app.use("/lang", langRouter)
+app.use("/about", aboutRouter)
 
 
 app.listen(process.env.APP_PORT, () => {
