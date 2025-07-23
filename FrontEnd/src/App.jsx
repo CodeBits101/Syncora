@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, Suspense } from 'react'
 import './App.css'
 // import '@fontsource/roboto/300.css';
 // import '@fontsource/roboto/400.css';
@@ -12,21 +12,89 @@ import Autocomplete from '@mui/material/Autocomplete';
 
 //import 'bootstrap/dist/css/bootstrap.min.css';
 import ProfileCard from './components/ProfileCard/ProfileCard';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import AboutDev from './screens/developer/AboutDev';
+import { developer, admin, tester, manager } from './../configs';
 import Signup from './screens/Signup';
 import LoginPage from './screens/Login';
+import Home from './Layout/Home/Home';
+import NotFound from './components/utility/NotFound';
+
+
 function App() {
   const [count, setCount] = useState(0)
 
+  //this should be replaced with global store/cookie role value
+  const user = {role : 'manager'}
+
+  const getRoleRoutes = () => {
+    switch (user.role) {
+      case 'dev':
+        return renderRoleRoutes(developer);
+      case 'admin':
+        return renderRoleRoutes(admin);
+      case 'manager':
+        return renderRoleRoutes(manager);
+      case 'tester':
+        return renderRoleRoutes(tester); 
+      default:
+        return <Route path="*" element={<NotFound />} />;
+    }
+  };
+
+  const renderMenuRoutes = (menu) => {
+    return menu.flatMap(({ label, path, component: Component, submenu }) => {
+      const routes = [
+        <Route
+          key={label}
+          path={path}
+          element={
+            <Suspense fallback={<div>Loading...</div>}>
+              <Component />
+            </Suspense>
+          }
+        />,
+      ];
+
+      if (submenu) {
+        routes.push(
+          ...submenu.map(({ label: subLabel, path: subPath, component: SubComponent }) => (
+            <Route
+              key={subLabel}
+              path={subPath}
+              element={
+                <Suspense fallback={<div>Loading...</div>}>
+                  <SubComponent />
+                </Suspense>
+              }
+            />
+          ))
+        );
+      }
+
+      return routes;
+    });
+  };
+
+  const renderRoleRoutes = (roleConfig) => (
+    <Route path={`/${roleConfig.path}`} element={<Home roleConfig={roleConfig} />}>
+      <Route index element={<Navigate to={roleConfig.menu[0].path} replace />} />
+      {renderMenuRoutes(roleConfig.menu)}
+    </Route>
+  );
+
   return (
     <>
-    <Routes>
-      <Route path='/profile' element={<ProfileCard />}/>
-      <Route path='/dev' element={<AboutDev />}/>
-      <Route path = '/login' element={<LoginPage/>}/>
-      <Route path = '/register' element={<Signup/>}/>
-    </Routes>
+ <Routes>
+  <Route path="/profile" element={<ProfileCard />} />
+  <Route path="/dev" element={<AboutDev />} />
+  <Route path = '/login' element={<LoginPage/>}/>
+  <Route path = '/register' element={<Signup/>}/>
+
+  {getRoleRoutes()}
+
+  <Route path="*" element={<NotFound />} />
+</Routes>
      {/* <div className='p-3'>SYNCORA 
       <p className='px-3'>This is project management system </p>
      </div> */}
