@@ -1,5 +1,7 @@
 package com.syncora.servicesimpl;
 
+import java.util.List;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -12,6 +14,7 @@ import com.syncora.dtos.EmployeeReqDto;
 import com.syncora.dtos.EmployeeResponseDto;
 import com.syncora.entities.Department;
 import com.syncora.entities.Employee;
+import com.syncora.enums.EmployeeType;
 import com.syncora.exceptions.ApiException;
 import com.syncora.exceptions.ResourceNotFoundException;
 import com.syncora.repositories.DeptRepo;
@@ -39,17 +42,37 @@ public class EmployeeServiceImpl implements EmployeeService {
 	public ApiResponse registerUser(EmployeeReqDto dto) {
 		
 		if(empRepo.existsByEmail(dto.getEmail())) 
-			throw new ApiException("Duplicate email found") ; 
+			throw new ApiException("Duplicate email found") ;
 		
-		Employee emp  = modelMapper.map(dto, Employee.class) ; 
+		Employee emp  = modelMapper.map(dto, Employee.class) ;
+		
+		if((dto.getEmpRole().name()  == "ROLE_MANAGER") || (dto.getEmpRole().name() == "ROLE_ADMIN")) {
+		   emp.setManager(emp);	
+		   
+		}
+		else {
+			emp.setManager(empRepo.findById(dto.getManagerId())
+					.orElseThrow(()-> new ResourceNotFoundException("Manager does not exist")));
+		}
+		
 		emp.setPassword(passwordEncoder.
 				encode(emp.getPassword()));
 		emp.setDepartment(deptRepo.findById(dto.getDepartmentId())
 				.orElseThrow(()-> new ResourceNotFoundException("Dept does not exist")));
-		emp.setManager(empRepo.findById(dto.getManagerId())
-				.orElseThrow(()-> new ResourceNotFoundException("Manager does not exist")));
+		
 		empRepo.save(emp); 
 		return new ApiResponse("Employee Registered successfully");
+	}
+
+
+
+
+
+	@Override
+	public List<EmployeeResponseDto> getEmployeeByRole(EmployeeType role) {
+		List<EmployeeResponseDto> empList  = empRepo.findByEmpRole(role).stream()
+				.map(emp -> modelMapper.map(emp,EmployeeResponseDto.class)).toList(); 
+		return empList;
 	}
 
 

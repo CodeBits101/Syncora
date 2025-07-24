@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.DeleteMapping;
 
 import com.syncora.dtos.ApiResponse;
 import com.syncora.dtos.DeptDto;
@@ -44,5 +45,24 @@ public class DeptServiceImpl implements DeptService {
 		      new ResourceNotFoundException("Dept does not exist")) ; 
 		return modelMapper.map(dept, DeptDto.class);
 	}
+
+	@Override
+	public ApiResponse updateDepartment(Long id ,DeptDto dto) {
+		Department dept  = deptRepo.findById(id).orElseThrow(()->
+	      new ResourceNotFoundException("Dept does not exist")) ; 
+	    modelMapper.map(dto , dept) ;  
+	    deptRepo.save(dept); 
+		return new ApiResponse("Updated succesfully");
+	}
+
+	@Override
+	public ApiResponse deleteDepartment(Long id) {
+		Department dept  = deptRepo.findById(id).orElseThrow(()->
+	      new ResourceNotFoundException("Dept does not exist")) ; 
+		deptRepo.deleteById(id);
+		return new ApiResponse("Deleted Successfully") ;
+	}
+	
+	
 
 }

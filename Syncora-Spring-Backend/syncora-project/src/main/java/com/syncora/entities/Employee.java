@@ -1,5 +1,6 @@
 package com.syncora.entities;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
@@ -47,7 +48,7 @@ public class Employee extends Base implements UserDetails {
 	@JoinColumn(name ="project_id")
   private Project project ;  
 	@Column(name="date_of_joining")
-  private LocalDateTime doj;
+  private LocalDate doj;
 	@Enumerated(EnumType.STRING)
 	@Column(name="emp_role")
   private EmployeeType empRole ;
@@ -55,7 +56,7 @@ public class Employee extends Base implements UserDetails {
 	
 	
 	public Employee(String empName, String email, String password, String phoneNumber, Department department,
-			Employee manager, Project project, LocalDateTime doj, EmployeeType empRole) {
+			Employee manager, Project project, LocalDate doj, EmployeeType empRole) {
 		super();
 		this.empName = empName;
 		this.email = email;
