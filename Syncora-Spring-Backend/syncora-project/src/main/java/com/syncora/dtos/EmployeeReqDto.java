@@ -1,5 +1,6 @@
 package com.syncora.dtos;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import com.syncora.entities.Department;
@@ -27,10 +28,8 @@ public class EmployeeReqDto extends BaseDto {
 	  private Long departmentId ;
 	
 	  private Long managerId ;
-		
-	  private Long projectId ;  
-		
-	  private LocalDateTime doj;
+	 	
+	  private LocalDate doj;
 	
 	  private EmployeeType empRole ;
 }

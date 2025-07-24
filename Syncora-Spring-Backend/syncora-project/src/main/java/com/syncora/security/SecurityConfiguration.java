@@ -36,15 +36,14 @@ public class SecurityConfiguration {
 		http.authorizeHttpRequests(
 
 				request -> request
-						.requestMatchers("/swagger-ui/**",
+						.requestMatchers(
+								"/swagger-ui.html","/swagger-ui/**",
 								"/v3/api-docs/**",
-								"/employees/register", "/employees/login")
+								"/employees/register", "/employees/login" ,"/employees/*" ,"/departments/**" )
 						.permitAll()
 						//only for react apps - permit in flight requests - otherwise CORS error
 						.requestMatchers(HttpMethod.OPTIONS).permitAll()
 						.requestMatchers(HttpMethod.GET, "/projects").permitAll()
-						.requestMatchers(HttpMethod.GET, "/departments").permitAll()
-						.requestMatchers(HttpMethod.POST, "/departments").permitAll()
 						.requestMatchers(HttpMethod.POST, "/projects").hasRole("ADMIN").anyRequest()
 						.authenticated());
 		// 3. disable HttpSession tracking - stateless

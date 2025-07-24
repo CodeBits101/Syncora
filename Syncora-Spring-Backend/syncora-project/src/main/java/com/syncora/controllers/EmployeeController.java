@@ -5,6 +5,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,6 +17,7 @@ import com.syncora.dtos.AuthReqDto;
 import com.syncora.dtos.AuthResp;
 import com.syncora.dtos.EmployeeReqDto;
 import com.syncora.entities.Employee;
+import com.syncora.enums.EmployeeType;
 import com.syncora.security.JwtUtils;
 import com.syncora.services.EmployeeService;
 
@@ -22,11 +26,12 @@ import lombok.AllArgsConstructor;
 @RestController
 @RequestMapping("/employees")
 @AllArgsConstructor
+@CrossOrigin
 public class EmployeeController {
 	
   private  AuthenticationManager authenticationManager;
   private final EmployeeService empService ;  
-	private JwtUtils jwtUtils;
+	private final JwtUtils jwtUtils;
   
   @PostMapping("/register")
   public ResponseEntity<?> registerUser(@RequestBody EmployeeReqDto dto){
@@ -50,10 +55,17 @@ public class EmployeeController {
 		System.out.println("after "+validAuthentication.isAuthenticated());//tru
 		//3. In case of success , generate JWT n send it to REST client
 		  Employee userPrincipal = (Employee) validAuthentication.getPrincipal();
+		  
 		return ResponseEntity.ok(
 				new AuthResp("auth successful"
-						,jwtUtils.generateJwtToken(validAuthentication) 
+						,jwtUtils.generateJwtToken(validAuthentication) , 
+						userPrincipal.getAuthorities().iterator().next().getAuthority() 
 						));
+	}
+	
+	@GetMapping("/{role}")
+	public ResponseEntity<?> getEmployeeByRole(@PathVariable EmployeeType role){
+		return ResponseEntity.ok(empService.getEmployeeByRole(role)) ;
 	}
   
 }

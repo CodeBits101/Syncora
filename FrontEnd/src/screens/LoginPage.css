@@ -84,3 +84,10 @@ body {
 {
     color: white;
 }
+
+
+
+.transparentInput::placeholder {
+  color: white; /* <-- this sets placeholder text to white */
+  opacity: 1;   /* ensure it's fully visible */
+}

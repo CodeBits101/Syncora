@@ -1,6 +1,6 @@
 .auth-container {
   background: linear-gradient(to right, #2c52d1, #2c52d1);
-  height: 100vh;
+  height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -8,7 +8,7 @@
 
 .auth-box {
   background-color: white;
-  padding: 40px;
+  padding: 2%;
   border-radius: 10px;
   width: 400px;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
@@ -16,7 +16,7 @@
 
 .auth-title {
   text-align: center;
-  margin-bottom: 30px;
+  
   font-size: 24px;
   font-weight: bold;
   color: #2c52d1;
