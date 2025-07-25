@@ -1,10 +1,20 @@
+/* ✅ Global fix for overflow issues */
+* {
+  box-sizing: border-box;
+}
+
+body, html {
+  overflow-x: hidden;
+  margin: 0;
+  padding: 0;
+}
+
 .profile-wrapper {
   font-family: 'Segoe UI', sans-serif;
   background-color: #f8f8f8;
-  padding: 2rem;
+  padding: 1.5rem 0.75rem; /* reduced to avoid extra scroll */
   min-height: 100vh;
-  width: 90%; 
-  margin-left: auto; 
+  width: 100%;
 }
 
 .header {
@@ -35,8 +45,8 @@
 .profileSection {
   display: flex;
   align-items: center;
-  padding: 1.5rem;
-  gap: 1rem;
+  padding: 1.2rem; /* reduced from 1.5rem */
+  gap: 0.8rem; /* slightly smaller gap */
   position: relative;
 }
 
@@ -57,15 +67,15 @@
 .infoTable {
   display: flex;
   justify-content: space-between;
-  padding: 1.5rem;
-  gap: 2rem;
+  padding: 1.2rem; /* slightly reduced */
+  gap: 1.5rem; /* reduced from 2rem */
 }
 
 .column {
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 1.2rem; /* slightly reduced */
 }
 
 .inputGroup {
@@ -85,6 +95,15 @@
   border-radius: 8px;
   font-size: 0.95rem;
   color: #444;
+}
+
+.inputGroup input[readonly] {
+  background-color: #f5f5f5;
+  color: #444;
+  outline: none;
+  box-shadow: none;
+  cursor: not-allowed;
+  caret-color: transparent; /* hides the blinking text cursor */
 }
 
 .inputWithIcon {
@@ -117,4 +136,128 @@
 
 .editButton:hover {
   background-color: #1f4bb8;
+}
+
+/* ✅ Improved date text styling */
+.date-text {
+  font-weight: 400;
+  color: #666;
+  font-size: 1rem;
+  letter-spacing: 0.3px;
+}
+
+/* ✅ Improved quote styling */
+.quote-text {
+  max-width: 280px; /* slightly narrower to prevent overflow */
+  text-align: right;
+  font-size: 1.1rem; /* slightly bigger for better readability */
+  color: #4a6fa5; /* softer blue-gray */
+  font-style: italic;
+  font-weight: 400; /* lighter, elegant */
+  margin-left: 1.5rem; /* reduced margin */
+  line-height: 1.5;
+  letter-spacing: 0.3px;
+  align-self: flex-start;
+}
+
+/* ✅ Responsive styles */
+@media (max-width: 900px) {
+  .profile-wrapper {
+    padding: 1rem;
+    width: 100%;
+  }
+  .infoTable {
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1rem;
+  }
+  .profileSection {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+    padding: 1rem;
+  }
+  .quote-text {
+    max-width: 100%;
+    margin-left: 0;
+    font-size: 1rem;
+    margin-top: 0.5rem;
+    text-align: left;
+  }
+}
+
+@media (max-width: 600px) {
+  .profile-wrapper {
+    padding: 0.5rem;
+    min-height: unset;
+  }
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+  .header > div:first-child,
+  .date-text,
+  .quote-text {
+    display: none !important;
+  }
+  .card {
+    border-radius: 8px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+  }
+  .banner {
+    height: 32px;
+  }
+  .avatar {
+    width: 48px;
+    height: 48px;
+  }
+  .avatarSmall {
+    width: 36px;
+    height: 36px;
+  }
+  .infoTable {
+    padding: 0.5rem;
+    gap: 0.5rem;
+  }
+  .column {
+    gap: 1rem;
+  }
+  .inputGroup input {
+    padding: 0.5rem;
+    font-size: 0.9rem;
+  }
+  .editButton {
+    width: 100%;
+    padding: 0.75rem 0;
+    font-size: 1rem;
+  }
+}
+
+/* ✅ Responsive modal (PasswordChangeModal) */
+.MuiDialog-paper {
+  max-width: 400px !important;
+  width: 100% !important;
+  margin: 0 auto !important;
+}
+@media (max-width: 600px) {
+  .MuiDialog-paper {
+    padding: 0.5rem !important;
+    min-width: unset !important;
+    max-width: 95vw !important;
+    width: 100% !important;
+    margin-left: 5vw !important;
+    margin-right: 5vw !important;
+    border-radius: 12px !important;
+  }
+  .MuiDialogContent-root {
+    padding: 0.5rem !important;
+  }
+  .MuiDialogTitle-root {
+    font-size: 1.1rem !important;
+    padding: 0.5rem 1rem !important;
+  }
+  .MuiDialogActions-root {
+    padding: 0.5rem 1rem !important;
+  }
 }
