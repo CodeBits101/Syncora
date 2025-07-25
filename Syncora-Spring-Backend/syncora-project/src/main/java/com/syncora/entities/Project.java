@@ -49,7 +49,6 @@ public class Project extends Base {
 	private Employee manager ;
 	
 	@OneToMany(mappedBy = "project" , cascade = CascadeType.ALL , orphanRemoval = true)
-	
 	private List<Employee> empList = new ArrayList<>();
   
   

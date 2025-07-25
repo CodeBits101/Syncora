@@ -19,6 +19,14 @@ import NotFoundPage from "./screens/main/NotFoundPage";
 import LoginPage from "./screens/Login";
 import Signup from "./screens/Signup";
 import SprintScreen from "./services/manager/SprintScreen";
+
+import ProjectStatus from "./screens/manager/ProjectStatus";
+
+import {manager, developer, admin, tester } from "../configs";
+import Home from "./Layout/Home/Home";
+import TaskBoard from "./components/TaskScreen/TaskBoard";
+
+
 function App() {
   const [count, setCount] = useState(0);
 
@@ -96,12 +104,20 @@ function App() {
         <Route path="/dev" element={<AboutDev />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<Signup />} />
+
         {/* for testing manager sprints screen */}
         <Route path="/manager/projects/:projectId/sprints" element={<SprintScreen />} />
 
 
+
+        <Route path="/projectstatus" element={<ProjectStatus />} />
 {/* 
         {getRoleRoutes()} */}
+
+        <Route path="/scrumBoard" element={<TaskBoard />} />
+
+        {getRoleRoutes()}
+
         <Route path="/" element={<AboutProject />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>

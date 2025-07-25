@@ -44,7 +44,7 @@ public class SecurityConfiguration {
 						//only for react apps - permit in flight requests - otherwise CORS error
 						.requestMatchers(HttpMethod.OPTIONS).permitAll()
 						.requestMatchers(HttpMethod.GET, "/projects").permitAll()
-						.requestMatchers(HttpMethod.POST, "/projects").hasRole("ADMIN").anyRequest()
+						.requestMatchers(HttpMethod.POST, "/projects").hasRole("MANAGER").anyRequest()
 						.authenticated());
 		// 3. disable HttpSession tracking - stateless
 		http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
