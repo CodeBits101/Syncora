@@ -1,0 +1,30 @@
+.project-card {
+  border: none;
+  border-radius: 1rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  background: #fff;
+}
+
+.project-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+}
+
+.project-card .card-body {
+  padding: 1.2rem;
+}
+
+.project-card .card-title {
+  font-size: 1.2rem;
+}
+
+.project-card .card-subtitle {
+  font-size: 0.9rem;
+}
+
+
+.hyperlink{
+  color: white;
+  text-decoration: underline;
+}
