@@ -10,22 +10,16 @@ import { FaInstagram } from "react-icons/fa";
 import { getLang } from "../../services/developer/lang";
 import { Dropdown, DropdownButton, Spinner } from "react-bootstrap";
 import getContentByLanguage from "../../utils/getContentByLang";
-import logoDark from "../../assets/logo_dark.png" ;  
+import logoDark from "../../assets/logo_dark.png";
 import NoData from "../main/NoData";
-
-function trimToWords(text, wordLimit) {
-  const words = text.split(" ");
-  return words.length > wordLimit
-    ? words.slice(0, wordLimit).join(" ") + "..."
-    : text;
-}
+import trimToWords from "../../utils/trimToWords";
 
 export default function AboutDev() {
   const [devData, setDevData] = useState([]);
   const [languages, setLanguages] = useState([]);
   const [selectedLanguage, setSelectedLanguage] = useState("English");
-  const[selectedLanguagekey, setSelectedLanguageKey] = useState("en");
-  const [staticData , setStaticData] = useState([]) ;  
+  const [selectedLanguagekey, setSelectedLanguageKey] = useState("en");
+  const [staticData, setStaticData] = useState([]);
 
   const getAboutDevData = async () => {
     try {
@@ -52,16 +46,13 @@ export default function AboutDev() {
     } catch (error) {
       console.error("Error fetching static data:", error);
     }
-  }
-
-
+  };
 
   useEffect(() => {
     getAboutDevData();
     fetchLanguages();
-    getStaticData() ;
-    
-  }, [selectedLanguage , selectedLanguagekey])  ;
+    getStaticData();
+  }, [selectedLanguage, selectedLanguagekey]);
 
   const handleSelect = (lang) => {
     setSelectedLanguage(lang);
@@ -85,9 +76,7 @@ export default function AboutDev() {
         </div>
 
         <div className="p-2" style={{ fontWeight: "400" }}>
-          <p>
-            {staticData.description}
-          </p>
+          <p>{staticData.description}</p>
         </div>
         <div className={styles.langauge}>
           <DropdownButton
@@ -97,7 +86,13 @@ export default function AboutDev() {
             variant="secondary"
           >
             {languages.map((lang, idx) => (
-              <Dropdown.Item eventKey={lang.name} key={idx} onClick={() => {setSelectedLanguageKey(lang.key)} }>
+              <Dropdown.Item
+                eventKey={lang.name}
+                key={idx}
+                onClick={() => {
+                  setSelectedLanguageKey(lang.key);
+                }}
+              >
                 {lang.name}
               </Dropdown.Item>
             ))}
@@ -106,10 +101,9 @@ export default function AboutDev() {
       </div>
 
       {devData.length == 0 ? (
-        <div style={{marginTop:"-15%"}}>
-          <NoData/>
+        <div style={{ marginTop: "-15%" }}>
+          <NoData />
         </div>
-      
       ) : (
         <Container>
           <Row>
