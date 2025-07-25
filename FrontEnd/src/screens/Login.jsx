@@ -25,6 +25,21 @@ const LoginPage = ({ setRole }) => {
   const handleLogin = async (e) => {
     console.log("Logging in with:", username, password);
     setIsLoading(true);
+    // validation Logic for email and password
+
+ const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  if (!username.trim() || !password.trim())
+  {
+    toast.error("Email and Password are required");
+    return;
+  }
+
+ if (!emailRegex.test(username))
+ {
+    toast.error("Enter a valid email address");
+    return;
+ }
     try {
       const data = {
         email: username,
