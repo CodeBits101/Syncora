@@ -4,7 +4,7 @@ import Board from './Board';
 
 const TaskBoard = () => {
   return (
-    <Box display="flex" height="100vh" width="100vw" overflow="hidden">
+    <Box className = "pb-3" display="flex" height="100vh" width="100vw" overflow="hidden">
       <Box width="80px" flexShrink={0} /> {/* Sidebar space */}
 
       <Box flex={1} overflow="hidden" display="flex" flexDirection="column">

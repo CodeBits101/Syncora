@@ -55,11 +55,14 @@ public class EmployeeController {
 		System.out.println("after "+validAuthentication.isAuthenticated());//tru
 		//3. In case of success , generate JWT n send it to REST client
 		  Employee userPrincipal = (Employee) validAuthentication.getPrincipal();
+		  String token = jwtUtils.generateJwtToken(validAuthentication);
 		  
 		return ResponseEntity.ok(
 				new AuthResp("auth successful"
 						,jwtUtils.generateJwtToken(validAuthentication) , 
-						userPrincipal.getAuthorities().iterator().next().getAuthority() 
+						userPrincipal.getAuthorities().iterator().next().getAuthority() , 
+						userPrincipal.getEmpName() ,
+						userPrincipal.getId()
 						));
 	}
 	
