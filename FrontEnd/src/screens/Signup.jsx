@@ -99,6 +99,42 @@ const Signup = () => {
     setIsLoading(true);
     const localDateTime = `${formData.doj}T00:00:00`;
     setFormData({ ...formData, doj: localDateTime });
+
+    // validation logic
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const phoneRegex = /^[0-9]{10}$/;
+    if (!formData.empName.trim()) {
+      toast.error("Name is required");
+      return;
+    }
+    if (!formData.email.trim() || !emailRegex.test(formData.email)) {
+      toast.error("Enter a valid email address");
+      return;
+    }
+    if (!formData.password || formData.password.length < 6) {
+      toast.error("Password must be at least 6 characters");
+      return;
+    }
+    if (!formData.phoneNumber.trim() || !phoneRegex.test(formData.phoneNumber)) {
+      toast.error("Enter a valid phone number (Max.10 Digits)");
+      return;
+    }
+    if(!formData.departmentId)
+    {
+      toast.error("Please select a department")
+      return;
+    }
+    if (!formData.doj) {
+      toast.error("Please select a date");
+      return;
+    }
+    if((formData.empRole === "ROLE_DEVELOPER" || formData.empRole === "ROLE_TESTER") && !formData.managerId)
+    {
+      toast.error("Manager is required for Developers and Testers");
+      return;
+    }
+
+
     try {
       const response = await registerUser(formData);
       console.log("Registration successful:", response);
@@ -131,6 +167,7 @@ const Signup = () => {
   }, []);
 
   return (
+  <div className="register-page">
     <div className="auth-container ">
       <div className="auth-box">
         <h2 className="auth-title">Register As</h2>
@@ -239,6 +276,7 @@ const Signup = () => {
         </p>
       </div>
       <ToastContainer position="top-center" autoClose={1500} />
+    </div>
     </div>
   );
 };
