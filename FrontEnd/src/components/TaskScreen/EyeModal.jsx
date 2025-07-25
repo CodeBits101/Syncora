@@ -166,7 +166,7 @@ export default function JiraModal({ open, onClose, task, updateTask }) {
   };
 
   return (
-    <Dialog open={open} onClose={onClose} maxWidth={false} fullWidth PaperProps={{ sx: { height: '65vh', width: '75vw', maxWidth: '75vw' } }}>
+    <Dialog open={open} onClose={onClose} maxWidth={false} fullWidth PaperProps={{ sx: { height: '70vh', width: '75vw', maxWidth: '75vw' , minWidth:'70vw'} }}>
       <Box display="flex" justifyContent="space-between" alignItems="center" p={2}>
         <DialogTitle sx={{ textAlign: 'left', padding: 0, pl: 2, pr: 2, pt: 2, pb: 0, m: 0 }}>
           {!editingTitle ? (
