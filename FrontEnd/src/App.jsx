@@ -22,26 +22,25 @@ import SprintScreen from "./services/manager/SprintScreen";
 
 import ProjectStatus from "./screens/manager/ProjectStatus";
 
-import {manager, developer, admin, tester } from "../configs";
+import { manager, developer, admin, tester } from "../configs";
 import Home from "./Layout/Home/Home";
 import TaskBoard from "./components/TaskScreen/TaskBoard";
 
-
 function App() {
   const [count, setCount] = useState(0);
-
+  const [role, setRole] = useState(localStorage.getItem("role"));
   //this should be replaced with global store/cookie role value
-  const user = { role: "manager" };
+  // const user = { role: "ROLE_MANAGER" };
 
   const getRoleRoutes = () => {
-    switch (user.role) {
-      case "dev":
+    switch (role) {
+      case "ROLE_DEVELOPER":
         return renderRoleRoutes(developer);
-      case "admin":
+      case "ROLE_ADMIN":
         return renderRoleRoutes(admin);
-      case "manager":
+      case "ROLE_MANAGER":
         return renderRoleRoutes(manager);
-      case "tester":
+      case "ROLE_TESTER":
         return renderRoleRoutes(tester);
       default:
         return <Route path="*" element={<NotFoundPage />} />;
@@ -102,7 +101,11 @@ function App() {
       <Routes>
         <Route path="/profile" element={<ProfileCard />} />
         <Route path="/dev" element={<AboutDev />} />
-        <Route path="/login" element={<LoginPage />} />
+        <Route
+          path="/login"
+          element={<LoginPage setRole={setRole} />}
+         
+        />
         <Route path="/register" element={<Signup />} />
 
         {/* for testing manager sprints screen */}
@@ -111,7 +114,7 @@ function App() {
 
 
         <Route path="/projectstatus" element={<ProjectStatus />} />
-{/* 
+        {/* 
         {getRoleRoutes()} */}
 
         <Route path="/scrumBoard" element={<TaskBoard />} />

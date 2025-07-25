@@ -9,14 +9,18 @@ import { ToastContainer } from "react-toastify";
 import { VscEyeClosed } from "react-icons/vsc";
 import { VscEye } from "react-icons/vsc";
 import { loginUser } from "../services/main/auth";
+import Cookies from "js-cookie";
+import { roleBasePaths } from "../utils/roleBasedPaths";
 
-const LoginPage = () => {
+const LoginPage = ({ setRole }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
   const navigate = useNavigate();
+
+  //calling login api
 
   const handleLogin = async (e) => {
     console.log("Logging in with:", username, password);
@@ -44,6 +48,32 @@ const LoginPage = () => {
       const response = await loginUser(data);
       console.log(response);
       toast.success("Login Successfull");
+
+      //setting the token in localstorage
+      localStorage.setItem("token", response.jwt);
+      localStorage.setItem("user", JSON.stringify(response));
+      localStorage.setItem("empName", response.userName);
+      localStorage.setItem("empId", response.id);
+      localStorage.setItem("role", response.role);
+
+      //setting token in cookies
+      Cookies.set("token", response.jwt, { expires: 7 }); // expires in 7 days
+      Cookies.set("empId", response.id);
+      Cookies.set("empName", response.userName);
+      Cookies.set("role", response.role);
+
+      setRole(response.role);
+
+      //delay navigation by 1500 ms
+      const basePath = roleBasePaths[response.role];
+
+      setTimeout(() => {
+        if (basePath) {
+          navigate(`/${basePath}`);
+        } else {
+          navigate("/not-foound");
+        }
+      }, 1500);
     } catch (error) {
       console.error("Login error:", error);
       toast.error(error.response.data.message || "Login failed occurred");

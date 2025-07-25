@@ -20,10 +20,10 @@ export default function NotFoundPage() {
             </p>
           </div>
 
-          <Button variant="dark" href="/">
+          <Button className="cursor-pointer" variant="dark" href="/">
             Go Back Home
           </Button>
-        </Col>
+        </Col> 
       </Row>
     </Container>
   );

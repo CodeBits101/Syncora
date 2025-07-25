@@ -106,11 +106,18 @@ public class JwtUtils {
 		}
 		
 		public Long getUserIdFromJwtToken(String token) {
+			System.out.println("Original token -:" + token);
 			String cleanToken = token.substring(7) ;
+			System.out.println("Clean token -:" + cleanToken);
 		    Claims claims = validateJwtToken(cleanToken);
 		    return claims.get("id", Long.class);
 		}
-
+         
+		public String getEmpNameFromJwtToken(String token) {
+			String cleanToken = token.substring(7) ;
+		    Claims claims = validateJwtToken(cleanToken);
+		    return claims.get("employeeName", String.class);
+		}
 		// this method will be invoked by our custom JWT filter to get list of granted
 		// authorities n store it in auth token
 		public List<GrantedAuthority> getAuthoritiesFromClaims(Claims claims) {

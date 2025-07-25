@@ -37,7 +37,7 @@ const HyperLink = () => {
   const navigate = useNavigate();
   return (
     <>
-      <Card.Link className="hyperlink" onClick={() => navigate("/task")}>
+      <Card.Link className="hyperlink" onClick={() => navigate("/scrumBoard")}>
         View Task{" "}
       </Card.Link>
       <Card.Link
