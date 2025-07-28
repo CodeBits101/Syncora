@@ -27,7 +27,7 @@ export default function SliderCustom() {
   }, []);
 
   return (
-    <div style={{ width: "100%", backgroundColor: "#f8f9fa" }}>
+    <div style={{ width: "100%", backgroundColor: "#f8f9fa" , overflow: "hidden" , height: "100vh"}}>
       <Container fluid className="py-5">
         <Row className="align-items-center">
           <Col xs={2} className="text-end">

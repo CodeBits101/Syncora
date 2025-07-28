@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from "react";
 import logo from "../../assets/logo_light.png";
 import styles from "./AboutProject.module.css";
-import { Container, Row, Col, Button } from "react-bootstrap";
+import { Container, Row, Col, Button, Fade } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { getAboutSyncora } from "../../services/main/aboutproject";
 import { Card, Spinner } from "react-bootstrap";
 import { FaRocket } from "react-icons/fa6";
 import Footer from "../../Layout/Footer";
 import SliderCustom from "../../components/main/SliderCustom";
+import { motion, useAnimation } from "framer-motion";
+import { useInView } from "react-intersection-observer";
 
 const data = [
   {
@@ -31,6 +33,33 @@ const data = [
     avatar: "https://api.dicebear.com/7.x/notionists/svg?seed=789",
   },
 ];
+
+const FadeInSection = ({ children }) => {
+  const controls = useAnimation();
+  const [ref, inView] = useInView({
+    triggerOnce: true,
+    threshold: 0.1, // how much of the element needs to be visible
+  });
+
+  useEffect(() => {
+    if (inView) {
+      controls.start({ opacity: 1, y: 0 });
+    }
+  }, [controls, inView]);
+
+  return (
+    <div style={{ overflow: "hidden" }}>
+      <motion.div
+        ref={ref}
+        initial={{ opacity: 0, y: 40 }}
+        animate={controls}
+        transition={{ duration: 1 }}
+      >
+        {children}
+      </motion.div>
+    </div>
+  );
+};
 
 function Header() {
   const navigate = useNavigate();
@@ -292,56 +321,66 @@ export default function AboutProject() {
   return (
     <div className="w-100" style={{ marginBottom: "1%" }}>
       <div className="w-100">
+        <Header />
         <SliderCustom />
       </div>
 
-      <div className="p-2">
-        <Header />
-        <TopComponent
-          head={"Built for Small Teams.Designed to Move Fast."}
-          description={
-            "Syncora is a lightweight, minimal alternative to Jira — made for startups who want clarity, not complexity. Fast to onboard. Simple to use. Powerful where it matters."
-          }
-          btnText={"About Developers"}
-          btnRedirect={"/dev"}
-          marginTop={"2%"}
-        />
-      </div>
+      <FadeInSection>
+        <div className="p-2">
+          <TopComponent
+            head={"Built for Small Teams.Designed to Move Fast."}
+            description={
+              "Syncora is a lightweight, minimal alternative to Jira — made for startups who want clarity, not complexity. Fast to onboard. Simple to use. Powerful where it matters."
+            }
+            btnText={"About Developers"}
+            btnRedirect={"/dev"}
+            marginTop={"2%"}
+          />
+        </div>
+      </FadeInSection>
 
-      <div className="p-2 mt-4 pb-4" style={{ backgroundColor: "#f8f9fa" }}>
-        <ChooseSyncora
-          title={"Why Choose Syncora?"}
-          description={
-            " Everything you need to manage projects without the bloat"
-          }
-        />
-        <AboutCard />
-      </div>
+      <FadeInSection>
+        <div className="p-2 mt-4 pb-4" style={{ backgroundColor: "#f8f9fa" }}>
+          <ChooseSyncora
+            title={"Why Choose Syncora?"}
+            description={
+              "Everything you need to manage projects without the bloat"
+            }
+          />
+          <AboutCard />
+        </div>
+      </FadeInSection>
 
-      <div className="p-2 mt-4 pb-4">
-        <ChooseSyncora
-          title={"See Syncora in Action"}
-          description={" A clean, focused workspace for your team"}
-        />
-        <SyncoraInAction />
-      </div>
+      <FadeInSection>
+        <div className="p-2 mt-4 pb-4">
+          <ChooseSyncora
+            title={"See Syncora in Action"}
+            description={"A clean, focused workspace for your team"}
+          />
+          <SyncoraInAction />
+        </div>
+      </FadeInSection>
 
-      <div style={{ paddingTop: "1rem" }}>
-        <TopComponent
-          head={"Ready to Move Fast?"}
-          description={
-            "Join hundreds of startups who've ditched complexity for clarity. Start your free trial today."
-          }
-          bgColor={"black"}
-          marginTop={"-4%"}
-          paadingTop={"2%"}
-          pBottom={"2%"}
-        />
-      </div>
+      <FadeInSection>
+        <div style={{ paddingTop: "1rem" }}>
+          <TopComponent
+            head={"Ready to Move Fast?"}
+            description={
+              "Join hundreds of startups who've ditched complexity for clarity. Start your free trial today."
+            }
+            bgColor={"black"}
+            marginTop={"-4%"}
+            paadingTop={"2%"}
+            pBottom={"2%"}
+          />
+        </div>
+      </FadeInSection>
 
-      <div>
-        <Footer />
-      </div>
+      <FadeInSection>
+        <div>
+          <Footer />
+        </div>
+      </FadeInSection>
     </div>
   );
 }

@@ -31,14 +31,14 @@ const Header = () => {
             />
           </Box>
           <Typography variant="h6" noWrap style={{ padding: 15 }}>
-            <div className="d-flex align-items-center">
+            <div
+              className="d-flex align-items-center cursor-pointer"
+              onClick={() => {
+                navigate("/profile");
+              }}
+            >
               <FaRegUserCircle size={25} className="me-2" />
-              <span
-                onClick={() => {
-                  navigate("/profile");
-                }}
-                className="cursor-pointer"
-              >
+              <span>
                 {user ? user.userName?.split(" ")[0] : "User"}
               </span>
             </div>

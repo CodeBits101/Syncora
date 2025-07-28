@@ -8,6 +8,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -93,6 +94,18 @@ public class EmployeeController {
 	    Long id = jwtUtils.getUserIdFromJwtToken(authHeader); 
 		return ResponseEntity.ok(empService.getEmployeeById(id)) ;
 	}
+	
+	@DeleteMapping("/{id}")
+	public ResponseEntity<?> deleteById(@PathVariable Long id){
+		return ResponseEntity.ok(empService.deleteById(id)) ;
+	}
+	
+	@GetMapping
+	public ResponseEntity<?> getAllEmployees(){
+		return ResponseEntity.ok(empService.getAllEmployees()) ;
+	}
+	
+	
 	
   
 }
