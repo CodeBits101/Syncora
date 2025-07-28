@@ -11,9 +11,11 @@ import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { ExpandLess, ExpandMore } from '@mui/icons-material';
 import { Collapse } from '@mui/material';
+import LogoutIcon from '@mui/icons-material/Logout';
+import LogoutModal from '../../components/shared/LogoutModal';
 
 const drawerWidth = 260;
 const collapsedWidth = 56;
@@ -67,9 +69,23 @@ const Drawer = styled(MuiDrawer, {
 }));
 
 const Sidebar = ({ open, handleDrawerOpen, handleDrawerClose, menuConfig }) => {
+  const navigate = useNavigate();
   const theme = useTheme();
   const location = useLocation();
   const [openMenus, setOpenMenus] = useState({});
+  const [logoutModalOpen, setLogoutModalOpen] =useState(false);
+
+  const logout = () => {
+    localStorage.clear();
+     document.cookie.split(';').forEach(c => {
+      document.cookie = c
+        .replace(/^ +/, '')
+        .replace(/=.*/, `=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/`);
+    });
+
+    setLogoutModalOpen(false);
+    navigate('/login'); 
+}
 
   useEffect(() => {
     const expanded = {};
@@ -89,6 +105,7 @@ const Sidebar = ({ open, handleDrawerOpen, handleDrawerClose, menuConfig }) => {
   };
 
   return (
+    <>
     <Drawer
       variant="permanent"
       open={open}
@@ -185,8 +202,36 @@ const Sidebar = ({ open, handleDrawerOpen, handleDrawerClose, menuConfig }) => {
             </div>
           );
         })}
+        
+        <ListItem disablePadding sx={{ display: 'block' }}>
+          <ListItemButton
+            onClick={setLogoutModalOpen}
+            sx={{
+              minHeight: 48,
+              justifyContent: open ? 'initial' : 'center',
+              px: 2.5,
+            }}
+          >
+            <ListItemIcon
+              sx={{
+                minWidth: 0,
+                mr: open ? 3 : 'auto',
+                justifyContent: 'center',
+              }}
+            >
+              <LogoutIcon />
+            </ListItemIcon>
+            <ListItemText primary="Logout" sx={{ opacity: open ? 1 : 0 }} />
+          </ListItemButton>
+        </ListItem>
       </List>
     </Drawer>
+    <LogoutModal
+      open={logoutModalOpen}
+      onClose={() => setLogoutModalOpen(false)}
+      onConfirm={logout}
+    />
+    </>
   );
 };
 

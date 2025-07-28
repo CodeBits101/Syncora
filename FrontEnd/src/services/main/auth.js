@@ -1,10 +1,7 @@
 import axios from "axios";
 import Cookies from "js-cookie";
+import { getToken } from "../../utils/basicUtil";
 
-const token = localStorage.getItem("token") || Cookies.get("token");
-if (!token) {
-  throw new Error("JWT token not found in localStorage or cookies");
-}
 
 export const getProfile = async () => {
   try {
@@ -58,6 +55,7 @@ export const getEmployeeByRole = async (role) => {
 
 export const changePassword = async (passwordData) => {
   try {
+    const token = getToken();
     const response = await axios.put(
       `${import.meta.env.VITE_SPRING_API}/employees/changepassword`,
       passwordData,
@@ -76,6 +74,7 @@ export const changePassword = async (passwordData) => {
 
 export const getEmployeeById = async () => {
   try {
+    const token = getToken();
     const response = await axios.get(
       `${import.meta.env.VITE_SPRING_API}/employees/byid`,
 
