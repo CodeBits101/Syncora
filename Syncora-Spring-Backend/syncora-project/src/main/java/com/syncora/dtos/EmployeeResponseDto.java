@@ -1,6 +1,7 @@
 package com.syncora.dtos;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+
 
 import com.syncora.enums.EmployeeType;
 
@@ -24,7 +25,7 @@ public class EmployeeResponseDto extends BaseDto {
 		
 	  private String projectName ;  
 		
-	  private LocalDateTime doj;
+	  private LocalDate doj;
 	
 	  private EmployeeType empRole ;
 }

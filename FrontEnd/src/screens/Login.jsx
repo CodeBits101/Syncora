@@ -27,19 +27,17 @@ const LoginPage = ({ setRole }) => {
     setIsLoading(true);
     // validation Logic for email and password
 
- const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-  if (!username.trim() || !password.trim())
-  {
-    toast.error("Email and Password are required");
-    return;
-  }
+    if (!username.trim() || !password.trim()) {
+      toast.error("Email and Password are required");
+      return;
+    }
 
- if (!emailRegex.test(username))
- {
-    toast.error("Enter a valid email address");
-    return;
- }
+    if (!emailRegex.test(username)) {
+      toast.error("Enter a valid email address");
+      return;
+    }
     try {
       const data = {
         email: username,
@@ -61,6 +59,7 @@ const LoginPage = ({ setRole }) => {
       Cookies.set("empId", response.id);
       Cookies.set("empName", response.userName);
       Cookies.set("role", response.role);
+      Cookies.set("user", JSON.stringify(response));
 
       setRole(response.role);
 

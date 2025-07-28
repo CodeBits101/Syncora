@@ -1,26 +1,31 @@
 package com.syncora.controllers;
 
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.syncora.dtos.AuthReqDto;
 import com.syncora.dtos.AuthResp;
+import com.syncora.dtos.ChangePassDto;
 import com.syncora.dtos.EmployeeReqDto;
 import com.syncora.entities.Employee;
 import com.syncora.enums.EmployeeType;
 import com.syncora.security.JwtUtils;
 import com.syncora.services.EmployeeService;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 
 @RestController
@@ -70,5 +75,24 @@ public class EmployeeController {
 	public ResponseEntity<?> getEmployeeByRole(@PathVariable EmployeeType role){
 		return ResponseEntity.ok(empService.getEmployeeByRole(role)) ;
 	}
+	
+	@PutMapping("/changepassword")
+	public ResponseEntity<?> changePassword(@RequestBody ChangePassDto dto ,Authentication authentication){
+		String email = authentication.getName() ; 
+		return ResponseEntity.ok(empService.changePassword(dto , email)) ;
+	}
+	
+	
+	@GetMapping("/byid")
+	public ResponseEntity<?> getEmployeeById(HttpServletRequest req){
+		String authHeader = req.getHeader(HttpHeaders.AUTHORIZATION);
+
+	    if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+	        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Missing or invalid Authorization header");
+	    }
+	    Long id = jwtUtils.getUserIdFromJwtToken(authHeader); 
+		return ResponseEntity.ok(empService.getEmployeeById(id)) ;
+	}
+	
   
 }

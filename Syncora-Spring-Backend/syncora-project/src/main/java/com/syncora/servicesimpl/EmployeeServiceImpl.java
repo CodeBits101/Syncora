@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.syncora.dtos.ApiResponse;
 import com.syncora.dtos.AuthReqDto;
+import com.syncora.dtos.ChangePassDto;
 import com.syncora.dtos.DeptDto;
 import com.syncora.dtos.EmployeeReqDto;
 import com.syncora.dtos.EmployeeResponseDto;
@@ -74,6 +75,47 @@ public class EmployeeServiceImpl implements EmployeeService {
 				.map(emp -> modelMapper.map(emp,EmployeeResponseDto.class)).toList(); 
 		return empList;
 	}
+
+
+
+
+
+	@Override
+	public ApiResponse changePassword(ChangePassDto dto, String email) {
+		Employee emp = empRepo.findByEmail(email)
+				.orElseThrow(()-> new ResourceNotFoundException("User does not exist")) ; 
+		
+		 if (!passwordEncoder.matches(dto.getCurrentPassword(), emp.getPassword()))
+			throw new ResourceNotFoundException("Password is incorrect") ; 
+		 emp.setPassword(passwordEncoder.
+					encode(dto.getNewPassword()));
+		empRepo.save(emp) ; 
+		return new ApiResponse("Password Updated Successfully");
+	}
+
+
+
+
+
+	@Override
+	public EmployeeResponseDto getEmployeeById(Long id) {
+		Employee emp = empRepo.findById(id)
+				.orElseThrow(()-> new ResourceNotFoundException("User doesn't exist with this id")) ; 
+		EmployeeResponseDto resp  = modelMapper.map(emp, EmployeeResponseDto.class) ;
+		if(emp.getDepartment()!=null) {
+			resp.setDepartName(emp.getDepartment().getDeptName());	
+		}
+		if(emp.getManager() !=null)
+			resp.setManagerName(emp.getManager().getEmpName());	
+		
+		return resp;
+	}
+
+
+
+
+
+	
 
 
  

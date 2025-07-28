@@ -1,4 +1,10 @@
 import axios from "axios";
+import Cookies from "js-cookie";
+
+const token = localStorage.getItem("token") || Cookies.get("token");
+if (!token) {
+  throw new Error("JWT token not found in localStorage or cookies");
+}
 
 export const getProfile = async () => {
   try {
@@ -38,7 +44,7 @@ export const loginUser = async (credentials) => {
   }
 };
 
-export const getEmployeeByRole = async(role)=>{
+export const getEmployeeByRole = async (role) => {
   try {
     const response = await axios.get(
       `${import.meta.env.VITE_SPRING_API}/employees/${role}`
@@ -48,4 +54,40 @@ export const getEmployeeByRole = async(role)=>{
     console.error("Error fetching employee by role:", error);
     throw error;
   }
-}
+};
+
+export const changePassword = async (passwordData) => {
+  try {
+    const response = await axios.put(
+      `${import.meta.env.VITE_SPRING_API}/employees/changepassword`,
+      passwordData,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error changing password:", error);
+    throw error;
+  }
+};
+
+export const getEmployeeById = async () => {
+  try {
+    const response = await axios.get(
+      `${import.meta.env.VITE_SPRING_API}/employees/byid`,
+
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching user by ID:", error);
+    throw error;
+  }
+};
