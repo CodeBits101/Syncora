@@ -1,6 +1,12 @@
 # Syncora
 
-This task management application is designed specifically for IT organizations, aligning with industry workflows and the Software Development Life Cycle (SDLC). Built on the AGILE methodology, it enables teams to efficiently manage tasks, track progress, and collaborate seamlessly. The application ensures streamlined task handling, fostering adaptability and iterative development, making it an essential tool for IT project management.
+Syncora is a modern, end-to-end project and task management application built to simulate the way real-world software development teams work. The application is designed to manage the entire Software Development Life Cycle (SDLC) — from requirement gathering to deployment — allowing users to create and track projects just as they are handled in the industry. Syncora enables efficient team collaboration, task assignments, project tracking, and real-time updates, making it a comprehensive tool for managing both individual and team-based workflows.
+
+The frontend of Syncora is developed using React.js, enhanced with Material UI (MUI) for consistent styling, Framer Motion for smooth UI animations, and SyncFusion for advanced data visualization components like charts, calendars, and Gantt charts. On the backend, we leverage both Spring Boot (for robust and scalable API development using Java) and Node.js (for flexible microservice needs). The platform uses both MongoDB for handling unstructured data and SQL databases for managing relational data, providing a hybrid and scalable data management system.
+
+For state management, the application uses client-side mechanisms such as cookies and localStorage to ensure seamless session handling and persistence across the platform. Syncora integrates AWS S3 Bucket services to securely store project-related files and documents, ensuring scalability and high availability of resources. Additionally, the application includes a built-in mail service that sends automated email notifications for task assignments, project status changes, and deadline alerts.
+
+Syncora is built with clean architecture principles and fully adheres to the SOLID design principles, ensuring modularity, testability, and maintainability of code. The platform is deployed on an AWS EC2 instance, providing a reliable and scalable hosting environment. Overall, Syncora is a powerful solution for modern project management, offering industry-aligned features with an emphasis on performance, design, and cloud integration.
 
 ## Installation
 
