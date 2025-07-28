@@ -25,6 +25,7 @@ import ProjectStatus from "./screens/manager/ProjectStatus";
 import { manager, developer, admin, tester } from "../configs";
 import Home from "./Layout/Home/Home";
 import TaskBoard from "./components/TaskScreen/TaskBoard";
+import UnAuthorised from "./screens/main/UnAuthorised";
 
 function App() {
   const [count, setCount] = useState(0);
@@ -43,7 +44,7 @@ function App() {
       case "ROLE_TESTER":
         return renderRoleRoutes(tester);
       default:
-        return <Route path="*" element={<NotFoundPage />} />;
+        return <Route path="*" element={<UnAuthorised />} />;
     }
   };
 
@@ -123,6 +124,7 @@ function App() {
 
         <Route path="/" element={<AboutProject />} />
         <Route path="*" element={<NotFoundPage />} />
+        <Route path="/unautho" element={<UnAuthorised />} />
       </Routes>
       {/* <div className='p-3'>SYNCORA 
       <p className='px-3'>This is project management system </p>

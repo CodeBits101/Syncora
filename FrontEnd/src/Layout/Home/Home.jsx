@@ -3,7 +3,7 @@ import Box from '@mui/material/Box';
 import CssBaseline from '@mui/material/CssBaseline';
 import Sidebar from '../navbar/SideBar';
 import { Outlet } from 'react-router-dom';
-import Header from '../header/header';
+import Header from '../header/Header'
 
 const drawerOffset = 64;
 

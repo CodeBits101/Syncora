@@ -96,46 +96,52 @@ const Signup = () => {
 
   const handleRegister = async (e) => {
     console.log(formData);
-    setIsLoading(true);
+
     const localDateTime = `${formData.doj}T00:00:00`;
     setFormData({ ...formData, doj: localDateTime });
 
     // validation logic
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    const phoneRegex = /^[0-9]{10}$/;
-    if (!formData.empName.trim()) {
-      toast.error("Name is required");
-      return;
-    }
-    if (!formData.email.trim() || !emailRegex.test(formData.email)) {
-      toast.error("Enter a valid email address");
-      return;
-    }
-    if (!formData.password || formData.password.length < 6) {
-      toast.error("Password must be at least 6 characters");
-      return;
-    }
-    if (!formData.phoneNumber.trim() || !phoneRegex.test(formData.phoneNumber)) {
-      toast.error("Enter a valid phone number (Max.10 Digits)");
-      return;
-    }
-    if(!formData.departmentId)
-    {
-      toast.error("Please select a department")
-      return;
-    }
-    if (!formData.doj) {
-      toast.error("Please select a date");
-      return;
-    }
-    if((formData.empRole === "ROLE_DEVELOPER" || formData.empRole === "ROLE_TESTER") && !formData.managerId)
-    {
-      toast.error("Manager is required for Developers and Testers");
-      return;
-    }
-
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
+    const phoneRegex = /^[0-9]{10}$/;
+    
+    if (!formData.empName.trim()) {
+      toast.error("Name is required");
+      return;
+    }
+    if (!formData.email.trim() || !emailRegex.test(formData.email)) {
+      toast.error("Enter a valid google email address");
+      return;
+    }
+    if (!formData.password || formData.password.length < 6) {
+      toast.error("Password must be at least 6 characters");
+      return;
+    }
+    if (
+      !formData.phoneNumber.trim() ||
+      !phoneRegex.test(formData.phoneNumber)
+    ) {
+      toast.error("Enter a valid phone number");
+      return;
+    }
+    if (!formData.departmentId) {
+      toast.error("Please select a department");
+      return;
+    }
+    if (!formData.doj) {
+      toast.error("Please select a date");
+      return;
+    }
+    if (
+      (formData.empRole === "ROLE_DEVELOPER" ||
+        formData.empRole === "ROLE_TESTER") &&
+      !formData.managerId
+    ) {
+      toast.error("Manager is required for Developers and Testers");
+      return;
+    }
 
     try {
+      setIsLoading(true);
       const response = await registerUser(formData);
       console.log("Registration successful:", response);
       toast.success("Registration successful!");
@@ -167,116 +173,119 @@ const Signup = () => {
   }, []);
 
   return (
-  <div className="register-page">
-    <div className="auth-container ">
-      <div className="auth-box">
-        <h2 className="auth-title">Register As</h2>
-        <div className="mt-3">
-          <ButtonRegisterGroup formData={formData} setFormData={setFormData} />
+    <div className="register-page">
+      <div className="auth-container ">
+        <div className="auth-box">
+          <h2 className="auth-title">Register As</h2>
+          <div className="mt-3">
+            <ButtonRegisterGroup
+              formData={formData}
+              setFormData={setFormData}
+            />
+          </div>
+          <div>
+            <input
+              className="auth-input"
+              type="text"
+              name="empName"
+              placeholder="Name"
+              value={formData.empName}
+              onChange={handleChange}
+              required
+            />
+            <input
+              className="auth-input"
+              type="email"
+              name="email"
+              placeholder="Google Email Only"
+              value={formData.email}
+              onChange={handleChange}
+              required
+            />
+
+            <Form.Group>
+              <InputGroup>
+                <Form.Control
+                  style={{ padding: "3%" }}
+                  type={isPasswordVisible ? "text" : "password"}
+                  placeholder="Password "
+                  name="password"
+                  value={formData.password}
+                  onChange={handleChange}
+                />
+                <InputGroup.Text
+                  onClick={() => setIsPasswordVisible(!isPasswordVisible)}
+                  style={{ cursor: "pointer" }}
+                >
+                  {isPasswordVisible ? <VscEyeClosed /> : <VscEye />}
+                </InputGroup.Text>
+              </InputGroup>
+            </Form.Group>
+
+            <input
+              className="auth-input"
+              type="tel"
+              name="phoneNumber"
+              placeholder="Phone Number (10 digits)"
+              value={formData.phoneNumber}
+              onChange={handleChange}
+              required
+            />
+            <select
+              className="auth-input"
+              name="departmentId"
+              value={formData.departmentId}
+              onChange={handleChange}
+            >
+              <option value="">Select Department</option>
+              {departments.map((department, index) => (
+                <option key={index} value={department.id}>
+                  {department.deptName}
+                </option>
+              ))}
+            </select>
+
+            {formData.empRole != "ROLE_MANAGER" &&
+              formData.empRole != "ROLE_ADMIN" && (
+                <select
+                  className="auth-input"
+                  name="managerId"
+                  value={formData.managerId}
+                  onChange={handleChange}
+                >
+                  <option value="">Select Manager</option>
+                  {managers.map((manager, index) => (
+                    <option key={index} value={manager.id}>
+                      {manager.empName}
+                    </option>
+                  ))}
+                </select>
+              )}
+
+            <input
+              className="auth-input"
+              type="date"
+              name="doj"
+              placeholder="Date of Joining"
+              value={formData.doj}
+              onChange={handleChange}
+              min={new Date().toISOString().split("T")[0]} // Prevent past dates
+              required
+            />
+
+            <button onClick={() => handleRegister()} className="auth-button">
+              {isLoading ? "Registering..." : "Register"}
+            </button>
+          </div>
+          <p className="auth-footer">
+            Have an account?{" "}
+            <a href="/login" className="auth-link">
+              Log in
+            </a>
+          </p>
         </div>
-        <div>
-          <input
-            className="auth-input"
-            type="text"
-            name="empName"
-            placeholder="Name"
-            value={formData.empName}
-            onChange={handleChange}
-            required
-          />
-          <input
-            className="auth-input"
-            type="email"
-            name="email"
-            placeholder="Email"
-            value={formData.email}
-            onChange={handleChange}
-            required
-          />
-
-          <Form.Group>
-            <InputGroup>
-              <Form.Control
-                style={{ padding: "3%" }}
-                type={isPasswordVisible ? "text" : "password"}
-                placeholder="Password"
-                name="password"
-                value={formData.password}
-                onChange={handleChange}
-              />
-              <InputGroup.Text
-                onClick={() => setIsPasswordVisible(!isPasswordVisible)}
-                style={{ cursor: "pointer" }}
-              >
-                {isPasswordVisible ? <VscEyeClosed /> : <VscEye />}
-              </InputGroup.Text>
-            </InputGroup>
-          </Form.Group>
-
-          <input
-            className="auth-input"
-            type="tel"
-            name="phoneNumber"
-            placeholder="Phone Number"
-            value={formData.phoneNumber}
-            onChange={handleChange}
-            required
-          />
-          <select
-            className="auth-input"
-            name="departmentId"
-            value={formData.departmentId}
-            onChange={handleChange}
-          >
-            <option value="">Select Department</option>
-            {departments.map((department, index) => (
-              <option key={index} value={department.id}>
-                {department.deptName}
-              </option>
-            ))}
-          </select>
-
-          {formData.empRole != "ROLE_MANAGER" &&
-            formData.empRole != "ROLE_ADMIN" && (
-              <select
-                className="auth-input"
-                name="managerId"
-                value={formData.managerId}
-                onChange={handleChange}
-              >
-                <option value="">Select Manager</option>
-                {managers.map((manager, index) => (
-                  <option key={index} value={manager.id}>
-                    {manager.empName}
-                  </option>
-                ))}
-              </select>
-            )}
-
-          <input
-            className="auth-input"
-            type="date"
-            name="doj"
-            placeholder="Date of Joining"
-            value={formData.doj}
-            onChange={handleChange}
-            min={new Date().toISOString().split("T")[0]} // Prevent past dates
-            required
-          />
-
-          <button onClick={() => handleRegister()} className="auth-button">
-            {isLoading ? "Registering..." : "Register"}
-          </button>
-        </div>
-        <p className="auth-footer">
-          Have an account?{" "}
-          <a href="/login" className="auth-link">
-            Log in
-          </a>
-        </p>
+        <ToastContainer position="top-center" autoClose={1500} />
       </div>
-      <ToastContainer position="top-center" autoClose={1500} />
-    </div>
     </div>
   );
 };

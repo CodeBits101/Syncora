@@ -14,10 +14,10 @@
     "@dnd-kit/modifiers": "^9.0.0",
     "@dnd-kit/sortable": "^10.0.0",
     "@emotion/react": "^11.14.0",
-    "@emotion/styled": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
     "@fontsource/roboto": "^5.2.5",
     "@mui/icons-material": "^7.1.0",
-    "@mui/material": "^7.1.0",
+    "@mui/material": "^7.2.0",
     "@mui/styled-engine-sc": "^7.1.0",
     "@tailwindcss/vite": "^4.1.7",
     "axios": "^1.10.0",
@@ -45,6 +45,6 @@
     "globals": "^16.0.0",
     "postcss": "^8.5.3",
     "tailwindcss": "^4.1.7",
-    "vite": "^7.0.6"
+    "vite": "^5.2.8"
   }
 }

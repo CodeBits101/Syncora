@@ -7,56 +7,58 @@ import {
   DialogActions,
   TextField,
   Button,
-  Typography
+  Typography,
 } from "@mui/material";
+import { changePassword } from "../../services/main/auth";
+import { toast } from "react-toastify";
 
 const PasswordChangeModal = ({ open, onClose }) => {
-  const [currentPassword, setCurrentPassword] = useState("");
-  const [newPassword, setNewPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+  const [data, setData] = useState({
+    currentPassword: "",
+    newPassword: "",
+    confirmPassword: "",
+  });
+
   const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
-  // Simulate stored password in localStorage
-  const getStoredPassword = () => {
-    return localStorage.getItem("user_password") || "password123"; // default password
-  };
-  const setStoredPassword = (pwd) => {
-    localStorage.setItem("user_password", pwd);
-  };
-
-  const handleSave = () => {
+  const handleSave = async () => {
     setError("");
-    setSuccess("");
-    // Validate current password
-    if (currentPassword !== getStoredPassword()) {
-      setError("Current password is incorrect.");
-      return;
-    }
+
     // Validate new password
-    if (newPassword.length < 6) {
+    if (data.newPassword.length < 6) {
       setError("New password must be at least 6 characters.");
       return;
     }
-    if (newPassword === currentPassword) {
-      setError("New password must be different from current password.");
-      return;
-    }
     // Validate confirm password
-    if (newPassword !== confirmPassword) {
-      setError("New passwords do not match.");
+    if (data.newPassword !== data.confirmPassword) {
+      setError("Passwords does not match.");
       return;
     }
+
     // Save new password
-    setStoredPassword(newPassword);
-    setSuccess("Password changed successfully!");
-    setCurrentPassword("");
-    setNewPassword("");
-    setConfirmPassword("");
+
+    try {
+      setIsLoading(true);
+      const response = await changePassword(data);
+      console.log("Password change response:", response);
+      toast.success("Password changed successfully!");
+    } catch (error) {
+      console.error("Login error:", error);
+      toast.error(error.response.data.message || "Login failed occurred");
+    } finally {
+      setIsLoading(false);
+      setData({
+        currentPassword: "",
+        newPassword: "",
+        confirmPassword: "",
+      });
+    }
+
     setTimeout(() => {
-      setSuccess("");
       onClose();
-    }, 1200);
+    }, 1500);
+
   };
 
   return (
@@ -68,40 +70,46 @@ const PasswordChangeModal = ({ open, onClose }) => {
           type="password"
           fullWidth
           margin="normal"
-          value={currentPassword}
-          onChange={(e) => setCurrentPassword(e.target.value)}
+          value={data.currentPassword}
+          onChange={(e) =>
+            setData({ ...data, currentPassword: e.target.value })
+          }
         />
         <TextField
           label="New Password"
           type="password"
           fullWidth
           margin="normal"
-          value={newPassword}
-          onChange={(e) => setNewPassword(e.target.value)}
+          value={data.newPassword}
+          onChange={(e) => setData({ ...data, newPassword: e.target.value })}
         />
         <TextField
           label="Confirm New Password"
           type="password"
           fullWidth
           margin="normal"
-          value={confirmPassword}
-          onChange={(e) => setConfirmPassword(e.target.value)}
+          value={data.confirmPassword}
+          onChange={(e) =>
+            setData({ ...data, confirmPassword: e.target.value })
+          }
         />
         {error && (
           <Typography color="error" variant="body2" sx={{ mt: 1 }}>
             {error}
           </Typography>
         )}
-        {success && (
+        {/* {success && (
           <Typography color="primary" variant="body2" sx={{ mt: 1 }}>
             {success}
           </Typography>
-        )}
+        )} */}
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose} color="secondary">Cancel</Button>
+        <Button onClick={onClose} color="secondary">
+          Cancel
+        </Button>
         <Button onClick={handleSave} variant="contained" color="primary">
-          Save
+          {isLoading ? "Saving..." : "Save"}
         </Button>
       </DialogActions>
     </Dialog>
