@@ -18,6 +18,10 @@ public interface EmployeeService {
 	ApiResponse changePassword(ChangePassDto dto , String email);
 
 	EmployeeResponseDto getEmployeeById(Long id);
+
+	ApiResponse deleteById(Long id);
+	
+	List<EmployeeResponseDto> getAllEmployees() ;  
 	
 	
 

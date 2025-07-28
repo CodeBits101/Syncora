@@ -71,8 +71,23 @@ public class EmployeeServiceImpl implements EmployeeService {
 
 	@Override
 	public List<EmployeeResponseDto> getEmployeeByRole(EmployeeType role) {
-		List<EmployeeResponseDto> empList  = empRepo.findByEmpRole(role).stream()
-				.map(emp -> modelMapper.map(emp,EmployeeResponseDto.class)).toList(); 
+		List<EmployeeResponseDto> empList = empRepo.findByEmpRole(role).stream()
+			    .map(emp -> {
+			        EmployeeResponseDto dto = modelMapper.map(emp, EmployeeResponseDto.class);
+			        
+			        // Set department name if available
+			        if (emp.getDepartment() != null) {
+			            dto.setDepartName(emp.getDepartment().getDeptName());
+			        }
+
+			        // Set manager name if available
+			        if (emp.getManager() != null) {
+			            dto.setManagerName(emp.getManager().getEmpName());
+			        }
+
+			        return dto;
+			    }).toList();
+		
 		return empList;
 	}
 
@@ -109,6 +124,45 @@ public class EmployeeServiceImpl implements EmployeeService {
 			resp.setManagerName(emp.getManager().getEmpName());	
 		
 		return resp;
+	}
+
+
+
+
+
+	@Override
+	public ApiResponse deleteById(Long id) {
+		if(!empRepo.existsById(id))
+			throw new ResourceNotFoundException("Employee does not exist") ; 
+		empRepo.deleteById(id);
+		return new ApiResponse("Employee Deleted Successfully");
+	}
+
+
+
+
+
+	@Override
+	public List<EmployeeResponseDto> getAllEmployees() {
+		List<EmployeeResponseDto> empList = empRepo.findAll().stream()
+			    .map(emp -> {
+			        EmployeeResponseDto dto = modelMapper.map(emp, EmployeeResponseDto.class);
+			        
+			        // Set department name if available
+			        if (emp.getDepartment() != null) {
+			            dto.setDepartName(emp.getDepartment().getDeptName());
+			        }
+
+			        // Set manager name if available
+			        if (emp.getManager() != null) {
+			            dto.setManagerName(emp.getManager().getEmpName());
+			        }
+
+			        return dto;
+			    }).toList();
+		
+		return empList;
+
 	}
 
 
