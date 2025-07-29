@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./Signup.css";
 import { useNavigate } from "react-router-dom";
-import { getDepartments } from "../services/main/department";
+import { addDepartment, getDepartments } from "../services/main/department";
 import { getEmployeeByRole, registerUser } from "../services/main/auth"; // Assuming this service exists
 import empRole from "../utils/empRole";
 import Button from "react-bootstrap/Button";
@@ -11,6 +11,7 @@ import Form from "react-bootstrap/Form";
 import InputGroup from "react-bootstrap/InputGroup";
 import { toast } from "react-toastify";
 import { ToastContainer } from "react-toastify";
+import DepartmentModal from "../components/DepartmentModal/DepartmentModal";
 
 function ButtonRegisterGroup({ formData, setFormData }) {
   const [buttons, setButtons] = useState([
@@ -57,6 +58,7 @@ const Signup = () => {
   const [managers, setManagers] = useState([]);
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [showAddDepartmentModal, setShowAddDepartmentModal] = useState(false);
 
   const [formData, setFormData] = useState({
     empName: "",
@@ -84,6 +86,27 @@ const Signup = () => {
     }
   };
 
+  const handleAddDepartment = async (newDeptName) => {
+    try {
+      // ✅ Step 1: Add department
+      await addDepartment(newDeptName);
+
+      // ✅ Step 2: Fetch updated list
+      const updatedDepartments = await getDepartments();
+      setDepartments(updatedDepartments);
+
+      // ✅ Step 3: Auto-select last added
+      const lastDept = updatedDepartments[updatedDepartments.length - 1];
+      setFormData((prev) => ({
+        ...prev,
+        departmentId: lastDept.id,
+      }));
+    } catch (error) {
+      console.error(error);
+      alert("Error adding department");
+    }
+  };
+
   const fetchManagers = async () => {
     try {
       const response = await getEmployeeByRole("ROLE_MANAGER");
@@ -92,6 +115,57 @@ const Signup = () => {
     } catch (error) {
       console.error("Error fetching managers:", error);
     }
+  };
+
+  const renderDepartmentDropdown = () => {
+    if (formData.empRole === "ROLE_ADMIN") {
+      // Admin view -> styled like password field + Add button
+      return (
+        <Form.Group>
+          <InputGroup>
+            <Form.Select
+              style={{ padding: "3%" }} // same padding as password
+              name="departmentId"
+              value={formData.departmentId}
+              onChange={handleChange}
+            >
+              <option value="">Select Department</option>
+              {departments.map((department, index) => (
+                <option key={index} value={department.id}>
+                  {department.deptName}
+                </option>
+              ))}
+            </Form.Select>
+
+            {/* Add Department Button for Admin */}
+            <InputGroup.Text
+              variant="outline-primary"
+              onClick={() => setShowAddDepartmentModal(true)} // opens modal
+              style={{ cursor: 'pointer', width: '10.5%' }}
+            >
+              + 
+            </InputGroup.Text>
+          </InputGroup>
+        </Form.Group>
+      );
+    }
+
+    // Normal users (Manager, Dev, Tester)
+    return (
+      <select
+        className="auth-input"
+        name="departmentId"
+        value={formData.departmentId}
+        onChange={handleChange}
+      >
+        <option value="">Select Department</option>
+        {departments.map((department, index) => (
+          <option key={index} value={department.id}>
+            {department.deptName}
+          </option>
+        ))}
+      </select>
+    );
   };
 
   const handleRegister = async (e) => {
@@ -231,19 +305,14 @@ const Signup = () => {
               onChange={handleChange}
               required
             />
-            <select
-              className="auth-input"
-              name="departmentId"
-              value={formData.departmentId}
-              onChange={handleChange}
-            >
-              <option value="">Select Department</option>
-              {departments.map((department, index) => (
-                <option key={index} value={department.id}>
-                  {department.deptName}
-                </option>
-              ))}
-            </select>
+
+            {renderDepartmentDropdown()}
+
+            <DepartmentModal
+              isOpen={showAddDepartmentModal}
+              onClose={() => setShowAddDepartmentModal(false)}
+              onAdd={handleAddDepartment}
+            />
 
             {formData.empRole != "ROLE_MANAGER" &&
               formData.empRole != "ROLE_ADMIN" && (
