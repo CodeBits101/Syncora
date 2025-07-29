@@ -25,9 +25,11 @@
 .logo{
   position: absolute;
   top: 2%;
-  left: -1%;
+  left: 1%;
   width: 20%;
 }
+
+
 
 /* Mobile responsiveness */
 @media (max-width: 576px) {

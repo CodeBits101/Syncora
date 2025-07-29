@@ -94,6 +94,7 @@ const Signup = () => {
       // ✅ Step 2: Fetch updated list
       const updatedDepartments = await getDepartments();
       setDepartments(updatedDepartments);
+      toast.success("Department added successfully!");
 
       // ✅ Step 3: Auto-select last added
       const lastDept = updatedDepartments[updatedDepartments.length - 1];
@@ -103,7 +104,7 @@ const Signup = () => {
       }));
     } catch (error) {
       console.error(error);
-      alert("Error adding department");
+      toast.error("Error adding department");
     }
   };
 
@@ -348,7 +349,7 @@ const Signup = () => {
           </div>
           <p className="auth-footer">
             Have an account?{" "}
-            <a href="/login" className="auth-link">
+            <a onClick={()=>navigate('/login')} className="auth-link cursor-pointer">
               Log in
             </a>
           </p>

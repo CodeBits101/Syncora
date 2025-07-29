@@ -179,7 +179,7 @@ const LoginPage = ({ setRole }) => {
         <p className="forgot-password">Forgot password?</p>
         <p className="forgot-password">
           Already have an account?{" "}
-          <a className="registerLink" href="/register">
+          <a className="registerLink" onClick={() => navigate("/register")}>
             Sign in here
           </a>{" "}
         </p>

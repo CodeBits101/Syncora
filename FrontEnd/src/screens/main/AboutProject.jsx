@@ -376,11 +376,11 @@ export default function AboutProject() {
         </div>
       </FadeInSection>
 
-      <FadeInSection>
-        <div>
+      
+        <div className="mt-2">
           <Footer />
         </div>
-      </FadeInSection>
+     
     </div>
   );
 }
