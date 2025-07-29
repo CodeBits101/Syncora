@@ -13,6 +13,7 @@ import getContentByLanguage from "../../utils/getContentByLang";
 import logoDark from "../../assets/logo_dark.png";
 import NoData from "../main/NoData";
 import trimToWords from "../../utils/trimToWords";
+import { IoChevronBackCircleOutline } from "react-icons/io5";
 
 export default function AboutDev() {
   const [devData, setDevData] = useState([]);
@@ -60,7 +61,9 @@ export default function AboutDev() {
 
   return (
     <div style={{ padding: "20px" }}>
+     
       <div className={styles.header}>
+        
         {/* <div className={styles.logo}>
           <img src={logoDark} alt="Logo here..." />
         </div> */}

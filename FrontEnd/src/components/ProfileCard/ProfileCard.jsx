@@ -5,6 +5,7 @@ import { IoChevronBackCircleOutline } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import { getEmployeeById } from "../../services/main/auth";
+import { Spinner } from "react-bootstrap";
 
 const ProfileCard = () => {
   const navigate = useNavigate();
@@ -22,6 +23,7 @@ const ProfileCard = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [showPasswordModal, setShowPasswordModal] = useState(false); // modal state
   const [profileErrors, setProfileErrors] = useState({});
+  const [loading, setLoading] = useState(true);
 
   const [profileData, setProfileData] = useState(
     {
@@ -151,6 +153,9 @@ const ProfileCard = () => {
       console.error("error:", error);
       toast.error(error.response.data.message || "Error occurred");
 
+    }
+    finally{
+      setLoading(false);
     } 
   }
 
@@ -158,6 +163,15 @@ const ProfileCard = () => {
   useEffect(() => {
     getUserById();
   }, []);
+
+
+   if (loading) {
+    return (
+      <div className="text-center mt-5">
+        <Spinner animation="border" />
+      </div>
+    );
+  }
 
   return (
     <div className="profile-wrapper" style={{ overflowX: "hidden" }}>
