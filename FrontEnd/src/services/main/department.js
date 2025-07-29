@@ -11,3 +11,16 @@ export const getDepartments = async () => {
     throw error;
   }
 }
+
+export const addDepartment = async (deptName) => {
+  try {
+    const response = await axios.post(
+      `${import.meta.env.VITE_SPRING_API}/departments`,
+      { deptName }
+    );
+    return response.data; // This is just the ApiResponse message
+  } catch (error) {
+    console.error("Error adding department:", error);
+    throw error;
+  }
+};
