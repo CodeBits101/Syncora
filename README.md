@@ -44,7 +44,6 @@ npm run dev or npm start
 ## Authors
 
 - [@Priyanshu Anand](https://github.com/PriyanshuAnand2826)
-- [@Bhavik Sonule](https://github.com/bhaviksonule)
 - [@Vinay Nakhate](https://github.com/vinay1nakhate)
 - [@Siddhesh Yawalkar](https://github.com/sidddheshh)
 - [@Yash Rajesh Chauhan](https://github.com/yashRChauhan)
