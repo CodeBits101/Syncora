@@ -55,3 +55,10 @@ export const developer = {
     {label:'Completed', icon:CheckCircle, path: 'completed', component: lazy(()=> import('./src/components/shared/TaskStatusList'))}
 ]
 }
+
+export const roleExtraRoutes = [
+     {
+    path: "projects/:status",
+    component: lazy(()=> import('./src/screens/manager/ProjectStatus')),
+  }
+]
