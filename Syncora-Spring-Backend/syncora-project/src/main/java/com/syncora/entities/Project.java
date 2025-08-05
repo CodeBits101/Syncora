@@ -1,12 +1,13 @@
 package com.syncora.entities;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 import com.syncora.enums.ProjectStatus;
 
+import jakarta.persistence.AttributeOverride;
+import jakarta.persistence.AttributeOverrides;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -26,19 +27,12 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @Table(name = "projects")
-public class Project extends Base {
-	@Column(name = "project_name" , length  = 50 ,nullable = false)
-  private String projectName; 
-	@Column(name ="project_description" , length= 100)
-  private String description ; 
-	@Column(name ="start_date")
-  private LocalDateTime startDate ;
-	@Column(name="end_date")
-  private LocalDateTime endDate ;
-	@Column(name="actual_start_date")
-  private LocalDateTime actualStartDate; 
-	@Column(name="actual_end_date")
-  private LocalDateTime actualEndDate ; 
+@AttributeOverrides({
+@AttributeOverride(name = "id", column = @Column(name = "project_id")),
+@AttributeOverride(name = "title", column = @Column(name = "project_title")),
+@AttributeOverride(name = "description", column = @Column(name = "project_description"))
+})
+public class Project extends CommonEntity {
 	@Enumerated(EnumType.STRING)
 	@Column(name ="status" , nullable = false )
   private ProjectStatus projectStatus ; 
@@ -48,8 +42,14 @@ public class Project extends Base {
 	@JoinColumn(name ="manager_id")
 	private Employee manager ;
 	
-	@OneToMany(mappedBy = "project" , cascade = CascadeType.ALL , orphanRemoval = true)
+	@OneToMany(mappedBy = "project" , cascade = {CascadeType.PERSIST, CascadeType.MERGE})
 	private List<Employee> empList = new ArrayList<>();
+	
+	@OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<Story> stories = new ArrayList<>();
+	
+	@OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<Sprint> sprints = new ArrayList<>();
   
   
   @PrePersist
