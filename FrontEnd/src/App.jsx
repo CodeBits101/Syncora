@@ -18,7 +18,6 @@ import AboutProject from "./screens/main/AboutProject";
 import NotFoundPage from "./screens/main/NotFoundPage";
 import LoginPage from "./screens/Login";
 import Signup from "./screens/Signup";
-import SprintScreen from "./services/manager/SprintScreen";
 
 import ProjectStatus from "./screens/manager/ProjectStatus";
 
@@ -31,8 +30,7 @@ function App() {
   const [count, setCount] = useState(0);
   const [role, setRole] = useState(localStorage.getItem("role"));
   //this should be replaced with global store/cookie role value
-  // const user = { role: "ROLE_MANAGER" };
-
+  const user = { role: "ROLE_MANAGER" };
   const getRoleRoutes = () => {
     switch (role) {
       case "ROLE_DEVELOPER":
@@ -121,7 +119,6 @@ function App() {
         <Route path="/register" element={<Signup />} />
 
         {/* for testing manager sprints screen */}
-        <Route path="/manager/projects/:projectId/sprints" element={<SprintScreen />} />
 
 
 

@@ -137,7 +137,8 @@ const Sidebar = ({ open, handleDrawerOpen, handleDrawerClose, menuConfig }) => {
       <Divider />
 
       <List>
-        {menuConfig.menu.map((item) => {
+        {
+          menuConfig.menu.map((item) => {
           const Icon = item.icon;
           const fullPath = `/${menuConfig.path}/${item.path}`;
           const hasSubMenu = !!item.submenu;
