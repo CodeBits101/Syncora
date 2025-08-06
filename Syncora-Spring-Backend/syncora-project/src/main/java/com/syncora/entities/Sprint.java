@@ -62,4 +62,7 @@ public class Sprint extends Base {
 
     @OneToMany(mappedBy = "sprint", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Bug> bugs = new ArrayList<>();
+    
+    @Column(name ="is_current", columnDefinition = "BIT(1) DEFAULT 0")
+    private Boolean isCurrent = false; 
 }

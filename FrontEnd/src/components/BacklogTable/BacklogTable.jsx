@@ -345,12 +345,12 @@ export default function BacklogTable() {
     <>
       <Box
         sx={{
-          width: "80%",
+          width: "90%",
           margin: "0 auto",
           display: "flex",
           flexDirection: "column",
           gap: 3,
-          paddingTop: 3,
+          marginTop: -1,
         }}
       >
         {/* Filter Tabs */}
@@ -358,7 +358,7 @@ export default function BacklogTable() {
           sx={{
             display: "flex",
             justifyContent: "center",
-            marginBottom: 3, // Added space below the tabs
+            marginBottom: -1, // Added space below the tabs
           }}
         >
           <ToggleButtonGroup
@@ -374,7 +374,7 @@ export default function BacklogTable() {
                 borderRadius: "8px !important",
                 border: "1px solid #e0e0e0 !important",
                 padding: "8px 24px", // Increased horizontal padding
-                margin: "0 4px", // Additional spacing
+                margin: "0 2px", // Additional spacing
                 transition: "all 0.3s ease",
                 "&.Mui-selected": {
                   boxShadow: "0px 3px 6px rgba(0,0,0,0.15)",
