@@ -27,7 +27,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Table(name = "tasks")
 @AttributeOverrides({
-@AttributeOverride(name = "id", column = @Column(name = "task_id")),
+
 @AttributeOverride(name = "title", column = @Column(name = "task_title")),
 @AttributeOverride(name = "description", column = @Column(name = "task_description"))
 
@@ -70,7 +70,9 @@ public class Task extends CommonEntity{
 	private boolean testingFlag;
 		
 	@OneToMany(mappedBy = "task",  cascade = CascadeType.ALL , orphanRemoval = true)
-	private List<SubTask> subTasks = new ArrayList<>();
+	private List<SubTask> subTasks = new ArrayList<>();	
+	
+	
 }
 
 

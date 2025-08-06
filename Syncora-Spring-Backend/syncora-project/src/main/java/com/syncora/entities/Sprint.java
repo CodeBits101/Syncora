@@ -26,7 +26,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @Table(name = "sprints")
-@AttributeOverride(name = "id", column = @Column(name = "sprint_id"))
+
 public class Sprint extends Base {
 
     @Column(name = "sprint_name", length = 30, nullable = false)
