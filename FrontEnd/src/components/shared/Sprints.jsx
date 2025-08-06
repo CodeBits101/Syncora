@@ -13,10 +13,20 @@ import {
   Chip
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-
+import EntityFormModal from "../BaseModal/BaseEntityModal";
+import { sprintFields } from "../../FormConfigs/sprintFields";
 const Sprints = () => {
   const { projectId } = useParams();
   const [projectName, setProjectName] = useState("");
+
+  const [openModal, setOpenModal] = useState(false);
+    
+  const handleCreateSprint = (data) => {
+      console.log("Sprint Created:", data);
+       // TODO: call your API here
+       setOpenModal(false);
+      };
+
 
   useEffect(() => {
     const dummyProjects = {
@@ -110,9 +120,11 @@ const Sprints = () => {
         <Typography variant="h5" sx={{ fontWeight: "bold" }}>
           Project: <span style={{ color: "#1976d2" }}>{projectName}</span> — Sprints
         </Typography>
-        <Button variant="contained" sx={{ backgroundColor: "#1976d2" }}>
-          + Add Sprint
-        </Button>
+        <Box display="flex" justifyContent="flex-end" mb={2}>
+                <Button variant="contained" color="primary" onClick={() => setOpenModal(true)}>
+                  + Create Sprint
+                </Button>
+        </Box>
       </Box>
 
       {["ongoing", "upcoming", "completed"].map((category) => (
@@ -196,7 +208,26 @@ const Sprints = () => {
           )}
         </Box>
       ))}
+
+      <EntityFormModal
+                    open={openModal}
+                    handleClose={() => setOpenModal(false)}
+                    title="Create Task"
+                    fields={sprintFields}
+                    initialValues={{
+                      sname: "",
+                      description: "",
+                      start_date: "",
+                      end_date: "",
+                      status: "",
+                      project_id:"",
+                      created_by:" "
+                    }}
+                    onSubmit={handleCreateSprint}
+                  />
+
     </Box>
+    
     
   );
 };
