@@ -24,6 +24,8 @@ public interface EmployeeService {
 	List<EmployeeResponseDto> getAllEmployees() ;
 
 	ApiResponse updateProfile(EmployeeReqDto dto, Long userId);  
+	List<EmployeeResponseDto> getEmpsUnderManager(Long managerId);  
+	
 	
 	
 
