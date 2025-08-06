@@ -21,7 +21,7 @@ import Signup from "./screens/Signup";
 
 import ProjectStatus from "./screens/manager/ProjectStatus";
 
-import { manager, developer, admin, tester } from "../configs";
+import { manager, developer, admin, tester, roleExtraRoutes } from "../configs";
 import Home from "./Layout/Home/Home";
 import TaskBoard from "./components/TaskScreen/TaskBoard";
 import UnAuthorised from "./screens/main/UnAuthorised";
@@ -92,6 +92,17 @@ function App() {
         element={<Navigate to={roleConfig.menu[0].path} replace />}
       />
       {renderMenuRoutes(roleConfig.menu)}
+      {roleExtraRoutes.map(({ path, component: Component }) => (
+        <Route
+          key={path}
+          path={path}
+          element={
+            <Suspense fallback={<div>Loading...</div>}>
+              <Component />
+            </Suspense>
+          }
+        />
+      ))}
     </Route>
   );
 
@@ -103,7 +114,7 @@ function App() {
         <Route
           path="/login"
           element={<LoginPage setRole={setRole} />}
-         
+
         />
         <Route path="/register" element={<Signup />} />
 

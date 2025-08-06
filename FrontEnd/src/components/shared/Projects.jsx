@@ -26,11 +26,14 @@ import {
 import { styled } from '@mui/material/styles';
 import { FolderZip, InfoOutlined } from '@mui/icons-material';
 import { Link } from 'react-router-dom';
+
 import { useState } from 'react';
 import { projectFields } from '../../FormConfigs/projectFields';
 import EntityFormModal from '../BaseModal/BaseEntityModal';
 
 
+
+import AddIcon from '@mui/icons-material/Add'
 
 const theme = createTheme({
   components: {
@@ -80,11 +83,11 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
 }));
 
 const projectData = [
-  { id: 1, title: "Under Planning", summary: "Project is about to On Board for development", badgeCount: 4, iconColor: "warning", path: "planning" },
-  { id: 2, title: "In Progress", summary: "Projects are under Development phase", badgeCount: 4, iconColor: "primary", path: "inprogress" },
+  { id: 1, title: "In Progress", summary: "Projects are under Development phase", badgeCount: 4, iconColor: "primary", path: "inprogress" },
+  { id: 2, title: "Closed", summary: "Projects are closed due to certain reasons", badgeCount: 2, iconColor: "warning", path: "closed" },
   { id: 3, title: "Completed", summary: "Projects are completed successfully.", badgeCount: 0, iconColor: "success", path: "completed" },
   { id: 4, title: "On Hold", summary: "Projects are put currently paused.", badgeCount: 2, iconColor: "error", path: "onhold" },
-  { id: 5, title: "Upcoming", summary: "Scheduled to begin next month.", badgeCount: 1, iconColor: "secondary", path: "upcoming" },
+  { id: 5, title: "ReOpen", summary: "Projects which are reopened for development", badgeCount: 1, iconColor: "secondary", path: "reopen" },
 ];
 
 const columns = [
@@ -160,14 +163,19 @@ function Projects() {
 
   return (
     <ThemeProvider theme={theme}>
+
       <Box display="flex" justifyContent="flex-end" mb={2}>
         <Button variant="contained" color="primary" onClick={() => setOpenModal(true)}>
           + Create Project
         </Button>
       </Box>
 
+
+      <Box sx={{display: 'flex', flexDirection: 'row', gap: 2}}>
+
       <Box
         sx={{
+          width: '90%',
           display: 'flex',
           flexDirection: 'row',
           overflowX: 'auto',
@@ -185,14 +193,14 @@ function Projects() {
         }}
       >
         {projectData.map((project) => (
-          <Card key={project.id} sx={{ minWidth: 300, flexShrink: 0 }}>
+          <Card key={project.id} sx={{ minWidth: 200, flexShrink: 0 }}>
             <CardActionArea>
               <CardMedia
                 sx={{
                   display: 'flex',
                   justifyContent: 'center',
                   alignItems: 'center',
-                  height: 200,
+                  height: 150,
                 }}
               >
                 <StyledBadge badgeContent={project.badgeCount} color="default" showZero>
@@ -203,30 +211,52 @@ function Projects() {
               <CardContent>
                 <Typography gutterBottom variant="h5" component="div">
                   {project.title}
+                  <Tooltip title={`Click to View List of ${project.title} projects`} placement='bottom-end'>
+                    <IconButton component={Link} to={project.path} size="medium" color="primary">
+                      <InfoOutlined />
+                    </IconButton>
+                  </Tooltip>
                 </Typography>
                 <Typography variant="body2" sx={{ color: 'text.secondary' }}>
                   {project.summary}
                 </Typography>
               </CardContent>
             </CardActionArea>
-
-            <CardActions>
-              <Tooltip title={`Click to View List of ${project.title} projects`} placement='bottom-end'>
-                <IconButton component={Link} to={project.path} size="small" color="primary">
-                  <InfoOutlined />
-                </IconButton>
-              </Tooltip>
-            </CardActions>
           </Card>
         ))}
       </Box>
+      <Card sx={{ minWidth: 200, maxWidth: 200, flexShrink: 0 }}>
+          <CardActionArea>
+            <CardMedia
+              sx={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}
+            >
+              <Tooltip title='Create New Project' placement='bottom-end'>
+                <IconButton component={Link} to='/new' size='small' color='primary'>
+                  <AddIcon color='primary' sx={{ fontSize: 140 }} />
+                </IconButton>
+              </Tooltip>
+
+            </CardMedia>
+
+            <CardContent>
+              <Typography gutterBottom variant="h5" component="div" textAlign='center'>
+                Add New Project
+              </Typography>
+            </CardContent>
+          </CardActionArea>
+        </Card>
+        </Box>
 
       <Divider sx={{ mt: 2, mb: 1 }}>
         <Typography sx={{ fontSize: 'xx-large' }}>In Progress Projects</Typography>
       </Divider>
 
       <Paper sx={{ width: '100%', overflow: 'hidden' }}>
-        <TableContainer sx={{ maxHeight: 345 }}>
+        <TableContainer>
           <Table stickyHeader aria-label="sticky table">
             <TableHead>
               <TableRow>
