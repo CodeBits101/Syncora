@@ -148,7 +148,7 @@ function Projects() {
 
   const handleCreateProject = (data) => {
     console.log("Project Created:", data);
-    // TODO: call your API here
+    // API Call
     setOpenModal(false);
   };
 
@@ -175,7 +175,7 @@ function Projects() {
 
       <Box
         sx={{
-          width: '90%',
+          width: '100%',
           display: 'flex',
           flexDirection: 'row',
           overflowX: 'auto',
@@ -225,7 +225,7 @@ function Projects() {
           </Card>
         ))}
       </Box>
-      <Card sx={{ minWidth: 200, maxWidth: 200, flexShrink: 0 }}>
+      {/* <Card sx={{ minWidth: 200, maxWidth: 200, flexShrink: 0 }}>
           <CardActionArea>
             <CardMedia
               sx={{
@@ -248,7 +248,7 @@ function Projects() {
               </Typography>
             </CardContent>
           </CardActionArea>
-        </Card>
+        </Card> */}
         </Box>
 
       <Divider sx={{ mt: 2, mb: 1 }}>
@@ -304,7 +304,7 @@ function Projects() {
           description: "",
           start_date: "",
           end_date: "",
-          project_status: "NOT_STARTED",
+          project_status: "IN_PROGRESS",
           project_code: "",
         }}
         onSubmit={handleCreateProject}
