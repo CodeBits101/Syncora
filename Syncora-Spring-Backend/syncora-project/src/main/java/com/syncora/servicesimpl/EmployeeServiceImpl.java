@@ -169,6 +169,20 @@ public class EmployeeServiceImpl implements EmployeeService {
 
 
 
+	@Override
+	public ApiResponse updateProfile(EmployeeReqDto dto, Long userId) {
+		Employee emp  = empRepo.findById(userId)
+				.orElseThrow(()-> new ResourceNotFoundException("Employee not found with the given mail")) ;
+		modelMapper.map(dto, emp) ; 
+		empRepo.save(emp) ; 
+		
+		return new ApiResponse("Employee Updated successfully");
+	}
+
+
+
+
+
 	
 
 

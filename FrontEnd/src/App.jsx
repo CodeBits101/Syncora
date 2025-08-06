@@ -25,6 +25,7 @@ import { manager, developer, admin, tester, roleExtraRoutes } from "../configs";
 import Home from "./Layout/Home/Home";
 import TaskBoard from "./components/TaskScreen/TaskBoard";
 import UnAuthorised from "./screens/main/UnAuthorised";
+import BacklogTable from "./components/BacklogTable/BacklogTable";
 
 function App() {
   const [count, setCount] = useState(0);
@@ -111,6 +112,7 @@ function App() {
       <Routes>
         <Route path="/profile" element={<ProfileCard />} />
         <Route path="/dev" element={<AboutDev />} />
+        <Route path="/backlog" element={<BacklogTable />} />
         <Route
           path="/login"
           element={<LoginPage setRole={setRole} />}

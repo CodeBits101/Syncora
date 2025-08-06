@@ -20,11 +20,12 @@
     "@mui/joy": "^5.0.0-beta.52",
     "@mui/material": "^7.2.0",
     "@mui/styled-engine-sc": "^7.1.0",
+    "@mui/x-data-grid": "^8.9.2",
     "@tailwindcss/vite": "^4.1.7",
     "axios": "^1.10.0",
     "bootstrap": "^5.3.7",
-    "framer-motion": "^12.23.11",
     "formik": "^2.4.6",
+    "framer-motion": "^12.23.11",
     "js-cookie": "^3.0.5",
     "lottie-react": "^2.4.1",
     "react": "^19.1.0",
@@ -36,7 +37,7 @@
     "react-router-dom": "^7.6.0",
     "react-toastify": "^11.0.5",
     "styled-components": "^6.1.18",
-    "yup": "^1.6.1"
+    "yup": "^1.7.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.25.0",
