@@ -28,7 +28,6 @@ import lombok.Setter;
 @NoArgsConstructor
 @Table(name = "projects")
 @AttributeOverrides({
-@AttributeOverride(name = "id", column = @Column(name = "project_id")),
 @AttributeOverride(name = "title", column = @Column(name = "project_title")),
 @AttributeOverride(name = "description", column = @Column(name = "project_description"))
 })

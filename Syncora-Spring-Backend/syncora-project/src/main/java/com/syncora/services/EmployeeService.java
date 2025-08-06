@@ -21,7 +21,9 @@ public interface EmployeeService {
 
 	ApiResponse deleteById(Long id);
 	
-	List<EmployeeResponseDto> getAllEmployees() ;  
+	List<EmployeeResponseDto> getAllEmployees() ;
+
+	ApiResponse updateProfile(EmployeeReqDto dto, Long userId);  
 	
 	
 
