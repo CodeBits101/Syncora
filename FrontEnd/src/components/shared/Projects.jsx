@@ -20,11 +20,17 @@ import {
   TableRow,
   ThemeProvider,
   createTheme,
-  Tooltip
+  Tooltip,
+  Button
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { FolderZip, InfoOutlined } from '@mui/icons-material';
 import { Link } from 'react-router-dom';
+import { useState } from 'react';
+import { projectFields } from '../../FormConfigs/projectFields';
+import EntityFormModal from '../BaseModal/BaseEntityModal';
+
+
 
 const theme = createTheme({
   components: {
@@ -134,6 +140,15 @@ function Projects() {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
+  const [openModal, setOpenModal] = useState(false);
+
+
+  const handleCreateProject = (data) => {
+    console.log("Project Created:", data);
+    // TODO: call your API here
+    setOpenModal(false);
+  };
+
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -145,6 +160,12 @@ function Projects() {
 
   return (
     <ThemeProvider theme={theme}>
+      <Box display="flex" justifyContent="flex-end" mb={2}>
+        <Button variant="contained" color="primary" onClick={() => setOpenModal(true)}>
+          + Create Project
+        </Button>
+      </Box>
+
       <Box
         sx={{
           display: 'flex',
@@ -243,6 +264,22 @@ function Projects() {
           sx={{ background: '#e7e7e7ff' }}
         />
       </Paper>
+      <EntityFormModal
+        open={openModal}
+        handleClose={() => setOpenModal(false)}
+        title="Create Project"
+        fields={projectFields}
+        initialValues={{
+          pname: "",
+          description: "",
+          start_date: "",
+          end_date: "",
+          project_status: "NOT_STARTED",
+          project_code: "",
+        }}
+        onSubmit={handleCreateProject}
+      />
+
     </ThemeProvider>
   );
 }
