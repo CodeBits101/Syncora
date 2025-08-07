@@ -2,11 +2,13 @@ import React from "react";
 import { Card, Container, Row, Col } from "react-bootstrap";
 import trimToWords from "../../utils/trimToWords";
 import "./ProjectStatus.css"; // Custom styles
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { colors } from "../../utils/color";
 import { RiProgress3Line } from "react-icons/ri";
 
 const ProjectCard = ({ project, bgColor }) => {
+  const {status} = useParams();
+ 
   return (
     <Card className="project-card h-100" style={{ backgroundColor: bgColor }}>
       <Card.Body>
@@ -149,7 +151,11 @@ export default function ProjectStatus() {
             const bgColor = colors[index % colors.length];
             return (
               <Col key={project.id} xs={12} sm={6} md={4} lg={3}>
-                <ProjectCard project={project} bgColor={bgColor} />
+                <ProjectCard
+                  key={project.id}
+                  project={project}
+                  bgColor={bgColor}
+                />
               </Col>
             );
           })}

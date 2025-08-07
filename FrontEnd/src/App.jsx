@@ -113,6 +113,7 @@ function App() {
         <Route path="/profile" element={<ProfileCard />} />
         <Route path="/dev" element={<AboutDev />} />
         <Route path="/backlog" element={<BacklogTable />} />
+        {/* <Route path="/manager/projects/:taskstatus" element={<ProjectStatus />} /> */}
         <Route
           path="/login"
           element={<LoginPage setRole={setRole} />}

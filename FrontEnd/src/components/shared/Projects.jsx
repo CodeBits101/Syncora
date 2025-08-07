@@ -165,7 +165,7 @@ function Projects() {
     <ThemeProvider theme={theme}>
 
       <Box display="flex" justifyContent="flex-end" mb={2}>
-        <Button variant="contained" color="primary" onClick={() => setOpenModal(true)}>
+        <Button variant="contained" color="success" onClick={() => setOpenModal(true)}>
           + Create Project
         </Button>
       </Box>
