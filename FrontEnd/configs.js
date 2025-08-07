@@ -22,6 +22,7 @@ export const manager = {
     {label: 'Dashboard', icon:Dashboard, path: 'dashboard', component: lazy(()=> import('./src/components/shared/Dashboard'))},
     {label:'Backlog', icon: PendingActions,path: 'backlog', component: lazy(()=> import('./src/screens/manager/Backlog/MgrBacklog'))},
     // {label:'Report', icon: PieChart, path: 'report', component: lazy(()=> import('./src/screens/manager/Report/MgrReport'))},
+    // {label:'Report', icon: PieChart, path: 'report', component: lazy(()=> import('./src/screens/manager/Report/MgrReport'))},
     {label: 'Sprints', icon: Timelapse, path: 'sprints', component: lazy(()=> import('./src/components/shared/Sprints'))},
     {label: 'Calendar', icon: CalendarMonthIcon, path: 'calendar', component: lazy(()=> import('./src/components/Calendar/Calendar'))},
     {label:'Tasks', icon: TaskAlt ,path:'tasks', component: lazy(()=> import('./src/components/shared/Tasks'))},
@@ -35,6 +36,9 @@ export const manager = {
 export const tester = {
     path: 'tester',
     menu : [
+        {label: 'Dashboard', icon:Dashboard, path: 'dashboard', component: lazy(()=> import('./src/components/shared/Dashboard'))},
+        {label: 'Sprints', icon: Timelapse, path: 'sprints', component: lazy(()=> import('./src/components/shared/Sprints'))},
+        {label:'Bugs', icon: BugReport,path: 'bugs', component: lazy(()=> import('./src/components/shared/Bugs'))}, 
         {label: 'Dashboard', icon:Dashboard, path: 'dashboard', component: lazy(()=> import('./src/components/shared/Dashboard'))},
         {label: 'Sprints', icon: Timelapse, path: 'sprints', component: lazy(()=> import('./src/components/shared/Sprints'))},
         {label:'Bugs', icon: BugReport,path: 'bugs', component: lazy(()=> import('./src/components/shared/Bugs'))}, 
