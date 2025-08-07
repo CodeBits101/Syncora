@@ -6,6 +6,8 @@ import {
 }from '@mui/material';
 import EntityFormModal from '../../../components/BaseModal/BaseEntityModal';
 import storyFields from '../../../FormConfigs/storyFields';
+import BacklogTable from "../../../components/BacklogTable/BacklogTable";
+
 function MgrBacklog() {
 
 
@@ -40,6 +42,9 @@ function MgrBacklog() {
         />
       </Box>
     </div>
+    
+      <BacklogTable/>
+    
   )
 }
 
