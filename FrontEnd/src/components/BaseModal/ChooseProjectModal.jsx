@@ -34,8 +34,37 @@ export default function ChooseProjectModal({
           <option value="103">Amazon S3 Bucket</option>
           <option value="two">Option Two</option>
           <option value="three">Option Three</option>
-          
-
+          <option value="three">Option Three</option>
+          <option value="three">Option Three</option>
+          <option value="three">Option Three</option>
+          <option value="three">Option Three</option>
+          <option value="three">Option Three</option>
+          <option value="three">Option Three</option>
+          <option value="three">Option Three</option>
+          <option value="three">Option Three</option>
+          <option value="three">Option Three</option>
+          <option value="three">Option Three</option>
+          <option value="three">Option Three</option>
+          <option value="three">Option Three</option>
+          <option value="three">Option Three</option>
+          <option value="three">Option Three</option>
+          <option value="three">Option Three</option>
+          <option value="three">Option Three</option>
+          <option value="three">Option Three</option>
+          <option value="three">Option Three</option>
+          <option value="three">Option Three</option>
+          <option value="three">Option Three</option>
+          <option value="three">Option Three</option>
+          <option value="three">Option Three</option>
+          <option value="three">Option Three</option>
+          <option value="three">Option Three</option>
+          <option value="three">Option Three</option>
+          <option value="three">Option Three</option>
+          <option value="three">Option Three</option>
+          <option value="three">Option Three</option>
+          <option value="three">Option Three</option>
+          <option value="three">Option Three</option>
+          <option value="three">Option Three</option>
         </Form.Select>
       </Modal.Body>
       <Modal.Footer>
