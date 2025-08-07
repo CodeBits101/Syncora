@@ -29,37 +29,7 @@ export default function ChooseProjectModal({
           <option value="one">Option One</option>
           <option value="two">Option Two</option>
           <option value="three">Option Three</option>
-          <option value="three">Option Three</option>
-          <option value="three">Option Three</option>
-          <option value="three">Option Three</option>
-          <option value="three">Option Three</option>
-          <option value="three">Option Three</option>
-          <option value="three">Option Three</option>
-          <option value="three">Option Three</option>
-          <option value="three">Option Three</option>
-          <option value="three">Option Three</option>
-          <option value="three">Option Three</option>
-          <option value="three">Option Three</option>
-          <option value="three">Option Three</option>
-          <option value="three">Option Three</option>
-          <option value="three">Option Three</option>
-          <option value="three">Option Three</option>
-          <option value="three">Option Three</option>
-          <option value="three">Option Three</option>
-          <option value="three">Option Three</option>
-          <option value="three">Option Three</option>
-          <option value="three">Option Three</option>
-          <option value="three">Option Three</option>
-          <option value="three">Option Three</option>
-          <option value="three">Option Three</option>
-          <option value="three">Option Three</option>
-          <option value="three">Option Three</option>
-          <option value="three">Option Three</option>
-          <option value="three">Option Three</option>
-          <option value="three">Option Three</option>
-          <option value="three">Option Three</option>
-          <option value="three">Option Three</option>
-          <option value="three">Option Three</option>
+          
         </Form.Select>
       </Modal.Body>
       <Modal.Footer>
