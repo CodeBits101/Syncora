@@ -18,8 +18,7 @@ import { sprintFields } from "../../FormConfigs/sprintFields";
 import { Modal, Form } from "react-bootstrap";
 import { SiPolymerproject } from "react-icons/si";
 import { MdOutlineDashboardCustomize } from "react-icons/md";
-
-
+import ChooseProjectModal from "../BaseModal/ChooseProjectModal";
 
 const Sprints = () => {
   const { projectId } = useParams();
@@ -127,64 +126,18 @@ const Sprints = () => {
     ],
   };
 
-
   const navigate = useNavigate();
 
   return (
     <>
-      <Modal show={showModal} backdrop="static" keyboard={false} centered>
-        <Modal.Header>
-          <Modal.Title>Choose Project First</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Form.Select
-            value={selectedOption}
-            onChange={(e) => setSelectedOption(e.target.value)}
-            aria-label="Dropdown select"
-          >
-            <option value="">-- Select Option --</option>
-            <option value="one">Option One</option>
-            <option value="two">Option Two</option>
-            <option value="three">Option Three</option>
-            <option value="three">Option Three</option>
-            <option value="three">Option Three</option>
-            <option value="three">Option Three</option>
-            <option value="three">Option Three</option>
-            <option value="three">Option Three</option>
-            <option value="three">Option Three</option>
-            <option value="three">Option Three</option>
-            <option value="three">Option Three</option>
-            <option value="three">Option Three</option>
-            <option value="three">Option Three</option>
-            <option value="three">Option Three</option>
-            <option value="three">Option Three</option>
-            <option value="three">Option Three</option>
-            <option value="three">Option Three</option>
-            <option value="three">Option Three</option>
-            <option value="three">Option Three</option>
-            <option value="three">Option Three</option>
-            <option value="three">Option Three</option>
-            <option value="three">Option Three</option>
-            <option value="three">Option Three</option>
-            <option value="three">Option Three</option>
-            <option value="three">Option Three</option>
-            <option value="three">Option Three</option>
-            <option value="three">Option Three</option>
-            <option value="three">Option Three</option>
-            <option value="three">Option Three</option>
-            <option value="three">Option Three</option>
-            <option value="three">Option Three</option>
-            <option value="three">Option Three</option>
-            <option value="three">Option Three</option>
-            <option value="three">Option Three</option>
-          </Form.Select>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="primary" onClick={handleClose}>
-            Save
-          </Button>
-        </Modal.Footer>
-      </Modal>
+      <ChooseProjectModal
+        showModal={showModal}
+        showMainUI={showMainUI}
+        setSelectedOption={setSelectedOption}
+        selectedOption={selectedOption}
+        setShowModal={setShowModal}
+        setShowMainUI={setShowMainUI}
+      />
 
       {showMainUI && (
         <Box p={4} sx={{ backgroundColor: "#f4faff", minHeight: "100vh" }}>
@@ -212,7 +165,12 @@ const Sprints = () => {
                 color="primary"
                 onClick={() => setShowModal(true)}
               >
-                 <SiPolymerproject color="white" size={20} style={{marginRight:'10px'}} /> Choose Project
+                <SiPolymerproject
+                  color="white"
+                  size={20}
+                  style={{ marginRight: "10px" }}
+                />{" "}
+                Choose Project
               </Button>
             </Box>
           </Box>
@@ -305,10 +263,19 @@ const Sprints = () => {
                                 </Grid>
                               ))}
                             </Grid>
-                           
-                            <Button variant="contained" sx={{ backgroundColor: "#3daa51ff" , mt: 2 }} onClick={()=>navigate('/scrumBoard')}>
-                           <MdOutlineDashboardCustomize size={20} color="white" style={{marginRight:'10px'}}/> Taskboard
-                        </Button>
+
+                            <Button
+                              variant="contained"
+                              sx={{ backgroundColor: "#3daa51ff", mt: 2 }}
+                              onClick={() => navigate("/scrumBoard")}
+                            >
+                              <MdOutlineDashboardCustomize
+                                size={20}
+                                color="white"
+                                style={{ marginRight: "10px" }}
+                              />{" "}
+                              Taskboard
+                            </Button>
                           </AccordionDetails>
                         </Accordion>
                       ))}

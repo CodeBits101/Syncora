@@ -1,5 +1,6 @@
-import * as React from "react";
+import React, { useState } from "react";
 import { DataGrid } from "@mui/x-data-grid";
+import { Modal, Form, Button } from "react-bootstrap";
 import {
   Select,
   MenuItem,
@@ -16,6 +17,7 @@ import BugReportIcon from "@mui/icons-material/BugReport";
 import BookmarkBorderOutlinedIcon from "@mui/icons-material/BookmarkBorderOutlined";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
+import ChooseProjectModal from "../BaseModal/ChooseProjectModal";
 
 const typeIcons = {
   Task: <TaskAltIcon fontSize="small" color="primary" />,
@@ -203,6 +205,9 @@ const initialRows = [
 ];
 
 export default function BacklogTable() {
+  const [showModal, setShowModal] = useState(true);
+  const [showMainUI, setShowMainUI] = useState(false);
+  const [selectedOption, setSelectedOption] = useState("");
   const [rows, setRows] = React.useState(initialRows);
   const [filter, setFilter] = React.useState("all"); // 'all', 'story', 'task', 'bug'
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -343,126 +348,138 @@ export default function BacklogTable() {
 
   return (
     <>
-      <Box
-        sx={{
-          width: "90%",
-          margin: "0 auto",
-          display: "flex",
-          flexDirection: "column",
-          gap: 3,
-          marginTop: -1,
-        }}
-      >
-        {/* Filter Tabs */}
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-            marginBottom: -1, // Added space below the tabs
-          }}
-        >
-          <ToggleButtonGroup
-            value={filter}
-            onChange={handleFilterChange}
-            exclusive
-            aria-label="work item type"
+      <ChooseProjectModal
+        showModal={showModal}
+        showMainUI={showMainUI}
+        setSelectedOption={setSelectedOption}
+        selectedOption={selectedOption}
+        setShowModal={setShowModal}
+        setShowMainUI={setShowMainUI}
+      />
+      {showMainUI && (
+        <div>
+          <Box
             sx={{
-              gap: 2, // Space between buttons
-              "& .MuiToggleButton-root": {
-                boxShadow: "0px 2px 4px rgba(0,0,0,0.3)",
-                textTransform: "none",
-                borderRadius: "8px !important",
-                border: "1px solid #e0e0e0 !important",
-                padding: "8px 24px", // Increased horizontal padding
-                margin: "0 2px", // Additional spacing
-                transition: "all 0.3s ease",
-                "&.Mui-selected": {
-                  boxShadow: "0px 3px 6px rgba(0,0,0,0.15)",
-                  backgroundColor: "#000000", // Black when selected
-                  color: "white",
-                  "&:hover": {
-                    backgroundColor: "#333333", // Darker black on hover
-                  },
-                },
-                "&:hover": {
-                  backgroundColor: "rgba(0, 0, 0, 0.04)",
-                },
-              },
+              width: "90%",
+              margin: "0 auto",
+              display: "flex",
+              flexDirection: "column",
+              gap: 3,
+              marginTop: -1,
             }}
           >
-            <ToggleButton value="all" aria-label="all">
-              All Items
-            </ToggleButton>
-            <ToggleButton value="story" aria-label="stories">
-              Stories
-            </ToggleButton>
-            <ToggleButton value="task" aria-label="tasks">
-              Tasks
-            </ToggleButton>
-            <ToggleButton value="bug" aria-label="bugs">
-              Bugs
-            </ToggleButton>
-          </ToggleButtonGroup>
-        </Box>
-
-        {/* DataGrid */}
-        <Box
-          sx={{
-            boxShadow: 3,
-            borderRadius: 3,
-            overflow: "hidden",
-            backgroundColor: "white",
-          }}
-        >
-          <DataGrid
-            rows={filteredRows}
-            columns={columns}
-            initialState={{
-              pagination: {
-                paginationModel: {
-                  pageSize: 8,
-                },
-              },
-            }}
-            pageSizeOptions={[8]}
-            autoHeight={true}
-            hideFooterSelectedRowCount
-            sx={{
-              "& .MuiDataGrid-virtualScroller": {
-                overflow: "hidden !important",
-              },
-              "& .MuiDataGrid-main": {
-                overflow: "hidden !important",
-              },
-              "& .MuiDataGrid-footerContainer": {
-                justifyContent: "center", // Center the pagination
-              },
-            }}
-          />
-        </Box>
-      </Box>
-      <Popover
-        open={Boolean(anchorEl)}
-        anchorEl={anchorEl}
-        onClose={handleClose}
-        anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
-      >
-        <Box sx={{ p: 1, minWidth: 150 }}>
-          {editing.options.map((opt) => (
+            {/* Filter Tabs */}
             <Box
-              key={opt}
               sx={{
-                p: 1,
-                cursor: "pointer",
-                "&:hover": { backgroundColor: "#eee" },
+                display: "flex",
+                justifyContent: "center",
+                marginBottom: -1, // Added space below the tabs
               }}
-              onClick={() => handleValueChange(opt)}
             >
-              {opt}
+              <ToggleButtonGroup
+                value={filter}
+                onChange={handleFilterChange}
+                exclusive
+                aria-label="work item type"
+                sx={{
+                  gap: 2, // Space between buttons
+                  "& .MuiToggleButton-root": {
+                    boxShadow: "0px 2px 4px rgba(0,0,0,0.3)",
+                    textTransform: "none",
+                    borderRadius: "8px !important",
+                    border: "1px solid #e0e0e0 !important",
+                    padding: "8px 24px", // Increased horizontal padding
+                    margin: "0 2px", // Additional spacing
+                    transition: "all 0.3s ease",
+                    "&.Mui-selected": {
+                      boxShadow: "0px 3px 6px rgba(0,0,0,0.15)",
+                      backgroundColor: "#000000", // Black when selected
+                      color: "white",
+                      "&:hover": {
+                        backgroundColor: "#333333", // Darker black on hover
+                      },
+                    },
+                    "&:hover": {
+                      backgroundColor: "rgba(0, 0, 0, 0.04)",
+                    },
+                  },
+                }}
+              >
+                <ToggleButton value="all" aria-label="all">
+                  All Items
+                </ToggleButton>
+                <ToggleButton value="story" aria-label="stories">
+                  Stories
+                </ToggleButton>
+                <ToggleButton value="task" aria-label="tasks">
+                  Tasks
+                </ToggleButton>
+                <ToggleButton value="bug" aria-label="bugs">
+                  Bugs
+                </ToggleButton>
+              </ToggleButtonGroup>
             </Box>
-          ))}
-        </Box>
-      </Popover>
+
+            {/* DataGrid */}
+            <Box
+              sx={{
+                boxShadow: 3,
+                borderRadius: 3,
+                overflow: "hidden",
+                backgroundColor: "white",
+              }}
+            >
+              <DataGrid
+                rows={filteredRows}
+                columns={columns}
+                initialState={{
+                  pagination: {
+                    paginationModel: {
+                      pageSize: 8,
+                    },
+                  },
+                }}
+                pageSizeOptions={[8]}
+                autoHeight={true}
+                hideFooterSelectedRowCount
+                sx={{
+                  "& .MuiDataGrid-virtualScroller": {
+                    overflow: "hidden !important",
+                  },
+                  "& .MuiDataGrid-main": {
+                    overflow: "hidden !important",
+                  },
+                  "& .MuiDataGrid-footerContainer": {
+                    justifyContent: "center", // Center the pagination
+                  },
+                }}
+              />
+            </Box>
+          </Box>
+          <Popover
+            open={Boolean(anchorEl)}
+            anchorEl={anchorEl}
+            onClose={handleClose}
+            anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+          >
+            <Box sx={{ p: 1, minWidth: 150 }}>
+              {editing.options.map((opt) => (
+                <Box
+                  key={opt}
+                  sx={{
+                    p: 1,
+                    cursor: "pointer",
+                    "&:hover": { backgroundColor: "#eee" },
+                  }}
+                  onClick={() => handleValueChange(opt)}
+                >
+                  {opt}
+                </Box>
+              ))}
+            </Box>
+          </Popover>
+        </div>
+      )}
     </>
   );
 }
