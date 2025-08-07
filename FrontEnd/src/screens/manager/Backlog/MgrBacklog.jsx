@@ -1,10 +1,11 @@
 import React from 'react'
+import BacklogTable from "../../../components/BacklogTable/BacklogTable";
 
 function MgrBacklog() {
   return (
-    <div>
-      <h1>manager backlog</h1>
-    </div>
+    
+      <BacklogTable/>
+    
   )
 }
 

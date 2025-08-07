@@ -42,7 +42,7 @@ public class SecurityConfiguration {
 								"/employees/register", "/employees/login" ,"/employees/**" ,"/departments/**" ,
 								"/mail/**")	
 						.permitAll()
-						//only for react apps - permit in flight requests - otherwise CORS error
+						//only for react and angular apps - permit in flight requests - otherwise CORS error
 						.requestMatchers(HttpMethod.OPTIONS).permitAll()
 						.requestMatchers(HttpMethod.GET, "/projects").permitAll()
 						.requestMatchers(HttpMethod.POST, "/projects").hasRole("MANAGER").anyRequest()

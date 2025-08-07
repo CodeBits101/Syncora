@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -81,6 +82,13 @@ public class EmployeeController {
 	public ResponseEntity<?> changePassword(@RequestBody ChangePassDto dto ,Authentication authentication){
 		String email = authentication.getName() ; 
 		return ResponseEntity.ok(empService.changePassword(dto , email)) ;
+	}
+	
+	@PutMapping("/updateProfile") 
+	public ResponseEntity<?> updateProfile
+	(@RequestBody EmployeeReqDto dto ,@RequestHeader("Authorization") String authHeader){
+		Long userId = jwtUtils.getUserIdFromJwtToken(authHeader) ; 
+		return ResponseEntity.ok(empService.updateProfile(dto , userId)) ;
 	}
 	
 	

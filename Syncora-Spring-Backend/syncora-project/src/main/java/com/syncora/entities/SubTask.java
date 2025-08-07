@@ -24,7 +24,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @Table(name = "subtasks")
-@AttributeOverride(name = "id", column = @Column(name = "subtask_id"))
+
 public class SubTask extends Base {
 
     @Column(nullable = false, length = 100)
