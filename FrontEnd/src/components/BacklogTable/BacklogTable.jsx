@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { DataGrid } from "@mui/x-data-grid";
 import { Modal, Form, Button } from "react-bootstrap";
+import { FaFilePdf } from "react-icons/fa";
 import {
   Select,
   MenuItem,
@@ -18,6 +19,7 @@ import BookmarkBorderOutlinedIcon from "@mui/icons-material/BookmarkBorderOutlin
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ChooseProjectModal from "../BaseModal/ChooseProjectModal";
+import { exportPDF } from "../../utils/exportToPdf";
 
 const typeIcons = {
   Task: <TaskAltIcon fontSize="small" color="primary" />,
@@ -366,6 +368,7 @@ export default function BacklogTable() {
               flexDirection: "column",
               gap: 3,
               marginTop: -1,
+              position: "relative",
             }}
           >
             {/* Filter Tabs */}
@@ -383,6 +386,8 @@ export default function BacklogTable() {
                 aria-label="work item type"
                 sx={{
                   gap: 2, // Space between buttons
+                  width: "100%",
+                  position: "relative",
                   "& .MuiToggleButton-root": {
                     boxShadow: "0px 2px 4px rgba(0,0,0,0.3)",
                     textTransform: "none",
@@ -417,6 +422,18 @@ export default function BacklogTable() {
                 <ToggleButton value="bug" aria-label="bugs">
                   Bugs
                 </ToggleButton>
+
+                <FaFilePdf
+                  size={25}
+                  color="red"
+                  style={{
+                    position: "absolute",
+                    top: 8,
+                    right: 1,
+                    cursor: "pointer",
+                  }}
+                  onClick={() => exportPDF(rows, columns)}
+                />
               </ToggleButtonGroup>
             </Box>
 
