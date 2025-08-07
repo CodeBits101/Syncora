@@ -12,7 +12,7 @@ import lombok.Setter;
 @Setter
 public class EmployeeResponseDto extends BaseDto {
    
-	private String empName;
+	  private String empName;
 	
 	  private String email ;  
 		

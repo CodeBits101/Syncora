@@ -148,7 +148,7 @@ function Projects() {
 
   const handleCreateProject = (data) => {
     console.log("Project Created:", data);
-    // TODO: call your API here
+    // API Call
     setOpenModal(false);
   };
 
@@ -304,7 +304,7 @@ function Projects() {
           description: "",
           start_date: "",
           end_date: "",
-          project_status: "NOT_STARTED",
+          project_status: "IN_PROGRESS",
           project_code: "",
         }}
         onSubmit={handleCreateProject}

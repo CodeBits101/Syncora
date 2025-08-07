@@ -38,7 +38,7 @@ public class EmployeeController {
 	
   private  AuthenticationManager authenticationManager;
   private final EmployeeService empService ;  
-	private final JwtUtils jwtUtils;
+  private final JwtUtils jwtUtils;
   
   @PostMapping("/register")
   public ResponseEntity<?> registerUser(@RequestBody EmployeeReqDto dto){
@@ -111,6 +111,11 @@ public class EmployeeController {
 	@GetMapping
 	public ResponseEntity<?> getAllEmployees(){
 		return ResponseEntity.ok(empService.getAllEmployees()) ;
+	}
+	
+	@GetMapping("/team/{managerId}")
+	public ResponseEntity<?> getTeamUnderManager(@PathVariable Long managerId){
+		return ResponseEntity.ok(empService.getEmpsUnderManager(managerId));
 	}
 	
 	
