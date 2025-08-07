@@ -1,0 +1,4 @@
+.calendar-container {
+  height: 95vh; /* Full viewport height */
+  box-sizing: border-box;
+}
