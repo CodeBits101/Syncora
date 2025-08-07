@@ -10,9 +10,16 @@ import { bugFields } from './../../FormConfigs/bugFields';
 function Bugs() {
 
    const [openModal, setOpenModal] = useState(false);
-    
+    const userRole = localStorage.getItem("role");
       const handleCreateBug = (data) => {
-        console.log("Bug Created:", data);
+        const payload = {
+          ...data,
+          projectId:"",
+          storyId:"",
+          reportedById:""
+
+        }
+        console.log("Bug Created:", payload);
         // TODO: call your API here
         setOpenModal(false);
       };
@@ -22,11 +29,13 @@ function Bugs() {
     <div>
       <h1>common template 'Bugs' page for Manager, developer, tester</h1>
 
-
-      <Box display="flex" justifyContent="flex-end" mb={2}>
+      {
+        userRole === "ROLE_TESTER" && 
               <Button variant="contained" color="primary" onClick={() => setOpenModal(true)}>
                 + Create Bug
               </Button>
+      }
+      <Box display="flex" justifyContent="flex-end" mb={2}>
             </Box>
       
       
@@ -39,13 +48,9 @@ function Bugs() {
                     initialValues={{
                       title: "",
                       description: "",
-                      status: "",
+                      status: "BACKLOG",
                       priority:"",
-                      start_date: "",
-                      end_date: "",
-                      assigned_to: "",
-                      task_id:"",
-                      reported_by:""
+                      assignedToId: "",
                     }}
                     onSubmit={handleCreateBug}
                   />
