@@ -41,9 +41,9 @@ function MgrBacklog() {
                       onSubmit={handleCreateStory}
         />
       </Box>
+      <BacklogTable/>
     </div>
     
-      <BacklogTable/>
     
   )
 }
