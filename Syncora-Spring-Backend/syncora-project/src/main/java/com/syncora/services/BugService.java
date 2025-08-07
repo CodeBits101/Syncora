@@ -12,7 +12,7 @@ import com.syncora.enums.TaskStatus;
 public interface BugService {
 
 	ApiResponse createBug(BugReqDto dto, Long id);
-	List<BacklogItemDto> getBacklogBugs();
+	List<BacklogItemDto> getBacklogBugs(Long projectId);
 	ApiResponse updateBug(BugReqDto dto, Long id);
 	ApiResponse changeStatus(TaskStatus changestatus, Long id);
 	List<BugRespDto> getBugByStatus(Long id);

@@ -11,7 +11,7 @@ import com.syncora.entities.Story;
 
 public interface BugRepo extends JpaRepository<Bug, Long> {
 
-	List<Bug> findBySprintIsNullAndStoryIsNull();
+	List<Bug> findBySprintIsNullAndStoryIsNullAndProjectId(Long projectId);
 
 	List<Bug> findByStory(Story story);
 }

@@ -87,8 +87,8 @@ public ApiResponse createTask(TaskReqDto dto,Long id) {
 }
 
 @Override
-public List<BacklogItemDto> getBacklogTasks() {
-	List<Task> tasks = taskRepo.findBySprintIsNullAndStoryIsNull();
+public List<BacklogItemDto> getBacklogTasks(Long projectId) {
+	List<Task> tasks = taskRepo.findBySprintIsNullAndStoryIsNullAndProjectId(projectId);
 	return tasks.stream()
 			.map(task -> {
 				String assignedToName = task.getAssignedTo() != null ? 
@@ -98,10 +98,7 @@ public List<BacklogItemDto> getBacklogTasks() {
 					"TASK",
 					task.getTitle(),
 					task.getStatus(),
-					assignedToName,
-					task.getId(),
-					task.getPriority()		
-					
+					task.getId()
 				);
 			})
 			.collect(Collectors.toList());

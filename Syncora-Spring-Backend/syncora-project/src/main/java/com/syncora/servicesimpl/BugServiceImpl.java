@@ -159,8 +159,8 @@ public class BugServiceImpl implements BugService {
 	}
     
     @Override
-    public List<BacklogItemDto> getBacklogBugs() {
-        List<Bug> bugs = bugRepo.findBySprintIsNullAndStoryIsNull();
+    public List<BacklogItemDto> getBacklogBugs(Long projectId) {
+        List<Bug> bugs = bugRepo.findBySprintIsNullAndStoryIsNullAndProjectId(projectId);
         return bugs.stream()
                 .map(bug -> {
                     String assignedToName = bug.getAssignedTo() != null ? 
@@ -170,9 +170,7 @@ public class BugServiceImpl implements BugService {
                         "BUG",
                         bug.getTitle(),
                         bug.getStatus(),
-                        assignedToName,
-                        bug.getId(),
-                        bug.getPriority()
+                        bug.getId()
                     );
                 })
                 .collect(Collectors.toList());

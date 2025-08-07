@@ -11,7 +11,7 @@ public interface TaskService {
 
 	ApiResponse createTask(TaskReqDto dto , Long id);
 
-	List<BacklogItemDto> getBacklogTasks();
+	List<BacklogItemDto> getBacklogTasks(Long projectId);
 
 
 	ApiResponse deleteTask(Long id);

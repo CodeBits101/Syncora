@@ -9,7 +9,7 @@ import com.syncora.dtos.StoryResponseDto;
 
 public interface StoryService {
 
-	List<BacklogItemDto> getBacklogStories();
+	List<BacklogItemDto> getBacklogStories(Long projectId);
 
 	List<StoryResponseDto> getStories(Long id);
 	

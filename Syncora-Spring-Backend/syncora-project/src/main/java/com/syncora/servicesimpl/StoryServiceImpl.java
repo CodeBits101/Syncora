@@ -36,11 +36,13 @@ public class StoryServiceImpl implements StoryService {
    private final EmployeeRepo empRepo;
    
    @Override
-   public List<BacklogItemDto> getBacklogStories() {
-       List<Story> stories = storyRepo.findByCurrentSprintIsNull();
+   public List<BacklogItemDto> getBacklogStories(Long projectId) {
+       List<Story> stories = storyRepo.findBySprintIsNullAndProjectId(projectId);
        return stories.stream()
                .map(story -> {
-                   
+                   String assignedToName = story.getCreatedBy() != null ? 
+                       story.getCreatedBy().getEmpName() : 
+                       "Unassigned";
                    return new BacklogItemDto(
                        "STORY",
                        story.getTitle(),
