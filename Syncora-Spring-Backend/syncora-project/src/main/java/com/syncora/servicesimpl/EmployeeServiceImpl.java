@@ -1,6 +1,7 @@
 package com.syncora.servicesimpl;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -46,6 +47,9 @@ public class EmployeeServiceImpl implements EmployeeService {
 			throw new ApiException("Duplicate email found") ;
 		
 		Employee emp  = modelMapper.map(dto, Employee.class) ;
+		System.out.println(dto.getManagerId());
+		System.out.println(dto.getDepartmentId());
+		
 		
 		if((dto.getEmpRole().name()  == "ROLE_MANAGER") || (dto.getEmpRole().name() == "ROLE_ADMIN")) {
 		   emp.setManager(emp);	
@@ -163,6 +167,21 @@ public class EmployeeServiceImpl implements EmployeeService {
 		
 		return empList;
 
+	}
+
+
+
+
+	@Override
+	public List<EmployeeResponseDto> getEmpsUnderManager(Long managerId) {
+		 List<Employee> team = empRepo.findByManager_Id(managerId);
+
+		 if (team.isEmpty()) {
+		        throw new ResourceNotFoundException("No employees found under manager with ID " + managerId);
+		    }
+		 return team.stream()
+	               .map(emp -> modelMapper.map(emp, EmployeeResponseDto.class))
+	               .collect(Collectors.toList());
 	}
 
 

@@ -6,10 +6,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.syncora.enums.SprintStatus;
+
 import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
@@ -26,7 +30,6 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @Table(name = "sprints")
-
 public class Sprint extends Base {
 
     @Column(name = "sprint_name", length = 30, nullable = false)
@@ -63,6 +66,6 @@ public class Sprint extends Base {
     @OneToMany(mappedBy = "sprint", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Bug> bugs = new ArrayList<>();
     
-    @Column(name ="is_current", columnDefinition = "BIT(1) DEFAULT 0")
-    private Boolean isCurrent = false; 
+    @Enumerated(EnumType.STRING)
+    private SprintStatus sprintStatus;
 }
