@@ -1,16 +1,18 @@
 import React from 'react';
 import { Box, Typography } from '@mui/material';
 import Board from './Board';
+import { IoChevronBackCircleOutline } from "react-icons/io5";
 
 const TaskBoard = () => {
   return (
     <Box className = "pb-3" display="flex" height="100vh" width="100vw" overflow="hidden">
-      <Box width="80px" flexShrink={0} /> {/* Sidebar space */}
+      <Box width="0px" flexShrink={0} /> {/* Sidebar space */}
 
       <Box flex={1} overflow="hidden" display="flex" flexDirection="column">
         {/* HEADER */}
         <Box display="flex" justifyContent="space-between" alignItems="center" p={2}>
-          <Box>
+          <Box display="flex" sx={{ alignItems: 'center', gap: 1 }}>
+            <IoChevronBackCircleOutline size={30} style={{ cursor: 'pointer' }} onClick={() => window.history.back()} />
             <Typography variant="h5">Project Name</Typography>
           </Box>
           <Box>

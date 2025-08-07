@@ -74,6 +74,11 @@ public ApiResponse createTask(TaskReqDto dto,Long id) {
 				 .orElseThrow(()-> new ResourceNotFoundException("Story Does not exist")) ;
 		createdTask.setStory(story);
 		createdTask.setStatus(TaskStatus.TODO);
+		if(story.getCurrentSprint() != null) {
+			Sprint sprint = sprintRepo.findById(story.getCurrentSprint().getId()).orElseThrow(()->
+			new ResourceNotFoundException("Sprint does not exist by this id")) ;  
+			createdTask.setSprint(sprint);
+		}
 	}
 	
 	taskRepo.save(createdTask) ; 
@@ -132,6 +137,11 @@ public ApiResponse updateTask(TaskReqDto dto, Long id) {
 				 .orElseThrow(()-> new ResourceNotFoundException("Story Does not exist")) ;
 		task.setStory(story);
 		task.setStatus(TaskStatus.TODO);
+		if(story.getCurrentSprint() != null) {
+			Sprint sprint = sprintRepo.findById(story.getCurrentSprint().getId()).orElseThrow(()->
+			new ResourceNotFoundException("Sprint does not exist by this id")) ;  
+			task.setSprint(sprint);
+		}
 	}
 	
     task.setAssignedTo(assignedToEmp);
