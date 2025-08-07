@@ -6,7 +6,11 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import com.syncora.dtos.ApiResponse;
+import com.syncora.dtos.BacklogItemDto;
 import com.syncora.dtos.TaskReqDto;
 import com.syncora.entities.Employee;
 import com.syncora.entities.Project;
@@ -77,6 +81,24 @@ public ApiResponse createTask(TaskReqDto dto,Long id) {
 	return new ApiResponse("Task Created successfully");
 }
 
+@Override
+public List<BacklogItemDto> getBacklogTasks() {
+	List<Task> tasks = taskRepo.findBySprintIsNullAndStoryIsNull();
+	return tasks.stream()
+			.map(task -> {
+				String assignedToName = task.getAssignedTo() != null ? 
+					task.getAssignedTo().getFirstName() + " " + task.getAssignedTo().getLastName() : 
+					"Unassigned";
+				return new BacklogItemDto(
+					"TASK",
+					task.getTitle(),
+					task.getPriority(),
+					assignedToName,
+					task.getId()
+				);
+			})
+			.collect(Collectors.toList());
+
 
 @Override
 public ApiResponse deleteTask(Long id) {
@@ -146,6 +168,7 @@ public List<TaskRespDto> getTaskByStatus(Long id) {
 			  return dto ; 
 			}).toList();
 	return taskList;
+
 } 
    
    

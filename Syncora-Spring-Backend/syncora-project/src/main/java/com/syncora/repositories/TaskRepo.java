@@ -9,5 +9,10 @@ import com.syncora.entities.Story;
 import com.syncora.entities.Task;
 
 public interface TaskRepo extends JpaRepository<Task, Long> {
+
+
+	List<Task> findBySprintIsNullAndStoryIsNull();
+
    List<Task> findByStory(Story story);
+
 }

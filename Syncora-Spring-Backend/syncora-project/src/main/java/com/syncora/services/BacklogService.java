@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.syncora.dtos.BacklogItemDto;
 
-public interface StoryServie {
+public interface BacklogService {
 
-	List<BacklogItemDto> getBacklogStories();
+	List<BacklogItemDto> getBacklogItems();
 }
