@@ -102,5 +102,21 @@ public class SprintServiceImpl implements SprintService {
 		return new ApiResponse("Sprint Updated Successfully!");
 		
 		
-	} 
+	}
+
+	@Override
+	public ApiResponse deleteSprint(Long id) {
+	    Sprint sprint = sprintRepo.findById(id)
+	        .orElseThrow(() -> new ResourceNotFoundException("Sprint does not exist!"));
+
+	    SprintStatus status = sprint.getSprintStatus();
+
+	    if (status == SprintStatus.ACTIVE || status == SprintStatus.COMPLETED) {
+	        throw new ApiException("Cannot delete Active or Completed sprints.");
+	    }
+
+	    sprintRepo.delete(sprint);
+	    return new ApiResponse("Sprint deleted successfully.");
+	}
+
 }
