@@ -86,14 +86,15 @@ public class BugServiceImpl implements BugService {
         return bugs.stream()
                 .map(bug -> {
                     String assignedToName = bug.getAssignedTo() != null ? 
-                        bug.getAssignedTo().getFirstName() + " " + bug.getAssignedTo().getLastName() : 
+                        bug.getAssignedTo().getEmpName() : 
                         "Unassigned";
                     return new BacklogItemDto(
                         "BUG",
                         bug.getTitle(),
-                        bug.getPriority(),
+                        bug.getStatus(),
                         assignedToName,
-                        bug.getId()
+                        bug.getId(),
+                        bug.getPriority()
                     );
                 })
                 .collect(Collectors.toList());

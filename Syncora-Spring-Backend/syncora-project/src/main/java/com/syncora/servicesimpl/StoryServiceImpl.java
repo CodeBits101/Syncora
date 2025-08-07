@@ -21,17 +21,14 @@ public class StoryServiceImpl implements StoryServie {
    
    @Override
    public List<BacklogItemDto> getBacklogStories() {
-       List<Story> stories = storyRepo.findBySprintIsNull();
+       List<Story> stories = storyRepo.findByCurrentSprintIsNull();
        return stories.stream()
                .map(story -> {
-                   String assignedToName = story.getAssignedTo() != null ? 
-                       story.getAssignedTo().getFirstName() + " " + story.getAssignedTo().getLastName() : 
-                       "Unassigned";
+                   
                    return new BacklogItemDto(
                        "STORY",
                        story.getTitle(),
-                       story.getPriority(),
-                       assignedToName,
+                       story.getStoryStatus(),
                        story.getId()
                    );
                })

@@ -87,17 +87,20 @@ public List<BacklogItemDto> getBacklogTasks() {
 	return tasks.stream()
 			.map(task -> {
 				String assignedToName = task.getAssignedTo() != null ? 
-					task.getAssignedTo().getFirstName() + " " + task.getAssignedTo().getLastName() : 
+					task.getAssignedTo().getEmpName() : 
 					"Unassigned";
 				return new BacklogItemDto(
 					"TASK",
 					task.getTitle(),
-					task.getPriority(),
+					task.getStatus(),
 					assignedToName,
-					task.getId()
+					task.getId(),
+					task.getPriority()		
+					
 				);
 			})
 			.collect(Collectors.toList());
+}
 
 
 @Override

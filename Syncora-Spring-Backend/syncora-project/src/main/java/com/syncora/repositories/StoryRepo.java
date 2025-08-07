@@ -8,5 +8,5 @@ import com.syncora.entities.Story;
 
 public interface StoryRepo extends JpaRepository<Story, Long> {
 
-	List<Story> findBySprintIsNull();
+	List<Story> findByCurrentSprintIsNull();
 }
