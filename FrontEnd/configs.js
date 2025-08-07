@@ -20,21 +20,22 @@ export const manager = {
     {label:'Team', icon: Groups, path: 'team', component: lazy(()=> import('./src/screens/manager/Team/MgrTeam'))},
     {label: 'Dashboard', icon:Dashboard, path: 'dashboard', component: lazy(()=> import('./src/components/shared/Dashboard'))},
     {label:'Backlog', icon: PendingActions,path: 'backlog', component: lazy(()=> import('./src/screens/manager/Backlog/MgrBacklog'))},
-    {label:'Report', icon: PieChart, path: 'report', component: lazy(()=> import('./src/screens/manager/Report/MgrReport'))},
+    // {label:'Report', icon: PieChart, path: 'report', component: lazy(()=> import('./src/screens/manager/Report/MgrReport'))},
     {label: 'Sprints', icon: Timelapse, path: 'sprints', component: lazy(()=> import('./src/components/shared/Sprints'))},
-    // {label:'Tasks', icon: TaskAlt ,path:'tasks', component: lazy(()=> import('./src/components/shared/Tasks'))},
-    // {label:'Bugs', icon: BugReport,path: 'bugs', component: lazy(()=> import('./src/components/shared/Bugs'))}, 
-    {label:'In Progress', icon:AutoGraph, path: 'inprogress', component: lazy(()=> import('./src/components/shared/TaskStatusList'))},
-    {label: 'On Hold', icon:HourglassBottom, path: 'onhold', component: lazy(()=> import('./src/components/shared/TaskStatusList'))},
-    {label:'Completed', icon:CheckCircle, path: 'completed', component: lazy(()=> import('./src/components/shared/TaskStatusList'))}
+    {label:'Tasks', icon: TaskAlt ,path:'tasks', component: lazy(()=> import('./src/components/shared/Tasks'))},
+    {label:'Bugs', icon: BugReport,path: 'bugs', component: lazy(()=> import('./src/components/shared/Bugs'))}, 
+    // {label:'In Progress', icon:AutoGraph, path: 'inprogress', component: lazy(()=> import('./src/components/shared/TaskStatusList'))},
+    // {label: 'On Hold', icon:HourglassBottom, path: 'onhold', component: lazy(()=> import('./src/components/shared/TaskStatusList'))},
+    // {label:'Completed', icon:CheckCircle, path: 'completed', component: lazy(()=> import('./src/components/shared/TaskStatusList'))}
 ]
 }
 
 export const tester = {
     path: 'tester',
     menu : [
-    {label: 'Dashboard', icon:Dashboard, path: 'dashboard', component: lazy(()=> import('./src/components/shared/Dashboard'))},
-    {label: 'Sprints', icon: Timelapse, path: 'sprints', component: lazy(()=> import('./src/components/shared/Sprints'))},
+        {label: 'Dashboard', icon:Dashboard, path: 'dashboard', component: lazy(()=> import('./src/components/shared/Dashboard'))},
+        {label: 'Sprints', icon: Timelapse, path: 'sprints', component: lazy(()=> import('./src/components/shared/Sprints'))},
+        {label:'Bugs', icon: BugReport,path: 'bugs', component: lazy(()=> import('./src/components/shared/Bugs'))}, 
     {label:'Open Bugs', icon: PestControl, path:'openbugs', component: lazy(()=> import('./src/components/shared/Bugs'))},
     {label:'Closed Bugs', icon: TaskAlt,path: 'closedbugs', component: lazy(()=> import('./src/components/shared/Bugs'))}, 
     {label:'In Progress', icon:AutoGraph, path: 'inprogress', component: lazy(()=> import('./src/components/shared/TaskStatusList'))},

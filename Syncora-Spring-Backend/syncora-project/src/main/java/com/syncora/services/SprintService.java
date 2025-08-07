@@ -15,4 +15,6 @@ public interface SprintService {
 	ApiResponse addSprint(SprintRequestDto requestDto);
 
 	ApiResponse updateSprint(SprintRequestDto requestDto, Long id);
+
+	ApiResponse deleteSprint(Long id);
 }

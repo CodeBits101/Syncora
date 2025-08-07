@@ -147,7 +147,14 @@ function Projects() {
 
 
   const handleCreateProject = (data) => {
-    console.log("Project Created:", data);
+    const managerId = localStorage.getItem("empId");
+    
+    const payload = {
+      ...data,  
+      managerId: managerId
+    };
+    console.log("Project Created:", payload);
+
     // API Call
     setOpenModal(false);
   };
@@ -300,12 +307,12 @@ function Projects() {
         title="Create Project"
         fields={projectFields}
         initialValues={{
-          pname: "",
+          title: "",
           description: "",
-          start_date: "",
-          end_date: "",
-          project_status: "IN_PROGRESS",
-          project_code: "",
+          startDate: "",
+          endDate: "",
+          projectStatus: "IN_PROGRESS",
+          managerId:""
         }}
         onSubmit={handleCreateProject}
       />

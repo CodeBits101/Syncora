@@ -21,13 +21,18 @@ import { MdOutlineDashboardCustomize } from "react-icons/md";
 import ChooseProjectModal from "../BaseModal/ChooseProjectModal";
 
 const Sprints = () => {
-  const { projectId } = useParams();
+  // const { projectId } = useParams();
   const [projectName, setProjectName] = useState("");
-
+  const userRole = localStorage.getItem("role"); //Role based Checking
   const [openModal, setOpenModal] = useState(false);
-
+  const managerId = localStorage.getItem("empId");
   const handleCreateSprint = (data) => {
-    console.log("Sprint Created:", data);
+    const payload = {
+      ...data,
+      managerId: managerId,
+      projectId:selectedOption
+    }
+    console.log("Sprint Created:", payload);
     // TODO: call your API here
     setOpenModal(false);
   };
@@ -35,6 +40,7 @@ const Sprints = () => {
   const [showModal, setShowModal] = useState(true);
   const [showMainUI, setShowMainUI] = useState(false);
   const [selectedOption, setSelectedOption] = useState("");
+  const [projectId, setProjectId] = useState("");
 
   const handleClose = () => {
     setShowModal(false);
@@ -137,6 +143,7 @@ const Sprints = () => {
         selectedOption={selectedOption}
         setShowModal={setShowModal}
         setShowMainUI={setShowMainUI}
+        
       />
 
       {showMainUI && (
@@ -152,13 +159,15 @@ const Sprints = () => {
               justifyContent="flex-end"
               mb={2}
             >
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={() => setOpenModal(true)}
-              >
-                + Create Sprint
-              </Button>
+              { userRole === "ROLE_MANAGER" &&
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={() => setOpenModal(true)}
+                >
+                  + Create Sprint
+                </Button>
+              }
 
               <Button
                 variant="contained"
@@ -292,13 +301,11 @@ const Sprints = () => {
             title="Create Task"
             fields={sprintFields}
             initialValues={{
-              sname: "",
+              sprintName: "",
               description: "",
-              start_date: "",
-              end_date: "",
-              status: "",
-              project_id: "",
-              created_by: " ",
+              startDate: "",
+              endDate: "",
+              status: "INPROGRESS",
             }}
             onSubmit={handleCreateSprint}
           />

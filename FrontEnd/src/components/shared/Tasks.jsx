@@ -11,9 +11,16 @@ import { taskFields } from '../../FormConfigs/taskFields';
 function Tasks() {
 
     const [openModal, setOpenModal] = useState(false);
-  
+    const userRole = localStorage.getItem("role");
     const handleCreateTask = (data) => {
-      console.log("Task Created:", data);
+      const payload = {
+        ...data,
+        projectId:"",
+        sprintId:"",
+        storyId:""        
+        
+      }
+      console.log("Task Created:", payload);
       // TODO: call your API here
       setOpenModal(false);
     };
@@ -22,9 +29,12 @@ function Tasks() {
     <div>
 <h1>common template 'Tasks' for manager, developer</h1>
     <Box display="flex" justifyContent="flex-end" mb={2}>
+        {(userRole === "ROLE_MANAGER" || userRole === "ROLE_DEVELOPER") && 
         <Button variant="contained" color="primary" onClick={() => setOpenModal(true)}>
           + Create Task
         </Button>
+        }
+        
       </Box>
       <EntityFormModal
               open={openModal}
@@ -34,14 +44,11 @@ function Tasks() {
               initialValues={{
                 title: "",
                 description: "",
-                start_date: "",
-                end_date: "",
-                status: "",
-                assigned_to: "",
+                startDate: "",
+                endDate: "",
+                status: "BACKLOG",
+                assignedToId: "",
                 priority:"",
-                project_id:"",
-                sprint_id:"",
-                story_id:""
               }}
               onSubmit={handleCreateTask}
             />
