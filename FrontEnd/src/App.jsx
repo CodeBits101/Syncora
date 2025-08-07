@@ -26,7 +26,11 @@ import Home from "./Layout/Home/Home";
 import TaskBoard from "./components/TaskScreen/TaskBoard";
 import UnAuthorised from "./screens/main/UnAuthorised";
 import BacklogTable from "./components/BacklogTable/BacklogTable";
+
+import Calendar from "./components/Calendar/Calendar";
+
 import ProjectDetails from "./components/shared/ProjectDetails";
+
 
 
 function App() {
@@ -115,6 +119,11 @@ function App() {
         <Route path="/profile" element={<ProfileCard />} />
         <Route path="/dev" element={<AboutDev />} />
         <Route path="/backlog" element={<BacklogTable />} />
+
+        {/* <Route path="/manager/projects/:taskstatus" element={<ProjectStatus />} /> */}
+
+        <Route path="/calendar" element={<Calendar />} />
+
         <Route
           path="/login"
           element={<LoginPage setRole={setRole} />}

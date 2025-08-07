@@ -20,8 +20,8 @@ function MgrBacklog() {
       };
   return (
     <div>
-      <Box display="flex" justifyContent="flex-end" mb={2}>
-        <Button variant="contained" color="primary" onClick={() => setOpenModal(true)}>
+      <Box display="flex" justifyContent="center" mb={2}>
+        <Button variant="contained" color="success" onClick={() => setOpenModal(true)}>
           + Create Story
         </Button>
 
