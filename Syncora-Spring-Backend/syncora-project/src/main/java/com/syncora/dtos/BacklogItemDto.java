@@ -1,6 +1,7 @@
 package com.syncora.dtos;
 
 import com.syncora.enums.TaskPriority;
+import com.syncora.enums.TaskStatus;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -15,7 +16,18 @@ public class BacklogItemDto {
     
     private String type; // "STORY", "TASK", or "BUG"
     private String title;
-    private TaskPriority priority;
-    private String assignedTo; // Employee name
+    private TaskStatus status;
+    private String assignedToName ;
     private Long id;
+    private TaskPriority priority ;
+    
+	public BacklogItemDto(String type, String title, TaskStatus status, Long id) {
+		
+		this.type = type;
+		this.title = title;
+		this.status = status;
+		this.id = id;
+	}
+    
+    
 }
