@@ -26,7 +26,12 @@ import Home from "./Layout/Home/Home";
 import TaskBoard from "./components/TaskScreen/TaskBoard";
 import UnAuthorised from "./screens/main/UnAuthorised";
 import BacklogTable from "./components/BacklogTable/BacklogTable";
+
 import Calendar from "./components/Calendar/Calendar";
+
+import ProjectDetails from "./components/shared/ProjectDetails";
+
+
 
 function App() {
   const [count, setCount] = useState(0);
@@ -137,6 +142,7 @@ function App() {
         <Route path="/" element={<AboutProject />} />
         <Route path="*" element={<NotFoundPage />} />
         <Route path="/unautho" element={<UnAuthorised />} />
+        <Route path="/project/:projectName" element = {<ProjectDetails/>} />
       </Routes>
       {/* <div className='p-3'>SYNCORA 
       <p className='px-3'>This is project management system </p>
