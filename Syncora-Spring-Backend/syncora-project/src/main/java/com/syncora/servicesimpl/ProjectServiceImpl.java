@@ -36,7 +36,7 @@ public class ProjectServiceImpl implements ProjectService{
 	
 	@Override
 	public List<ProjectResponseDto> getInProgressProjects() {
-		List<ProjectResponseDto> projects = projectRepo.findByProjectStatus(ProjectStatus.IN_PROGRESS).stream()
+		List<ProjectResponseDto> projects = projectRepo.findByProjectStatus(ProjectStatus.INPROGRESS).stream()
 				.map(project -> { ProjectResponseDto dto = modelMapper.map(project, ProjectResponseDto.class);
 				dto.setManagerId(project.getManager().getId());
 				return dto;
@@ -91,7 +91,7 @@ public class ProjectServiceImpl implements ProjectService{
 
 	@Override
 	public List<ProjectSelectionDto> getProjectByManagerId(Long managerId) {
-	    return projectRepo.findByManagerIdAndProjectStatus(managerId, ProjectStatus.IN_PROGRESS)
+	    return projectRepo.findByManagerIdAndProjectStatus(managerId, ProjectStatus.INPROGRESS)
 	        .stream()
 	        .map(project -> new ProjectSelectionDto(project.getId(), project.getTitle()))
 	        .toList();
