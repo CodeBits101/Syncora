@@ -10,6 +10,8 @@ import Footer from "../../Layout/Footer";
 import SliderCustom from "../../components/main/SliderCustom";
 import { motion, useAnimation } from "framer-motion";
 import { useInView } from "react-intersection-observer";
+import { AiFillWechat } from "react-icons/ai";
+import { ToastContainer, toast } from "react-toastify";
 
 const data = [
   {
@@ -319,7 +321,7 @@ function SyncoraInAction() {
 
 export default function AboutProject() {
   return (
-    <div className="w-100" style={{ marginBottom: "1%" }}>
+    <div className="w-100" style={{ marginBottom: "1%", position: "relative" }}>
       <div className="w-100">
         <Header />
         <SliderCustom />
@@ -376,11 +378,16 @@ export default function AboutProject() {
         </div>
       </FadeInSection>
 
-      
-        <div className="mt-2">
-          <Footer />
-        </div>
-     
+      <div className="mt-2">
+        <Footer />
+      </div>
+      <AiFillWechat
+        size={90}
+        style={{ position: "fixed", bottom: 25, right: 30, cursor: "pointer" }}
+        color="blue"
+        onClick={() => toast.warn("Chat window clicked...")}
+      />
+      <ToastContainer position="top-center" autoClose={1500} />
     </div>
   );
 }

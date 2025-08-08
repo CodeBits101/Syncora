@@ -23,6 +23,8 @@
     "@mui/x-data-grid": "^8.9.2",
     "@syncfusion/ej2-base": "^30.1.42",
     "@syncfusion/ej2-react-calendars": "^30.1.37",
+    "@syncfusion/ej2-react-charts": "^30.2.4",
+    "@syncfusion/ej2-react-circulargauge": "^30.2.4",
     "@syncfusion/ej2-react-dropdowns": "^30.1.42",
     "@syncfusion/ej2-react-schedule": "^30.1.42",
     "@tailwindcss/vite": "^4.1.7",
@@ -43,8 +45,7 @@
     "react-router-dom": "^7.6.0",
     "react-toastify": "^11.0.5",
     "styled-components": "^6.1.18",
-    "yup": "^1.7.0",
-    "lodash": "^4.17.21"
+    "yup": "^1.7.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.25.0",

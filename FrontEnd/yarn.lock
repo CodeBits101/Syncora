@@ -500,6 +500,11 @@
     "@jridgewell/resolve-uri" "^3.1.0"
     "@jridgewell/sourcemap-codec" "^1.4.14"
 
+"@kurkle/color@^0.3.0":
+  version "0.3.4"
+  resolved "https://registry.npmjs.org/@kurkle/color/-/color-0.3.4.tgz"
+  integrity sha512-M5UknZPHRu3DEDWoipU6sE8PdkZ6Z/S+v4dD+Ke8IaNlpdSQah50lz1KtcFBa2vsdOnwbbnxJwVM4wty6udA5w==
+
 "@mui/base@5.0.0-beta.40-1":
   version "5.0.0-beta.40-1"
   resolved "https://registry.npmjs.org/@mui/base/-/base-5.0.0-beta.40-1.tgz"
@@ -1263,6 +1268,13 @@ chalk@^4.0.0:
   dependencies:
     ansi-styles "^4.1.0"
     supports-color "^7.1.0"
+
+chart.js@^4.1.1, chart.js@^4.5.0:
+  version "4.5.0"
+  resolved "https://registry.npmjs.org/chart.js/-/chart.js-4.5.0.tgz"
+  integrity sha512-aYeC/jDgSEx8SHWZvANYMioYMZ2KX02W6f6uVfyteuCGcadDLcYVHdfdygsTQkQ4TKn5lghoojAsPj5pu0SnvQ==
+  dependencies:
+    "@kurkle/color" "^0.3.0"
 
 chownr@^3.0.0:
   version "3.0.0"
@@ -2285,6 +2297,11 @@ react-bootstrap@^2.10.10:
     react-transition-group "^4.4.5"
     uncontrollable "^7.2.1"
     warning "^4.0.3"
+
+react-chartjs-2@^5.3.0:
+  version "5.3.0"
+  resolved "https://registry.npmjs.org/react-chartjs-2/-/react-chartjs-2-5.3.0.tgz"
+  integrity sha512-UfZZFnDsERI3c3CZGxzvNJd02SHjaSJ8kgW1djn65H1KK8rehwTjyrRKOG3VTMG8wtHZ5rgAO5oTHtHi9GCCmw==
 
 "react-dom@^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0", "react-dom@^17.0.0 || ^18.0.0 || ^19.0.0", "react-dom@^18 || ^19", "react-dom@^18.0.0 || ^19.0.0", react-dom@^19.1.0, "react-dom@>= 16.8.0", react-dom@>=16.14.0, react-dom@>=16.6.0, react-dom@>=16.8.0, react-dom@>=18:
   version "19.1.0"
