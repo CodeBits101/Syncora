@@ -56,6 +56,7 @@ public class ProjectServiceImpl implements ProjectService{
 	public ApiResponse addProject(ProjectReqDto dto)
 	{
 		Project project = modelMapper.map(dto, Project.class);
+		project.setProjectStatus(ProjectStatus.INPROGRESS);
 		Employee manager = employeeRepo.findById(dto.getManagerId()).orElseThrow(()-> new ResourceNotFoundException("employee does not exists with this id")) ;
 		project.setManager(manager);
 		projectRepo.save(project);
