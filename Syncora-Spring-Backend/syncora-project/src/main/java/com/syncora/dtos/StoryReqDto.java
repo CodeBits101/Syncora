@@ -10,11 +10,11 @@ import lombok.Setter;
 public class StoryReqDto {
 	private String title;
     private String description;
-    private long project;
+    private Long project;
 	private LocalDateTime startDate;
 	private LocalDateTime endDate;
 	private LocalDateTime actualStartDate;
 	private LocalDateTime actualEndDate;
 	private Long currentSprint;
-	private long createdBy;
+	private Long createdBy;
 }
