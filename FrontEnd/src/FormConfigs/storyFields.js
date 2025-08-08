@@ -23,19 +23,10 @@ const storyFields = [
     placeholder: "Enter points (1-100)",
     required: false,
   },
-  {
-    name: "start_date",
-    label: "Planned Start Date",
-    type: "date",
-    required: false,
-  },
-  {
-    name: "end_date",
-    label: "Planned End Date",
-    type: "date",
-    required: false,
-  },
   
+ 
+  { name: "projectId", type: "hidden", auto: true },
+  { name: "sprintId", type: "hidden", auto: true },
 ];
 
 export default storyFields;

@@ -14,7 +14,14 @@ function MgrBacklog() {
   const [openModal, setOpenModal] = useState(false);
     
       const handleCreateStory = (data) => {
-        console.log("Story Created:", data);
+        const payload = 
+        {
+          ...data,
+          sprintId:"",
+          projectId:"",
+
+        }
+        console.log("Story Created:", payload);
         // TODO: call your API here
         setOpenModal(false);
       };
@@ -34,8 +41,6 @@ function MgrBacklog() {
                       initialValues={{
                         title: "",
                         description: "",
-                        start_date: "",
-                        end_date: "",
                         storyPoint:""
                       }}
                       onSubmit={handleCreateStory}
