@@ -74,6 +74,8 @@ const columns = [
   { id: 'managerId', label: 'Manager ID', minWidth: 100, align: 'right' },
   { id: 'startDate', label: 'Start Date', minWidth: 150 },
   { id: 'endDate', label: 'End Date', minWidth: 150 },
+  {id: 'createdTimeStamp', label: 'Created On', minWidth: 150 },
+  {id: 'updatedTimeStamp', label: 'Last Updated On', minWidth: 150}
 ];
 
 function Projects() {
@@ -124,21 +126,20 @@ function Projects() {
         return;
       }
 
-
       const payload = {
-        title: formData.pname,
+        title: formData.title,
         description: formData.description,
-        startDate: new Date(formData.start_date),
-        endDate: new Date(formData.end_date),
-        actualStartDate: new Date(formData.start_date),
-        actualEndDate: new Date(formData.end_date),
+        startDate: new Date(formData.startDate),
+        endDate: new Date(formData.endDate),
+        actualStartDate: new Date(formData.startDate),
+        actualEndDate: new Date(formData.endDate),
         projectStatus: 'INPROGRESS',
         managerId: Number(managerId),
       };
 
       await createProject(payload);
       setOpenModal(false);
-      toast.success('Project is successfully created');
+      toast.success('Project successfully created');
       fetchProjects();
     } catch (error) {
       toast.error('Error while creating project');
