@@ -9,10 +9,12 @@ import org.springframework.transaction.annotation.Transactional;
 import com.syncora.dtos.ApiResponse;
 import com.syncora.dtos.ProjectReqDto;
 import com.syncora.dtos.ProjectResponseDto;
+import com.syncora.dtos.ProjectSelectionDto;
 import com.syncora.dtos.ProjectStatusCountDto;
 import com.syncora.entities.Employee;
 import com.syncora.entities.Project;
 import com.syncora.enums.ProjectStatus;
+import com.syncora.exceptions.ApiException;
 import com.syncora.exceptions.ResourceNotFoundException;
 import com.syncora.repositories.DeptRepo;
 import com.syncora.repositories.EmployeeRepo;
@@ -34,7 +36,7 @@ public class ProjectServiceImpl implements ProjectService{
 	
 	@Override
 	public List<ProjectResponseDto> getInProgressProjects() {
-		List<ProjectResponseDto> projects = projectRepo.findByProjectStatus(ProjectStatus.INPROGRESS).stream()
+		List<ProjectResponseDto> projects = projectRepo.findByProjectStatus(ProjectStatus.IN_PROGRESS).stream()
 				.map(project -> { ProjectResponseDto dto = modelMapper.map(project, ProjectResponseDto.class);
 				dto.setManagerId(project.getManager().getId());
 				return dto;
@@ -56,6 +58,7 @@ public class ProjectServiceImpl implements ProjectService{
 	public ApiResponse addProject(ProjectReqDto dto)
 	{
 		Project project = modelMapper.map(dto, Project.class);
+		project.setProjectStatus(ProjectStatus.INPROGRESS);
 		Employee manager = employeeRepo.findById(dto.getManagerId()).orElseThrow(()-> new ResourceNotFoundException("employee does not exists with this id")) ;
 		project.setManager(manager);
 		projectRepo.save(project);
@@ -85,6 +88,16 @@ public class ProjectServiceImpl implements ProjectService{
 		List<ProjectStatusCountDto> projectsWithStatusCount = projectRepo.countProjectsByStatus();
 		return projectsWithStatusCount.stream().map(types -> modelMapper.map(types, ProjectStatusCountDto.class)).toList();
 	}
+
+	@Override
+	public List<ProjectSelectionDto> getProjectByManagerId(Long managerId) {
+	    return projectRepo.findByManagerIdAndProjectStatus(managerId, ProjectStatus.IN_PROGRESS)
+	        .stream()
+	        .map(project -> new ProjectSelectionDto(project.getId(), project.getTitle()))
+	        .toList();
+	}
+
+
 	
 
 }

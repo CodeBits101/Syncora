@@ -23,6 +23,7 @@ import lombok.AllArgsConstructor;
 @RequestMapping("/projects")
 @AllArgsConstructor
 @CrossOrigin
+
 public class ProjectController {
 	
 	private final ProjectService projectService;
@@ -60,4 +61,12 @@ public class ProjectController {
 	public ResponseEntity<?> getProjectsByStatusCount() {
 		return ResponseEntity.status(HttpStatus.ACCEPTED).body(projectService.getProjectByStatusCount());
 	}
+	
+	@GetMapping("/manager/{managerId}")
+	public ResponseEntity<?> getProjectByManagerId(@PathVariable Long managerId)
+	{
+		return ResponseEntity.status(HttpStatus.ACCEPTED).body(projectService.getProjectByManagerId(managerId));
+		
+	}
+	
 }

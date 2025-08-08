@@ -10,12 +10,15 @@ import org.springframework.transaction.annotation.Transactional;
 import com.syncora.dtos.ApiResponse;
 import com.syncora.dtos.SprintRequestDto;
 import com.syncora.dtos.SprintResponseDto;
+import com.syncora.entities.Bug;
 import com.syncora.dtos.SprintItemsRespDto;
 import com.syncora.dtos.BugRespDto;
 import com.syncora.services.TaskRespDto;
 import com.syncora.entities.Employee;
 import com.syncora.entities.Project;
 import com.syncora.entities.Sprint;
+import com.syncora.entities.Story;
+import com.syncora.entities.Task;
 import com.syncora.entities.Story;
 import com.syncora.enums.SprintStatus;
 import com.syncora.exceptions.ApiException;
@@ -93,9 +96,31 @@ public class SprintServiceImpl implements SprintService {
 		if (sprints.isEmpty()) {
 	        throw new ResourceNotFoundException("No Sprints Found ");
 	    }
-	 return sprints.stream()
-               .map(sprint -> modelMapper.map(sprint, SprintResponseDto.class))
-               .collect(Collectors.toList());
+//	 return sprints.stream()
+//               .map(sprint -> modelMapper.map(sprint, SprintResponseDto.class))
+//               .collect(Collectors.toList());
+		return sprints.stream()
+			    .map(sprint -> {
+			        SprintResponseDto dto = new SprintResponseDto();
+			        dto.setId(sprint.getId());
+			        dto.setSprintName(sprint.getSprintName());
+			        dto.setDescription(sprint.getDescription());
+			        dto.setStartDate(sprint.getActualStartDate());
+			        dto.setEndDate(sprint.getActualEndDate());
+
+			        if (sprint.getProject() != null)
+			            dto.setProjectId(sprint.getProject().getId());
+			        if (sprint.getManager() != null)
+			            dto.setManagerId(sprint.getManager().getId());
+			        dto.setSprintStatus(sprint.getSprintStatus());
+			        dto.setStoryIds(sprint.getStories().stream().map(Story::getId).collect(Collectors.toSet()));
+			        dto.setTaskIds(sprint.getTasks().stream().map(Task::getId).collect(Collectors.toList()));
+//			        dto.setBugIds(sprint.getBugs().stream().map(Bug::getId).collect(Collectors.toList()));
+
+			        return dto;
+			    })
+			    .collect(Collectors.toList());
+
 	}
 
 	@Override

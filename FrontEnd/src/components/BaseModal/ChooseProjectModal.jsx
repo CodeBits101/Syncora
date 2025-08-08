@@ -28,7 +28,7 @@ export default function ChooseProjectModal({
       console.log("Fetching projects for manager:", managerId);
 
       const res = await axios.get(
-        http://localhost:8080/projects/manager/${managerId}
+        `http://localhost:8080/projects/manager/${managerId}`
       );
 
       console.log("Projects API response:", res.data);

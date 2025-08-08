@@ -7,15 +7,13 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class ProjectResponseDto {
+public class ProjectResponseDto extends BaseDto{
 	    private String title;
 	    private String description;
 	    private String projectCode;
 	    private String projectStatus;
 	    private Long managerId;
-	    private LocalDateTime createdTimeStamp;
 	    private LocalDateTime startDate;
 	    private LocalDateTime endDate;
-	    private LocalDateTime updatedTimeStamp;
 }
 

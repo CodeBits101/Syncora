@@ -9,6 +9,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
+import com.syncora.enums.ProjectStatus;
+import com.syncora.enums.SprintStatus;
+
 
 @Getter
 @Setter
@@ -25,4 +28,5 @@ public class SprintResponseDto {
     private Set<Long> storyIds;
     private List<Long> taskIds;
     private List<Long> bugIds;
+    private SprintStatus sprintStatus;
 }
