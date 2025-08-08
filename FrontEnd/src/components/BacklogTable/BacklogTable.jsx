@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { DataGrid } from "@mui/x-data-grid";
 import { Modal, Form, Button } from "react-bootstrap";
 import { FaFilePdf } from "react-icons/fa";
@@ -11,6 +11,8 @@ import {
   Typography,
   ToggleButton,
   ToggleButtonGroup,
+  CircularProgress,
+  Alert,
 } from "@mui/material";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import TaskAltIcon from "@mui/icons-material/TaskAlt";
@@ -20,210 +22,82 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ChooseProjectModal from "../BaseModal/ChooseProjectModal";
 import { exportPDF } from "../../utils/exportToPdf";
+import EntityFormModal from "../BaseModal/BaseEntityModal";
+import storyFields from "../../FormConfigs/storyFields";
+import { taskFields } from "../../FormConfigs/taskFields";
+import { bugFields } from "../../FormConfigs/bugFields";
+import { getBacklogItems } from "./backlogService";
 
 const typeIcons = {
+  STORY: <BookmarkBorderOutlinedIcon fontSize="small" color="success" />,
+  TASK: <TaskAltIcon fontSize="small" color="primary" />,
+  BUG: <BugReportIcon fontSize="small" color="error" />,
+  // Keep backward compatibility with old format
+  Story: <BookmarkBorderOutlinedIcon fontSize="small" color="success" />,
   Task: <TaskAltIcon fontSize="small" color="primary" />,
   Bug: <BugReportIcon fontSize="small" color="error" />,
-  Story: <BookmarkBorderOutlinedIcon fontSize="small" color="success" />,
 };
 
 const statusOptions = ["To Do", "In Progress", "Done"];
 
-const initialRows = [
-  {
-    id: 1,
-    title: "Create user login/signup",
-    type: "Story",
-    priority: "High",
-    assignee: "Alice",
-    child: [
-      {
-        id: 101,
-        title: "Design login/signup UI",
-        type: "Task",
-        priority: "Medium",
-        assignee: "Bob",
-      },
-      {
-        id: 102,
-        title: "Fix error on signup form submission",
-        type: "Bug",
-        priority: "High",
-        assignee: "Charlie",
-      },
-    ],
-  },
-  {
-    id: 2,
-    title: "Create project dashboard",
-    type: "Story",
-    priority: "Medium",
-    assignee: "YRC",
-    child: [
-      {
-        id: 103,
-        title: "Implement dashboard layout",
-        type: "Task",
-        priority: "High",
-        assignee: "Diana",
-      },
-    ],
-  },
-  {
-    id: 3,
-    title: "Add backlog UI",
-    type: "Story",
-    priority: "High",
-    assignee: "Ethan",
-    child: [
-      {
-        id: 104,
-        title: "Bug: UI flickers on scroll",
-        type: "Bug",
-        priority: "Medium",
-        assignee: "Fiona",
-      },
-    ],
-  },
-  {
-    id: 4,
-    title: "Implement notifications system",
-    type: "Story",
-    priority: "High",
-    assignee: "Grace",
-    child: [
-      {
-        id: 105,
-        title: "Create real-time push module",
-        type: "Task",
-        priority: "High",
-        assignee: "Henry",
-      },
-      {
-        id: 106,
-        title: "Bug: Notifications show duplicate entries",
-        type: "Bug",
-        priority: "Medium",
-        assignee: "Ivy",
-      },
-    ],
-  },
-  {
-    id: 5,
-    title: "Design API documentation portal",
-    type: "Story",
-    priority: "Medium",
-    assignee: "Jack",
-    child: [],
-  },
-  {
-    id: 6,
-    title: "Fix login redirect bug",
-    type: "Bug",
-    priority: "High",
-    assignee: "YRC",
-  },
-  {
-    id: 7,
-    title: "Optimize DB queries for analytics",
-    type: "Task",
-    priority: "Low",
-    assignee: "Karen",
-  },
-  {
-    id: 8,
-    title: "Refactor auth middleware",
-    type: "Task",
-    priority: "Medium",
-    assignee: "Liam",
-  },
-  {
-    id: 9,
-    title: "Fix XSS vulnerability in contact form",
-    type: "Bug",
-    priority: "High",
-    assignee: "Mona",
-  },
-  {
-    id: 10,
-    title: "Mobile layout bug on dashboard",
-    type: "Bug",
-    priority: "Medium",
-    assignee: "Nina",
-  },
-  {
-    id: 11,
-    title: "Create onboarding tutorial",
-    type: "Story",
-    priority: "Medium",
-    assignee: "Oscar",
-    child: [
-      {
-        id: 107,
-        title: "Bug: Tutorial steps freeze on step 3",
-        type: "Bug",
-        priority: "High",
-        assignee: "Paul",
-      },
-    ],
-  },
-  {
-    id: 12,
-    title: "Setup internationalization",
-    type: "Task",
-    priority: "Low",
-    assignee: "Quinn",
-  },
-  {
-    id: 13,
-    title: "Performance regression in search",
-    type: "Bug",
-    priority: "High",
-    assignee: "Rachel",
-  },
-  {
-    id: 14,
-    title: "Redesign settings panel",
-    type: "Story",
-    priority: "Medium",
-    assignee: "Steve",
-    child: [
-      {
-        id: 108,
-        title: "Build privacy control section",
-        type: "Task",
-        priority: "High",
-        assignee: "Tina",
-      },
-    ],
-  },
-  {
-    id: 15,
-    title: "File export bug in Safari (iOS 15+)",
-    type: "Bug",
-    priority: "High",
-    assignee: "Uma",
-  },
-];
-
 export default function BacklogTable() {
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalTitle, setModalTitle] = useState("");
+  const [modalFields, setModalFields] = useState([]);
+  const [modalInitialValues, setModalInitialValues] = useState({});
+  const [modalEntityType, setModalEntityType] = useState(null);
   const [showModal, setShowModal] = useState(true);
   const [showMainUI, setShowMainUI] = useState(false);
   const [selectedOption, setSelectedOption] = useState("");
-  const [rows, setRows] = React.useState(initialRows);
-  const [filter, setFilter] = React.useState("all"); // 'all', 'story', 'task', 'bug'
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const [editing, setEditing] = React.useState({
+  const [rows, setRows] = useState([]);
+  const [filter, setFilter] = useState("all"); // 'all', 'story', 'task', 'bug'
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [editing, setEditing] = useState({
     rowId: null,
     field: "",
     options: [],
   });
+  
+  // New states for API integration
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  // Load backlog data when project is selected
+  useEffect(() => {
+    if (selectedOption && showMainUI) {
+      loadBacklogData();
+    }
+  }, [selectedOption, showMainUI]);
+
+  const loadBacklogData = async () => {
+    if (!selectedOption) return;
+    
+    setLoading(true);
+    setError(null);
+    
+    try {
+      // Extract project ID from selectedOption (assuming it's the project ID)
+      const projectId = selectedOption;
+      const data = await getBacklogItems(projectId);
+      setRows(data);
+    } catch (err) {
+      console.error('Failed to load backlog data:', err);
+      setError('Failed to load backlog data. Please try again.');
+      // Fallback to empty array
+      setRows([]);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // Filter rows based on selected tab
   const filteredRows =
     filter === "all"
       ? rows
-      : rows.filter((row) => row.type.toLowerCase() === filter);
+      : rows.filter((row) => {
+          const rowType = row.type?.toLowerCase();
+          return rowType === filter;
+        });
 
   const handleFilterChange = (event, newFilter) => {
     if (newFilter !== null) {
@@ -263,8 +137,8 @@ export default function BacklogTable() {
         <Box
           sx={{
             display: "flex",
-            alignItems: "center", // This vertically centers content
-            height: "100%", // Takes full row height
+            alignItems: "center",
+            height: "100%",
             gap: 1,
           }}
         >
@@ -286,6 +160,10 @@ export default function BacklogTable() {
       width: 120,
       renderCell: (params) => {
         const priorityStyles = {
+          HIGH: { color: "#ff4444", fontWeight: 400 },
+          MEDIUM: { color: "#ffbb33", fontWeight: 400 },
+          LOW: { color: "#00C851", fontWeight: 400 },
+          // Keep backward compatibility
           High: { color: "#ff4444", fontWeight: 400 },
           Medium: { color: "#ffbb33", fontWeight: 400 },
           Low: { color: "#00C851", fontWeight: 400 },
@@ -348,6 +226,68 @@ export default function BacklogTable() {
     },
   ];
 
+  const handleUpdate = (row) => {
+    let fields = [];
+    let title = "";
+
+    // Handle both new (STORY, TASK, BUG) and old (Story, Task, Bug) formats
+    const rowType = row.type?.toUpperCase();
+    
+    switch (rowType) {
+      case "STORY":
+        fields = storyFields;
+        title = "Edit Story";
+        break;
+      case "BUG":
+        fields = bugFields;
+        title = "Edit Bug";
+        break;
+      case "TASK":
+        fields = taskFields;
+        title = "Edit Task";
+        break;
+      default:
+        return;
+    }
+
+    // Construct initial values from the fields
+    const initialValues = {};
+    fields.forEach((field) => {
+      initialValues[field.name] = row[field.name] ?? ""; // Fallback to empty string
+    });
+
+    setModalFields(fields);
+    setModalTitle(title);
+    setModalInitialValues(initialValues);
+    setModalEntityType(row.type);
+    setModalOpen(true);
+  };
+
+  const handleModalSubmit = (updatedValues) => {
+    setRows((prevRows) =>
+      prevRows.map((row) =>
+        row.id === updatedValues.id ? { ...row, ...updatedValues } : row
+      )
+    );
+    setModalOpen(false);
+  };
+
+  // Show loading state
+  if (loading) {
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "50vh",
+        }}
+      >
+        <CircularProgress />
+      </Box>
+    );
+  }
+
   return (
     <>
       <ChooseProjectModal
@@ -371,12 +311,19 @@ export default function BacklogTable() {
               position: "relative",
             }}
           >
+            {/* Error Alert */}
+            {error && (
+              <Alert severity="error" onClose={() => setError(null)}>
+                {error}
+              </Alert>
+            )}
+
             {/* Filter Tabs */}
             <Box
               sx={{
                 display: "flex",
                 justifyContent: "center",
-                marginBottom: -1, // Added space below the tabs
+                marginBottom: -1,
               }}
             >
               <ToggleButtonGroup
@@ -385,7 +332,7 @@ export default function BacklogTable() {
                 exclusive
                 aria-label="work item type"
                 sx={{
-                  gap: 2, // Space between buttons
+                  gap: 2,
                   width: "100%",
                   position: "relative",
                   "& .MuiToggleButton-root": {
@@ -393,15 +340,15 @@ export default function BacklogTable() {
                     textTransform: "none",
                     borderRadius: "8px !important",
                     border: "1px solid #e0e0e0 !important",
-                    padding: "8px 24px", // Increased horizontal padding
-                    margin: "0 2px", // Additional spacing
+                    padding: "8px 24px",
+                    margin: "0 2px",
                     transition: "all 0.3s ease",
                     "&.Mui-selected": {
                       boxShadow: "0px 3px 6px rgba(0,0,0,0.15)",
-                      backgroundColor: "#000000", // Black when selected
+                      backgroundColor: "#000000",
                       color: "white",
                       "&:hover": {
-                        backgroundColor: "#333333", // Darker black on hover
+                        backgroundColor: "#333333",
                       },
                     },
                     "&:hover": {
@@ -467,7 +414,7 @@ export default function BacklogTable() {
                     overflow: "hidden !important",
                   },
                   "& .MuiDataGrid-footerContainer": {
-                    justifyContent: "center", // Center the pagination
+                    justifyContent: "center",
                   },
                 }}
               />
@@ -497,6 +444,14 @@ export default function BacklogTable() {
           </Popover>
         </div>
       )}
+      <EntityFormModal
+        open={modalOpen}
+        handleClose={() => setModalOpen(false)}
+        title={modalTitle}
+        fields={modalFields}
+        initialValues={modalInitialValues}
+        onSubmit={handleModalSubmit}
+      />
     </>
   );
 }

@@ -6,20 +6,25 @@ import java.util.stream.Collectors;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.PathVariable;
 
 import com.syncora.dtos.ApiResponse;
 import com.syncora.dtos.SprintRequestDto;
 import com.syncora.dtos.SprintResponseDto;
+import com.syncora.dtos.SprintItemsRespDto;
+import com.syncora.dtos.BugRespDto;
+import com.syncora.services.TaskRespDto;
 import com.syncora.entities.Employee;
 import com.syncora.entities.Project;
 import com.syncora.entities.Sprint;
+import com.syncora.entities.Story;
 import com.syncora.enums.SprintStatus;
 import com.syncora.exceptions.ApiException;
 import com.syncora.exceptions.ResourceNotFoundException;
 import com.syncora.repositories.EmployeeRepo;
 import com.syncora.repositories.ProjectRepo;
 import com.syncora.repositories.SprintRepo;
+import com.syncora.repositories.StoryRepo;
+import com.syncora.dtos.StoryResponseDto;
 import com.syncora.services.SprintService;
 
 import lombok.AllArgsConstructor;
@@ -34,6 +39,7 @@ public class SprintServiceImpl implements SprintService {
      private final SprintRepo sprintRepo ;
      private final ProjectRepo projectRepo;
      private final EmployeeRepo empRepo;
+     private final StoryRepo storyRepo;
      private ModelMapper modelMapper;
 
 	@Override
@@ -47,6 +53,39 @@ public class SprintServiceImpl implements SprintService {
 	               .map(sprint -> modelMapper.map(sprint, SprintResponseDto.class))
 	               .collect(Collectors.toList());
 	}
+
+    @Override
+    public SprintItemsRespDto getSprintItems(Long sprintId) {
+        Sprint sprint = sprintRepo.findById(sprintId)
+                .orElseThrow(() -> new ResourceNotFoundException("Sprint does not exist."));
+
+        SprintItemsRespDto resp = new SprintItemsRespDto();
+        resp.setSprintId(sprint.getId());
+
+        // Bugs
+        List<BugRespDto> bugDtos = sprint.getBugs().stream()
+                .map(b -> modelMapper.map(b, BugRespDto.class))
+                .collect(Collectors.toList());
+        resp.setBugs(bugDtos);
+
+        // Tasks
+        List<TaskRespDto> taskDtos = sprint.getTasks().stream()
+                .map(t -> modelMapper.map(t, TaskRespDto.class))
+                .collect(Collectors.toList());
+        resp.setTasks(taskDtos);
+
+        // Stories: include both many-to-many and currentSprint associated stories
+        List<Story> storyList = sprint.getStories().stream().collect(Collectors.toList());
+        storyList.addAll(storyRepo.findByCurrentSprint_Id(sprintId));
+
+        List<StoryResponseDto> storyDtos = storyList.stream()
+                .distinct()
+                .map(st -> modelMapper.map(st, StoryResponseDto.class))
+                .collect(Collectors.toList());
+        resp.setStories(storyDtos);
+
+        return resp;
+    }
 
 	@Override
 	public List<SprintResponseDto> getSprintByProjectId(Long id) {
@@ -77,8 +116,8 @@ public class SprintServiceImpl implements SprintService {
 		
 		sprint.setSprintStatus(SprintStatus.BACKLOG);
 		
-		Sprint saved = sprintRepo.save(sprint);
-		
+        sprintRepo.save(sprint);
+        
 		return new ApiResponse("Sprint Created");
 	}
 

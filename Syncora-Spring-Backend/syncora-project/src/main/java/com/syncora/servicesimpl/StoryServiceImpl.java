@@ -15,6 +15,7 @@ import com.syncora.entities.Employee;
 import com.syncora.entities.Project;
 import com.syncora.entities.Sprint;
 import com.syncora.entities.Story;
+import com.syncora.enums.TaskPriority;
 import com.syncora.enums.TaskStatus;
 import com.syncora.exceptions.ResourceNotFoundException;
 import com.syncora.repositories.StoryRepo;
@@ -35,23 +36,21 @@ public class StoryServiceImpl implements StoryService {
    private final SprintRepo sprintRepo;
    private final EmployeeRepo empRepo;
    
-   @Override
-   public List<BacklogItemDto> getBacklogStories(Long projectId) {
-       List<Story> stories = storyRepo.findBySprintIsNullAndProjectId(projectId);
-       return stories.stream()
-               .map(story -> {
-                   String assignedToName = story.getCreatedBy() != null ? 
-                       story.getCreatedBy().getEmpName() : 
-                       "Unassigned";
-                   return new BacklogItemDto(
-                       "STORY",
-                       story.getTitle(),
-                       story.getStoryStatus(),
-                       story.getId()
-                   );
-               })
-               .collect(Collectors.toList());
-   }
+       @Override
+    public List<BacklogItemDto> getBacklogStories(Long projectId) {
+        List<Story> stories = storyRepo.findByStoryStatusAndProjectId(TaskStatus.BACKLOG, projectId);
+        return stories.stream()
+                .map(story -> {
+                    return new BacklogItemDto(
+                        "STORY",
+                        story.getTitle(),
+                        TaskPriority.HIGH,  // Stories get HIGH priority
+                        null,               // Stories don't have assignedTo
+                        story.getId()
+                    );
+                })
+                .collect(Collectors.toList());
+    }
 
    @Override
 public List<StoryResponseDto> getStories(Long uId) {

@@ -5,12 +5,15 @@ import java.util.List;
 import com.syncora.dtos.ApiResponse;
 import com.syncora.dtos.SprintRequestDto;
 import com.syncora.dtos.SprintResponseDto;
+import com.syncora.dtos.SprintItemsRespDto;
 
 public interface SprintService {
 	
 	List<SprintResponseDto> getAllSprints();
 
 	List<SprintResponseDto> getSprintByProjectId(Long projectId);
+
+	SprintItemsRespDto getSprintItems(Long sprintId);
 
 	ApiResponse addSprint(SprintRequestDto requestDto);
 

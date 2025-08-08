@@ -25,9 +25,9 @@ import { manager, developer, admin, tester, roleExtraRoutes } from "../configs";
 import Home from "./Layout/Home/Home";
 import TaskBoard from "./components/TaskScreen/TaskBoard";
 import UnAuthorised from "./screens/main/UnAuthorised";
-import BacklogTable from "./components/BacklogTable/BacklogTable";
 
 import Calendar from "./components/Calendar/Calendar";
+import BacklogTable from "./components/BacklogTable/BacklogTable.jsx";
 
 // import ProjectDetails from "./components/shared/ProjectDetails";
 
