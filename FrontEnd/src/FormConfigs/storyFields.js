@@ -1,6 +1,6 @@
 // storyFields.js
 
-const storyFields = [
+const storyFields = (projects = [], stories = []) => [
   {
     name: "title",
     label: "Story Title",
@@ -15,18 +15,39 @@ const storyFields = [
     placeholder: "Describe the story",
     required: false,
   },
-  
+
   {
-    name: "storyPoint",
-    label: "Story Points",
-    type: "number",
-    placeholder: "Enter points (1-100)",
-    required: false,
+    name: "projectId", // renamed from storyPoint
+    label: "Select Project",
+    type: "select",
+    options: projects,
+    required: true,
   },
-  
- 
-  { name: "projectId", type: "hidden", auto: true },
-  { name: "sprintId", type: "hidden", auto: true },
+
+  {
+    name: "sprintId", // renamed from storyPoint
+    label: "Select Sprints",
+    type: "select",
+    options: [
+      { value: 1, label: "Sprint Alpha" },
+      { value: 2, label: "Sprint Beta" },
+      { value: 3, label: "Sprint Gamma" },
+    ],
+  },
+  {
+    name: "startDate",
+    label: "Planned Start Date",
+    type: "date",
+    required: true,
+    InputLabelProps: { shrink: true },
+  },
+  {
+    name: "endDate",
+    label: "Planned End Date",
+    type: "date",
+    required: true,
+    InputLabelProps: { shrink: true },
+  },
 ];
 
 export default storyFields;

@@ -87,8 +87,8 @@ export default function EntityFormModal({ open, handleClose, title, fields, init
                       helperText={touched[field.name] && errors[field.name]}
                     >
                       {field.options.map((option) => (
-                        <MenuItem key={option} value={option}>
-                          {option}
+                        <MenuItem  key={option.id ?? option} value={option.id ?? option}>
+                          {option.title ?? "UnKnown"}
                         </MenuItem>
                       ))}
                     </TextField>
