@@ -1,5 +1,6 @@
-import { Timelapse, Dashboard , TaskAlt, BugReport, AutoGraph, HourglassBottom, CheckCircle, FolderCopy, Groups, PendingActions, PestControl, PieChart, Favorite, PeopleOutline, AppRegistration, List , CalendarMonthIcon} from "@mui/icons-material";
+import { Timelapse, Dashboard , TaskAlt, BugReport, AutoGraph, HourglassBottom, CheckCircle, FolderCopy, Groups, PendingActions, PestControl, PieChart, Favorite, PeopleOutline, AppRegistration, List  } from "@mui/icons-material";
 import { lazy } from "react";
+import EditCalendarIcon from '@mui/icons-material/EditCalendar';
 
 export const admin = {
     path: 'admin',
@@ -20,9 +21,9 @@ export const manager = {
     {label:'Team', icon: Groups, path: 'team', component: lazy(()=> import('./src/screens/manager/Team/MgrTeam'))},
     {label: 'Dashboard', icon:Dashboard, path: 'dashboard', component: lazy(()=> import('./src/components/shared/Dashboard'))},
     {label:'Backlog', icon: PendingActions,path: 'backlog', component: lazy(()=> import('./src/screens/manager/Backlog/MgrBacklog'))},
-    {label:'Report', icon: PieChart, path: 'report', component: lazy(()=> import('./src/screens/manager/Report/MgrReport'))},
     {label: 'Sprints', icon: Timelapse, path: 'sprints', component: lazy(()=> import('./src/components/shared/Sprints'))},
-    {label: 'Calendar', icon: CalendarMonthIcon, path: 'calendar', component: lazy(()=> import('./src/components/Calendar/Calendar'))},
+    {label: 'Calendar', icon: EditCalendarIcon, path: 'calendar', component: lazy(()=> import('./src/components/Calendar/Calendar'))},
+     // {label:'Report', icon: PieChart, path: 'report', component: lazy(()=> import('./src/screens/manager/Report/MgrReport'))},
     // {label:'Tasks', icon: TaskAlt ,path:'tasks', component: lazy(()=> import('./src/components/shared/Tasks'))},
     // {label:'Bugs', icon: BugReport,path: 'bugs', component: lazy(()=> import('./src/components/shared/Bugs'))}, 
     // {label:'In Progress', icon:AutoGraph, path: 'inprogress', component: lazy(()=> import('./src/components/shared/TaskStatusList'))},

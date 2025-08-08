@@ -11,7 +11,7 @@ import PropTypes from 'prop-types';
 import CloseIcon from '@mui/icons-material/Close';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import { Pie, Doughnut } from 'react-chartjs-2';
-import GaugeChart from 'react-gauge-chart';
+
 
 
 function CustomTabPanel(props) {
