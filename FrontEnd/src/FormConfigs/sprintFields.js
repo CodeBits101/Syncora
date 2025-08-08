@@ -9,6 +9,8 @@ export const sprintFields = [
   { name: "startDate", label: "Planned Start Date", type: "date", required: true },
   { name: "endDate", label: "Planned End Date", type: "date", required: true },
   { name: "status", label: "Status", type: "hidden", required: true },
+   { name: "startDate", label: "Planned Start Date", type: "date", required: true , InputLabelProps: { shrink: true } },
+  { name: "endDate", label: "Planned End Date", type: "date", required: true, InputLabelProps: { shrink: true }  },
   
 
   // Hidden auto-filled fields

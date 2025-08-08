@@ -298,7 +298,7 @@ const Sprints = () => {
           <EntityFormModal
             open={openModal}
             handleClose={() => setOpenModal(false)}
-            title="Create Task"
+            title="Create Sprint"
             fields={sprintFields}
             initialValues={{
               sprintName: "",

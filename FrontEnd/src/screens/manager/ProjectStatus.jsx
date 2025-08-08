@@ -75,7 +75,7 @@ export default function ProjectStatus() {
     <div className="p-4 bg-light min-vh-100 cursor-pointer">
       <Container>
         <h2 className="mb-4 text-center text-dark fw-semibold">
-          {status} Projects
+          {status.toUpperCase()} PROJECTS
         </h2>
 
         {loading ? (
