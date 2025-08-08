@@ -40,7 +40,7 @@ public class SecurityConfiguration {
 								"/swagger-ui.html","/swagger-ui/**",
 								"/v3/api-docs/**",
 								"/employees/register", "/employees/login" ,"/employees/**" ,"/departments/**" ,
-								"/mail/**")	
+								"/mail/**", "/projects/**", "/sprints/**")	
 						.permitAll()
 						//only for react and angular apps - permit in flight requests - otherwise CORS error
 						.requestMatchers(HttpMethod.OPTIONS).permitAll()

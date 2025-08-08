@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.syncora.dtos.BacklogItemDto;
 import com.syncora.services.BacklogService;
 import com.syncora.services.BugService;
-import com.syncora.services.StoryServie;
+import com.syncora.services.StoryService;
 import com.syncora.services.TaskService;
 
 import lombok.AllArgsConstructor;
@@ -19,7 +19,7 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class BacklogServiceImpl implements BacklogService {
     
-    private final StoryServie storyService;
+    private final StoryService storyService;
     private final TaskService taskService;
     private final BugService bugService;
     

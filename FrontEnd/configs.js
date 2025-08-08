@@ -1,4 +1,5 @@
-import { Timelapse, Dashboard , TaskAlt, BugReport, AutoGraph, HourglassBottom, CheckCircle, FolderCopy, Groups, PendingActions, PestControl, PieChart, Favorite, PeopleOutline, AppRegistration, List , CalendarMonthIcon} from "@mui/icons-material";
+import { Timelapse, Dashboard , TaskAlt, BugReport, AutoGraph, HourglassBottom, CheckCircle, FolderCopy, Groups, PendingActions, PestControl, PieChart, Favorite, PeopleOutline, AppRegistration, List } from "@mui/icons-material";
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import { lazy } from "react";
 
 export const admin = {
@@ -34,9 +35,9 @@ export const manager = {
 export const tester = {
     path: 'tester',
     menu : [
-        {label: 'Dashboard', icon:Dashboard, path: 'dashboard', component: lazy(()=> import('./src/components/shared/Dashboard'))},
-        {label: 'Sprints', icon: Timelapse, path: 'sprints', component: lazy(()=> import('./src/components/shared/Sprints'))},
-        {label:'Bugs', icon: BugReport,path: 'bugs', component: lazy(()=> import('./src/components/shared/Bugs'))}, 
+    {label: 'Dashboard', icon:Dashboard, path: 'dashboard', component: lazy(()=> import('./src/components/shared/Dashboard'))},
+    {label: 'Sprints', icon: Timelapse, path: 'sprints', component: lazy(()=> import('./src/components/shared/Sprints'))},
+    {label:'Bugs', icon: BugReport,path: 'bugs', component: lazy(()=> import('./src/components/shared/Bugs'))}, 
     {label:'Open Bugs', icon: PestControl, path:'openbugs', component: lazy(()=> import('./src/components/shared/Bugs'))},
     {label:'Closed Bugs', icon: TaskAlt,path: 'closedbugs', component: lazy(()=> import('./src/components/shared/Bugs'))}, 
     {label:'In Progress', icon:AutoGraph, path: 'inprogress', component: lazy(()=> import('./src/components/shared/TaskStatusList'))},
