@@ -1,10 +1,13 @@
 package com.syncora.repositories;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import com.syncora.dtos.ProjectResponseDto;
+import com.syncora.dtos.ProjectSelectionDto;
 import com.syncora.dtos.ProjectStatusCountDto;
 import com.syncora.entities.Employee;
 import com.syncora.entities.Project;
@@ -17,4 +20,6 @@ public interface ProjectRepo extends JpaRepository<Project, Long>{
 	@Query("SELECT new com.syncora.dtos.ProjectStatusCountDto(p.projectStatus, COUNT(p)) " +
 		       "FROM Project p GROUP BY p.projectStatus")
 	List<ProjectStatusCountDto> countProjectsByStatus();
+//	List<ProjectSelectionDto> findByManagerAndProjectStatus(Long managerId, ProjectStatus inProgress);
+	List<Project> findByManagerIdAndProjectStatus(Long managerId, ProjectStatus inProgress);
 }

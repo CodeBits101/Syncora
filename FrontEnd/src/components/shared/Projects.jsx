@@ -123,12 +123,16 @@ const projectTypes = [
 ];
 
 const columns = [
-  { id: "title", label: "Title", minWidth: 150 },
-  { id: "projectCode", label: "Code", minWidth: 100 },
-  { id: "projectStatus", label: "Status", minWidth: 120 },
-  { id: "managerId", label: "Manager ID", minWidth: 100, align: "right" },
-  { id: "startDate", label: "Start Date", minWidth: 150 },
-  { id: "endDate", label: "End Date", minWidth: 150 },
+
+  { id: 'title', label: 'Title', minWidth: 150 },
+  { id: 'projectCode', label: 'Code', minWidth: 100 },
+  { id: 'projectStatus', label: 'Status', minWidth: 120 },
+  { id: 'managerId', label: 'Manager ID', minWidth: 100, align: 'right' },
+  { id: 'startDate', label: 'Start Date', minWidth: 150 },
+  { id: 'endDate', label: 'End Date', minWidth: 150 },
+  {id: 'createdTimeStamp', label: 'Created On', minWidth: 150 },
+  {id: 'updatedTimeStamp', label: 'Last Updated On', minWidth: 150}
+
 ];
 
 function Projects() {
@@ -180,6 +184,7 @@ function Projects() {
         return;
       }
 
+
       console.log(formData.startDate, formData.endDate);
        console.log(formData)
       const startDateFormatted = formatToLocalDateTime(formData.startDate);
@@ -190,8 +195,9 @@ function Projects() {
         return;
       }
 
+
       const payload = {
-        title: formData.pname,
+        title: formData.title,
         description: formData.description,
         startDate: startDateFormatted,
         endDate: endDateFormatted,
@@ -203,7 +209,7 @@ function Projects() {
 
       await createProject(payload);
       setOpenModal(false);
-      toast.success("Project is successfully created");
+      toast.success('Project successfully created');
       fetchProjects();
     } catch (error) {
       toast.error("Error while creating project");

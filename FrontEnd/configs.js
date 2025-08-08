@@ -103,6 +103,7 @@ export const manager = {
     // {label:'Completed', icon:CheckCircle, path: 'completed', component: lazy(()=> import('./src/components/shared/TaskStatusList'))}
 
     // {label:'Report', icon: PieChart, path: 'report', component: lazy(()=> import('./src/screens/manager/Report/MgrReport'))},
+
     {
       label: "Sprints",
       icon: Timelapse,
@@ -127,6 +128,8 @@ export const manager = {
       path: "bugs",
       component: lazy(() => import("./src/components/shared/Bugs")),
     },
+
+   
     // // {label:'In Progress', icon:AutoGraph, path: 'inprogress', component: lazy(()=> import('./src/components/shared/TaskStatusList'))},
     // // {label: 'On Hold', icon:HourglassBottom, path: 'onhold', component: lazy(()=> import('./src/components/shared/TaskStatusList'))},
     // // {label:'Completed', icon:CheckCircle, path: 'completed', component: lazy(()=> import('./src/components/shared/TaskStatusList'))}
@@ -134,6 +137,7 @@ export const manager = {
 };
 
 export const tester = {
+
   path: "tester",
   menu: [
     {
@@ -186,6 +190,10 @@ export const tester = {
     },
   ],
 };
+
+  
+}
+
 
 export const developer = {
   path: "devHome",
