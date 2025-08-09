@@ -122,16 +122,16 @@ export const getStoriesByProjectIdAndSprintId = async (pid, sid) => {
   }
 };
 
-//TASKS APIs-: 
+//TASKS APIs-:
 
-export const addTask= async(data)=>{
+export const addTask = async (data) => {
   try {
-     const url = `${config.serverUrl}/tasks/add`;
+    const url = `${config.serverUrl}/tasks/add`;
 
     const token = localStorage.getItem("token");
     console.log(token);
 
-    const response = await axios.post(url,data ,{
+    const response = await axios.post(url, data, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -140,4 +140,22 @@ export const addTask= async(data)=>{
   } catch (error) {
     console.log(`exception: `, error);
   }
-}
+};
+
+//Bugs APis here
+export const addBug = async (data) => {
+  try {
+    const url = `${config.serverUrl}/bugs/add`;
+
+    const token = localStorage.getItem("token");
+
+    const response = await axios.post(url, data, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.log(`exception: `, error);
+  }
+};

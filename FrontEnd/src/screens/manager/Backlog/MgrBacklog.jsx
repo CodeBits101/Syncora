@@ -11,6 +11,7 @@ import { sprintFields } from "../../../FormConfigs/sprintFields";
 import { taskFields } from "../../../FormConfigs/taskFields";
 import { bugFields } from "../../../FormConfigs/bugFields";
 import {
+  addBug,
   addStory,
   addTask,
   getAllInprogressProjects,
@@ -154,25 +155,50 @@ function MgrBacklog() {
       setOpenModal(false);
     } catch (error) {
       console.error("Task error:", error);
-      toast.error(error.response.data.message || "Login failed occurred");
+      toast.error(error.response.data.message || "Task failed occurred");
+    }
+  };
+
+  const handleCreateBug = async (data) => {
+    console.log("Creating bug with data:", data);
+    console.log("Selected projectId:", data.projectId);
+
+    const startDateFormatted = formatToLocalDateTime(data.start_date);
+    const endDateFormatted = formatToLocalDateTime(data.end_date);
+
+    // Validate dates here (optional — Yup can also handle this)
+    if (!startDateFormatted || !endDateFormatted) {
+      toast.error("Please select valid start and end dates.");
+      return;
     }
 
-    // TODO: Replace this with your actual API call
-    // await api.createTask(payload);
+    const payload = {
+      title: data.title.trim(),
+      description: data.description.trim(),
+      startDate: startDateFormatted,
+      endDate: endDateFormatted,
+      actualStartDate: startDateFormatted,
+      actualEndDate: endDateFormatted,
+      priority: data.priority,
+      assignedToId: data.assignedToId,
+      projectId: data.projectId,
+      sprintId: data.sprintId || null,
+      storyId: data.storyId || null,
+      storyPoint: Number(data.storyPoint) || 0,
+    };
+    try {
+      const response = await addBug(payload);
+      console.log(response)
+      if (response) {
+        toast.success("Bug created successfully!");
+      }
+      setOpenModal(false);
+    } catch (error) {
+      console.error("Task error:", error);
+      toast.error(error.response.data.message || "Bug failed occurred");
+    }
   };
 
-  const handleCreateBug = (data) => {
-    console.log("Creating bug with data:", data);
-    console.log("Selected projectId:", formData.projectId);
-    const payload = {
-      ...data,
-      sprintId: "",
-      projectId: "",
-    };
-    console.log("Story Created:", payload);
-    // TODO: call your API here
-    setOpenModal(false);
-  };
   const handleCreateSprint = (data) => {
     console.log("Creating bug with data:", data);
     console.log("Selected projectId:", formData.projectId);
@@ -226,7 +252,19 @@ function MgrBacklog() {
         return {
           title: "Create Bug",
           fields: bugFields(inProgressProject, employees),
-          initialValues: { title: "", priority: "" },
+          initialValues: {
+            title: "",
+            priority: "",
+            projectId: "",
+            description: "",
+            assignedToId: "",
+            start_date: "",
+            end_date: "",
+            storyPoint: "",
+            sprintId: "",
+            storyId: "",
+            createdById: localStorage.getItem("empId") || Cookies.get("empId"),
+          },
           onSubmit: handleCreateBug,
           gridLayout: true, // want a grid layout for bugs
         };

@@ -51,9 +51,6 @@ export default function EntityFormModal({
   let schema = Yup.object(
     fields.reduce((acc, field) => {
       if (field.required) {
-        console.log(
-          `Adding validation for field: ${field.name} (${field.type})`
-        );
         switch (field.type) {
           case "number":
             acc[field.name] = Yup.number()
