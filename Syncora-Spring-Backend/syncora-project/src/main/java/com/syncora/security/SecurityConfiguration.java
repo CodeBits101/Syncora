@@ -2,6 +2,8 @@ package com.syncora.security;
 
 
 
+import java.util.Arrays;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -15,6 +17,9 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 
 import lombok.AllArgsConstructor;
 
@@ -32,6 +37,7 @@ public class SecurityConfiguration {
 	SecurityFilterChain configureFilterChain(HttpSecurity http) throws Exception {
 		// 1. disable CSRF protection
 		http.csrf(csrf -> csrf.disable());
+		 http.cors(Customizer.withDefaults());
 		// 2. any request - has to be authenticated
 		http.authorizeHttpRequests(
 
@@ -40,7 +46,7 @@ public class SecurityConfiguration {
 								"/swagger-ui.html","/swagger-ui/**",
 								"/v3/api-docs/**",
 								"/employees/register", "/employees/login" ,"/employees/**" ,"/departments/**" ,
-								"/mail/**", "/projects/**", "/sprints/**")	
+								"/mail/**", "/projects/**", "/sprints/**" , "/stories/**" )	
 						.permitAll()
 						//only for react and angular apps - permit in flight requests - otherwise CORS error
 						.requestMatchers(HttpMethod.OPTIONS).permitAll()
@@ -66,5 +72,18 @@ public class SecurityConfiguration {
 	authenticationManager
 	(AuthenticationConfiguration config) throws Exception{
 		return config.getAuthenticationManager();
+	}
+	
+	@Bean
+	public CorsFilter corsFilter() {
+	    CorsConfiguration config = new CorsConfiguration();
+	    config.setAllowCredentials(true);
+	    config.setAllowedOrigins(Arrays.asList("http://localhost:5173")); // frontend URL
+	    config.setAllowedHeaders(Arrays.asList("Origin", "Content-Type", "Accept", "Authorization", "token"));
+	    config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+
+	    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+	    source.registerCorsConfiguration("/**", config);
+	    return new CorsFilter(source);
 	}
 }

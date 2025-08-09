@@ -45,6 +45,30 @@ const pieData = [
   { x: 'Planned', y: 20 },
 ];
 
+
+const CustomTabPanel = (props) => {
+  const { children, value, index, ...other } = props;
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`simple-tabpanel-${index}`}
+      aria-labelledby={`simple-tab-${index}`}
+      {...other}
+      style={{ height: '100%', overflow: 'hidden' }}
+    >
+      {value === index && <Box sx={{ p: 0, height: '100%' }}>{children}</Box>}
+    </div>
+  );
+};
+
+CustomTabPanel.propTypes = {
+  children: PropTypes.node,
+  index: PropTypes.number.isRequired,
+  value: PropTypes.number.isRequired,
+};
+
+
 const inProgressTasks = [
   { name: 'Design Wireframes' },
   { name: 'Implement Login Page' },
@@ -272,6 +296,12 @@ export default function ProjectDetails() {
     );
   };
 
+  return (
+    <Box sx={{ width: '100%', height: '100vh', display: 'flex', flexDirection: 'column' }}>
+      <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+        <Tabs value={value} onChange={handleChange} aria-label="tabs">
+          <Tab label="Summary" {...a11yProps(0)} />
+
   const InProgressTasks = () => (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, overflowY: 'auto', height: '100%' }}>
       {inProgressTasks.map((task, idx) => (
@@ -380,6 +410,7 @@ export default function ProjectDetails() {
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
         <Tabs value={value} onChange={handleChange}>
           <Tab label="Project Details" {...a11yProps(0)} />
+
         </Tabs>
       </Box>
 
@@ -457,4 +488,8 @@ export default function ProjectDetails() {
       </Box>
     </Box>
   );
+
 }
+
+}
+

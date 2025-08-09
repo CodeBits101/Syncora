@@ -129,7 +129,6 @@ export const manager = {
       component: lazy(() => import("./src/components/shared/Bugs")),
     },
 
-   
     // // {label:'In Progress', icon:AutoGraph, path: 'inprogress', component: lazy(()=> import('./src/components/shared/TaskStatusList'))},
     // // {label: 'On Hold', icon:HourglassBottom, path: 'onhold', component: lazy(()=> import('./src/components/shared/TaskStatusList'))},
     // // {label:'Completed', icon:CheckCircle, path: 'completed', component: lazy(()=> import('./src/components/shared/TaskStatusList'))}
@@ -137,7 +136,6 @@ export const manager = {
 };
 
 export const tester = {
-
   path: "tester",
   menu: [
     {

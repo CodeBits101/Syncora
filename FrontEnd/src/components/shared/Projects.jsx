@@ -109,7 +109,7 @@ const projectTypes = [
     title: "On Hold",
     summary: "Projects are currently paused.",
     iconColor: "error",
-    path: "onhold",
+    path: "hold",
     status: "HOLD",
   },
   {
@@ -123,16 +123,14 @@ const projectTypes = [
 ];
 
 const columns = [
-
-  { id: 'title', label: 'Title', minWidth: 150 },
-  { id: 'projectCode', label: 'Code', minWidth: 100 },
-  { id: 'projectStatus', label: 'Status', minWidth: 120 },
-  { id: 'managerId', label: 'Manager ID', minWidth: 100, align: 'right' },
-  { id: 'startDate', label: 'Start Date', minWidth: 150 },
-  { id: 'endDate', label: 'End Date', minWidth: 150 },
-  {id: 'createdTimeStamp', label: 'Created On', minWidth: 150 },
-  {id: 'updatedTimeStamp', label: 'Last Updated On', minWidth: 150}
-
+  { id: "title", label: "Title", minWidth: 150 },
+  { id: "projectCode", label: "Code", minWidth: 100 },
+  { id: "projectStatus", label: "Status", minWidth: 120 },
+  { id: "managerName", label: "Manager Name", minWidth: 100, align: "right" },
+  { id: "startDate", label: "Start Date", minWidth: 150 },
+  { id: "endDate", label: "End Date", minWidth: 150 },
+  { id: "createdTimeStamp", label: "Created On", minWidth: 150 },
+  { id: "updatedTimeStamp", label: "Last Updated On", minWidth: 150 },
 ];
 
 function Projects() {
@@ -150,7 +148,7 @@ function Projects() {
         getAllInprogressProjects(),
         getProjectsCountByStatus(),
       ]);
-      console.log(projects) ;
+      console.log(projects);
       setRows(Array.isArray(projects) ? projects : []);
       setProjectCounts(Array.isArray(counts) ? counts : []);
     } catch (error) {
@@ -184,9 +182,8 @@ function Projects() {
         return;
       }
 
-
       console.log(formData.startDate, formData.endDate);
-       console.log(formData)
+      console.log(formData);
       const startDateFormatted = formatToLocalDateTime(formData.startDate);
       const endDateFormatted = formatToLocalDateTime(formData.endDate);
 
@@ -194,7 +191,6 @@ function Projects() {
         toast.error("Please select valid start and end dates.");
         return;
       }
-
 
       const payload = {
         title: formData.title,
@@ -209,7 +205,7 @@ function Projects() {
 
       await createProject(payload);
       setOpenModal(false);
-      toast.success('Project successfully created');
+      toast.success("Project successfully created");
       fetchProjects();
     } catch (error) {
       toast.error("Error while creating project");

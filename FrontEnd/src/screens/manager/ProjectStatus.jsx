@@ -5,27 +5,29 @@ import { RiProgress3Line } from "react-icons/ri";
 import trimToWords from "../../utils/trimToWords";
 import { colors } from "../../utils/color";
 import "./ProjectStatus.css";
-import { getProjectsByStatus } from "../../services/manager/manager"; 
+import { getProjectsByStatus } from "../../services/manager/manager";
+import ProjectStatusMap from "../../components/shared/ProjectStatusMap";
 
-const ProjectCard = ({ project, bgColor }) => {
+const ProjectCard = ({ project, bgColor, status }) => {
   const navigate = useNavigate();
-
+  console.log(status)
   return (
     <Card className="project-card h-100" style={{ backgroundColor: bgColor }}>
       <Card.Body>
         <div className="d-flex justify-content-between">
           <Card.Title className="fw-bold fs-5 text-white">
-            {trimToWords(project.title, 3)}
+            {trimToWords(project.title, 3) || "No Project"}
           </Card.Title>
           <Card.Text className="mb-1">
-            <RiProgress3Line size={20} color="#FBF5DE" className="mt-1" />
+            <ProjectStatusMap status={status} />
           </Card.Text>
         </div>
         <Card.Subtitle className="mb-2 text-white-50">
           {project.projectCode}
         </Card.Subtitle>
         <Card.Text className="mb-1 text-white">
-          <span className="fw-semibold">Manager ID:</span> {project.managerId}
+          <span className="fw-semibold">Manager Name:</span>{" "}
+          {trimToWords(project.managerName, 1) || "No Manager"}
         </Card.Text>
 
         <div className="d-flex justify-content-between">
@@ -94,7 +96,11 @@ export default function ProjectStatus() {
               const bgColor = colors[index % colors.length];
               return (
                 <Col key={project.id} xs={12} sm={6} md={4} lg={3}>
-                  <ProjectCard project={project} bgColor={bgColor} />
+                  <ProjectCard
+                    project={project}
+                    status={status}
+                    bgColor={bgColor}
+                  />
                 </Col>
               );
             })}

@@ -3,6 +3,7 @@ package com.syncora.services;
 import java.util.List;
 
 import com.syncora.dtos.ApiResponse;
+import com.syncora.dtos.BackLogResponseDto;
 import com.syncora.dtos.ProjectReqDto;
 import com.syncora.dtos.ProjectResponseDto;
 import com.syncora.dtos.ProjectSelectionDto;
@@ -24,6 +25,8 @@ public interface ProjectService {
 	List<ProjectStatusCountDto> getProjectByStatusCount();
 
 	List<ProjectSelectionDto> getProjectByManagerId(Long managerId);
+
+	BackLogResponseDto getBackLogItems(Long id ,Long managerId);
 	
 	
 
