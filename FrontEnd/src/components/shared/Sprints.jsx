@@ -1,11 +1,17 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import PlayArrowIcon from '@mui/icons-material/PlayArrow';
+import DoneIcon from '@mui/icons-material/Done';
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditNoteRoundedIcon from '@mui/icons-material/EditNoteRounded';
+import AssessmentIcon from '@mui/icons-material/Assessment';
 import EntityFormModal from "../BaseModal/BaseEntityModal";
 import { sprintFields } from "../../FormConfigs/sprintFields";
 import { SiPolymerproject } from "react-icons/si";
 import { MdOutlineDashboardCustomize } from "react-icons/md";
 import ChooseProjectModal from "../BaseModal/ChooseProjectModal";
+import { formatToLocalDateTime } from "../../utils/formatToLocalDateTime";
 import {
   Box,
   Typography,
@@ -19,6 +25,9 @@ import {
   Button,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import { completeSprint, createSprint, deleteSprint, startSprint, updateSprint } from "../../services/manager/manager";
+import { toast, ToastContainer } from 'react-toastify';
+import { formatDateForInput } from './../../utils/dateFormatForInput';
 
 const Sprints = () => {
   const userRole = localStorage.getItem("role");
@@ -30,6 +39,8 @@ const Sprints = () => {
   const [showModal, setShowModal] = useState(true);
   const [showMainUI, setShowMainUI] = useState(false);
   const [selectedOption, setSelectedOption] = useState("");
+  const [editSprint , setEditSprint] = useState(null);
+  const [selectedSprint, setSelectedSprint] = useState(null);
   const [projectName, setProjectName] = useState("");
   const [sprints, setSprints] = useState({
     ACTIVE: [],
@@ -39,15 +50,26 @@ const Sprints = () => {
 
   const navigate = useNavigate();
 
-  const handleCreateSprint = (data) => {
+  const handleCreateSprint = async (data) => {
     const payload = {
       ...data,
       managerId,
       projectId: selectedOption,
+      startDate: formatToLocalDateTime(data.startDate),
+      endDate: formatToLocalDateTime(data.endDate),
     };
-    console.log("Sprint Created:", payload);
-    // TODO: call your create sprint API here
-    setOpenModal(false);
+    try{
+      const createdSprint = await createSprint(payload);
+      console.log("Sprint created :", createdSprint);
+      setOpenModal(false);
+      toast.success("Sprint Created Successfully");
+      fetchSprints(selectedOption);
+    }
+    catch(error)
+    {
+      console.error("Failed to create Sprint", error);
+      toast.error("Sprint Creation failed")
+    }
   };
 
   const fetchSprints = async (projectId) => {
@@ -62,9 +84,9 @@ const Sprints = () => {
 
       // Group sprints by status
       const grouped = {
-        ACTIVE: sprintList.filter((s) => s.status === "ACTIVE"),
-        BACKLOG: sprintList.filter((s) => s.status === "BACKLOG"),
-        COMPLETED: sprintList.filter((s) => s.status === "COMPLETED"),
+        ACTIVE: sprintList.filter((s) => s.sprintStatus === "ACTIVE"),
+        BACKLOG: sprintList.filter((s) => s.sprintStatus === "BACKLOG"),
+        COMPLETED: sprintList.filter((s) => s.sprintStatus === "COMPLETED"),
       };
       setSprints(grouped);
 
@@ -79,6 +101,84 @@ const Sprints = () => {
       setLoading(false);
     }
   };
+
+// SetSprint Status to ACTIVE
+
+  const handleStartSprint = async(sprintId, projectId) =>
+  {
+    try{
+      setLoading(true);
+      await startSprint(sprintId, projectId);
+      await fetchSprints(projectId);
+    } 
+    catch(ex)
+    {
+      toast.error("Sprint Start error.")
+    }
+    finally
+    {
+      setLoading(false);
+    }
+  }
+
+  //  set sprint status complete
+  const handleCompleteSprint = async(sprintId, projectId) =>
+  {
+    try{
+      console.log(projectId);
+      setLoading(true);
+      await completeSprint(sprintId);
+      await fetchSprints(projectId);
+    } 
+    catch(ex)
+    {
+      toast.error("Sprint Complete error.")
+    }
+    finally
+    {
+      setLoading(false);
+    }
+  }
+
+  const handleDeleteSprint = async(sprintId, projectId) =>
+    {
+    try{
+      console.log(projectId);
+      setLoading(true);
+      await deleteSprint(sprintId);
+      toast.success("Sprint Deleted.");
+      await fetchSprints(projectId);
+    } 
+    catch(ex)
+    {
+      toast.error("Sprint Cannot be Delete.")
+    }
+    finally
+    {
+      setLoading(false);
+    }
+  }
+
+  const openUpdateSprintModal = (sprint) => {
+    setSelectedSprint(sprint);
+    setOpenModal(true);
+  };
+
+  const handleUpdateSprint = async (values) => {
+  try {
+    console.log(values.id);
+    await updateSprint(values); 
+    toast.success("Sprint updated successfully!");
+    await fetchSprints();
+    setOpenModal(false);
+    setSelectedSprint(null);
+  } catch (ex) {
+    toast.error("Sprint could not be updated.");
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   useEffect(() => {
     if (selectedOption) {
@@ -99,6 +199,7 @@ const Sprints = () => {
 
       {showMainUI && (
         <Box p={4} sx={{ backgroundColor: "#f4faff", minHeight: "100vh" }}>
+          <ToastContainer/>
           <Box display="flex" justifyContent="space-between" mb={4}>
             <Typography variant="h5" sx={{ fontWeight: "bold" }}>
               Project: <span style={{ color: "#1976d2" }}>{projectName}</span> — Sprints
@@ -171,9 +272,11 @@ const Sprints = () => {
                       </Grid>
                     </AccordionSummary>
                     <AccordionDetails>
+                      <Box sx={{ display: 'flex', gap: 2 }}>
                       <Button
                         variant="contained"
-                        sx={{ backgroundColor: "#3daa51ff", mt: 2 }}
+                        sx={{ mt: 2 }}
+                        color="primary"
                         onClick={() => navigate("/scrumBoard")}
                       >
                         <MdOutlineDashboardCustomize
@@ -183,6 +286,67 @@ const Sprints = () => {
                         />{" "}
                         Taskboard
                       </Button>
+                      {/* SPRINT UPDATE STATUS FUNCTIONS */}
+                      {category === "BACKLOG" && (
+                        <>
+                        {/* Start Sprint */}
+                          <Button
+                            variant="contained"
+                            sx={{ backgroundColor: "#3daa51ff", mt: 2 }}
+                            disabled={sprints.ACTIVE.length > 0}
+                            onClick={() => handleStartSprint(sprint.id, sprint.projectId)}
+                            startIcon={<PlayArrowIcon />}
+                          >
+                            Start Sprint
+                          </Button>
+                          {/* Delete button */}
+                          <Button
+                            variant="contained"
+                            color="error"
+                            sx={{ mt: 2 }}
+                            onClick={() => handleDeleteSprint(sprint.id, sprint.projectId)}
+                            startIcon={<DeleteIcon />}
+                          >
+                            Delete Sprint
+                          </Button>
+                          <Button
+                            variant="contained"
+                            color="secondary"
+                            sx={{ mt: 2 }}
+                            // onClick={() => handleUpdateSprint(sprint)}
+                            onClick={() => openUpdateSprintModal(sprint)}
+                            startIcon={< EditNoteRoundedIcon />}
+                          >
+                            Update Sprint
+                          </Button>
+                          </>
+                      )}
+                      {category === "ACTIVE" && (
+                        <>
+                          <Button
+                            variant="contained"
+                            sx={{ backgroundColor: "#802fe3ff", mt: 2 }}
+                            onClick={() => handleCompleteSprint(sprint.id, sprint.projectId)}
+                            startIcon={<DoneIcon />}
+                          >
+                            Complete Sprint
+                          </Button>
+                          {/* <Button
+                            variant="outlined"
+                            color="info"
+                            onClick={() => navigate(`/sprint-report/${sprint.id}`)}
+                            startIcon={<AssessmentIcon />}
+                          >
+                            View Report
+                          </Button> */}
+                        </>
+                      )}
+                      </Box>
+                      {category === "BACKLOG" && sprints.ACTIVE.length > 0 && (
+                        <Typography variant="caption" color="error" sx={{ mt: 1, display: 'block' }}>
+                          Cannot start new sprint while another sprint is active
+                        </Typography>
+                      )}
                     </AccordionDetails>
                   </Accordion>
                 ))
@@ -192,17 +356,33 @@ const Sprints = () => {
 
           <EntityFormModal
             open={openModal}
-            handleClose={() => setOpenModal(false)}
-            title="Create Sprint"
-            fields={sprintFields}
-            initialValues={{
-              sprintName: "",
-              description: "",
-              startDate: "",
-              endDate: "",
-              status: "BACKLOG",
+            handleClose={() => {
+              setOpenModal(false);
+              setSelectedSprint(null);
             }}
-            onSubmit={handleCreateSprint}
+            title={selectedSprint ? "Update Sprint" : "Create Sprint"}
+            fields={sprintFields}
+            initialValues={
+              selectedSprint ? {
+                  id:selectedSprint.id,
+                  sprintName: selectedSprint.sprintName || "",
+                  description: selectedSprint.description ||"",
+                  startDate: formatDateForInput(selectedSprint.startDate) || "",
+                  endDate: formatDateForInput(selectedSprint.endDate) || "",
+                  status: "BACKLOG",
+            
+              }
+              :
+              {
+                sprintName: "",
+                description: "",
+                startDate: "",
+                endDate: "",
+                status: "BACKLOG",
+              }
+            }
+            onSubmit={selectedSprint ? handleUpdateSprint: handleCreateSprint}
+            submitLabel={selectedSprint ? "Update" : "Create"}
           />
         </Box>
       )}

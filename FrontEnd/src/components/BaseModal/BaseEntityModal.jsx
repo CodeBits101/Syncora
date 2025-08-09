@@ -25,7 +25,7 @@ const withPlannedDateValidation = (schema) => {
   });
 };
 
-export default function EntityFormModal({ open, handleClose, title, fields, initialValues, onSubmit }) {
+export default function EntityFormModal({ open, handleClose, title, fields, initialValues, onSubmit, submitLabel = "Create"}) {
   // Build base validation schema dynamically from fields
   let schema = Yup.object(
     fields.reduce((acc, field) => {
@@ -41,6 +41,7 @@ export default function EntityFormModal({ open, handleClose, title, fields, init
   if (fieldNames.includes("start_date") && fieldNames.includes("end_date")) {
     schema = withPlannedDateValidation(schema);
   }
+
 
   return (
     <Modal open={open} onClose={handleClose}>
@@ -130,7 +131,7 @@ export default function EntityFormModal({ open, handleClose, title, fields, init
               <Box mt={2} display="flex" justifyContent="flex-end" gap={2}>
                 <Button onClick={handleClose}>Cancel</Button>
                 <Button type="submit" variant="contained" color="primary">
-                  Create
+                  {submitLabel}
                 </Button>
               </Box>
             </Form>

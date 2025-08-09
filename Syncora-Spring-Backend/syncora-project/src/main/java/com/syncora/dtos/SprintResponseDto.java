@@ -9,7 +9,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
-import com.syncora.enums.ProjectStatus;
 import com.syncora.enums.SprintStatus;
 
 
