@@ -11,8 +11,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.syncora.dtos.ApiResponse;
@@ -53,7 +55,7 @@ public class SprintController {
 	 }
  
 	 @PutMapping("/{id}")
-	 public ResponseEntity<ApiResponse> updateSprint(@RequestBody SprintRequestDto requestDto,@PathVariable Long id)
+	 public ResponseEntity<ApiResponse> updateSprint(@RequestBody SprintRequestDto requestDto, @PathVariable Long id)
 	 {
 		 return ResponseEntity.ok(sprintService.updateSprint(requestDto, id));
 	 }
@@ -64,6 +66,17 @@ public class SprintController {
 		 return ResponseEntity.ok(sprintService.deleteSprint(id));
 	 }
 	 
+	 @PutMapping("/{id}/start")
+	 public ResponseEntity<ApiResponse> startSprint(@PathVariable Long id, @RequestParam Long projectId)
+	 {
+		 return ResponseEntity.ok(sprintService.startSprint(id, projectId));
+	 }
+	 
+	 @PutMapping("/{id}/complete")
+	 public ResponseEntity<ApiResponse> completeSprint(@PathVariable Long id)
+	 {
+		 return ResponseEntity.ok(sprintService.completeSprint(id));
+	 }
 	 
  
  

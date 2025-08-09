@@ -45,7 +45,9 @@ export default function EntityFormModal({
   initialValues,
   onSubmit,
   gridLayout = false,
+  submitLabel = "Create"
 }) {
+// export default function EntityFormModal({ open, handleClose, title, fields, initialValues, onSubmit, submitLabel = "Create"}) {
   // Build base validation schema dynamically from fields
 
   let schema = Yup.object(
@@ -103,6 +105,7 @@ export default function EntityFormModal({
       setSprintOptions([]);
     }
   };
+
 
   return (
     <Modal open={open} onClose={handleClose}>
@@ -286,14 +289,20 @@ export default function EntityFormModal({
                   )}
                 </Box>
 
-                <Box mt={2} display="flex" justifyContent="flex-end" gap={2}>
+                {/* <Box mt={2} display="flex" justifyContent="flex-end" gap={2}>
                   <Button onClick={handleClose}>Cancel</Button>
                   <Button type="submit" variant="contained" color="primary">
                     Create
                   </Button>
-                </Box>
+                </Box> */}
+              <Box mt={2} display="flex" justifyContent="flex-end" gap={2}>
+                <Button onClick={handleClose}>Cancel</Button>
+                <Button type="submit" variant="contained" color="primary">
+                  {submitLabel}
+                </Button>
+              </Box>
               </Form>
-            </>
+                  </>                 
           )}
         </Formik>
       </Box>
