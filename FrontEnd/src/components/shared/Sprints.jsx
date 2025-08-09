@@ -28,6 +28,7 @@ import { useNavigate } from "react-router-dom";
 import { completeSprint, createSprint, deleteSprint, startSprint, updateSprint } from "../../services/manager/manager";
 import { toast, ToastContainer } from 'react-toastify';
 import { formatDateForInput } from './../../utils/dateFormatForInput';
+import { getSprintByProjectId } from "../../services/manager/manager";
 
 const Sprints = () => {
   const userRole = localStorage.getItem("role");
@@ -76,10 +77,8 @@ const Sprints = () => {
     try {
       setLoading(true);
       setError("");
-      const res = await axios.get(
-        `http://localhost:8080/sprints/${projectId}`
-      );
-      const sprintList = res.data || [];
+      const res = await getSprintByProjectId(projectId)
+      const sprintList = res || [];
       console.log("Sprints fetched:", JSON.stringify(res.data, null, 2));
 
       // Group sprints by status

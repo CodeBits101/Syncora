@@ -13,6 +13,7 @@ public class ProjectResponseDto extends BaseDto{
 	    private String projectCode;
 	    private String projectStatus;
 	    private Long managerId;
+	    private String managerName;
 	    private LocalDateTime startDate;
 	    private LocalDateTime endDate;
 }

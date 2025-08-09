@@ -7,6 +7,8 @@ import {
   Tabs,
   Tab,
   Paper,
+  Avatar,
+  LinearProgress,
 } from '@mui/material';
 import PropTypes from 'prop-types';
 import CloseIcon from '@mui/icons-material/Close';
@@ -34,7 +36,7 @@ import {
   Annotations,
 } from '@syncfusion/ej2-react-circulargauge';
 
-// === Dummy Data ===
+// Mock data
 const pieData = [
   { x: 'Completed', y: 40 },
   { x: 'In Progress', y: 25 },
@@ -42,66 +44,89 @@ const pieData = [
   { x: 'Planned', y: 20 },
 ];
 
-const CustomTabPanel = (props) => {
-  const { children, value, index, ...other } = props;
-  return (
-    <div
-      role="tabpanel"
-      hidden={value !== index}
-      id={`simple-tabpanel-${index}`}
-      aria-labelledby={`simple-tab-${index}`}
-      {...other}
-      style={{ height: '100%', overflow: 'hidden' }}
-    >
-      {value === index && <Box sx={{ p: 0, height: '100%' }}>{children}</Box>}
-    </div>
-  );
+const inProgressTasks = [
+  { name: 'Design Wireframes' },
+  { name: 'Implement Login Page' },
+  { name: 'Integrate Auth API' },
+  { name: 'Build Dashboard Layout' },
+];
+
+const employees = [
+  { name: 'John Doe', joined: '2025-01-15', completed: 24, overdue: 2 },
+  { name: 'Jane Smith', joined: '2025-03-10', completed: 30, overdue: 5 },
+  { name: 'Alice Johnson', joined: '2025-02-20', completed: 128, overdue: 14 },
+  { name: 'Michael Brown', joined: '2025-04-05', completed: 220, overdue: 14 },
+  { name: 'Sunny Brown', joined: '2025-04-05', completed: 20, overdue: 4 },
+  { name: 'John Brown', joined: '2025-04-05', completed: 20, overdue: 4 },
+  { name: 'Pale Brown', joined: '2025-04-05', completed: 20, overdue: 4 },
+  { name: 'Don Brown', joined: '2025-04-05', completed: 20, overdue: 4 },
+];
+
+const sprintPlans = [
+  {
+    name: 'Sprint Alpha',
+    description: 'Initial backend setup and login flow',
+    stories: 10,
+    tasks: 10,
+    subtasks: 43, 
+    bugs: 2,
+    overdue: 2
+  },
+  {
+    name: 'Sprint Beta',
+    description: 'Dashboard & API Integration',
+    stories: 8,
+    tasks: 10,
+    subtasks: 43, 
+    bugs: 2,
+    overdue: 2
+  },
+  {
+    name: 'Sprint Gamma',
+    description: 'Notifications and Performance',
+    tasks: 10,
+    subtasks: 43, 
+    bugs: 2,
+    overdue: 2
+  },
+  {
+    name: 'Sprint Delta',
+    description: 'Final Review & Deployment',
+    tasks: 10,
+    subtasks: 43, 
+    bugs: 2,
+    overdue: 2
+  },
+];
+
+// Tab helpers
+const CustomTabPanel = ({ children, value, index, ...other }) => (
+  <div
+    role="tabpanel"
+    hidden={value !== index}
+    id={`simple-tabpanel-${index}`}
+    aria-labelledby={`simple-tab-${index}`}
+    {...other}
+    style={{ height: '100%', overflow: 'hidden' }}
+  >
+    {value === index && <Box sx={{ p: 0, height: '100%' }}>{children}</Box>}
+  </div>
+);
+
+CustomTabPanel.propTypes = {
+  children: PropTypes.node,
+  index: PropTypes.number.isRequired,
+  value: PropTypes.number.isRequired,
 };
-// import * as React from 'react';
-// import {
-//   Box,
-//   Grid,
-//   IconButton,
-//   Typography,
-//   Tabs,
-//   Tab,
-// } from '@mui/material';
-// import PropTypes from 'prop-types';
-// import CloseIcon from '@mui/icons-material/Close';
-// import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
-// import { Pie, Doughnut } from 'react-chartjs-2';
-// import GaugeChart from 'react-gauge-chart';
 
+function a11yProps(index) {
+  return {
+    id: `simple-tab-${index}`,
+    'aria-controls': `simple-tabpanel-${index}`,
+  };
+}
 
-// function CustomTabPanel(props) {
-//   const { children, value, index, ...other } = props;
-//   return (
-//     <div
-//       role="tabpanel"
-//       hidden={value !== index}
-//       id={`simple-tabpanel-${index}`}
-//       aria-labelledby={`simple-tab-${index}`}
-//       {...other}
-//       style={{ height: '100%', overflow: 'hidden' }}
-//     >
-//       {value === index && <Box sx={{ p: 0, height: '100%' }}>{children}</Box>}
-//     </div>
-//   );
-// }
-
-// CustomTabPanel.propTypes = {
-//   children: PropTypes.node,
-//   index: PropTypes.number.isRequired,
-//   value: PropTypes.number.isRequired,
-// };
-
-// function a11yProps(index) {
-//   return {
-//     id: `simple-tab-${index}`,
-//     'aria-controls': `simple-tabpanel-${index}`,
-//   };
-// }
-
+// Component
 export default function ProjectDetails() {
   const [value, setValue] = useState(0);
   const handleChange = (event, newValue) => setValue(newValue);
@@ -109,50 +134,6 @@ export default function ProjectDetails() {
   const completedTasks = 37;
   const totalTasks = 50;
   const percentage = Math.round((completedTasks / totalTasks) * 100);
-// export default function ProjectDetails() {
-//   const [value, setValue] = React.useState(0);
-//   const handleChange = (event, newValue) => setValue(newValue);
-//   ChartJS.register(ArcElement, Tooltip, Legend);
-//   const data = {
-//     labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
-//     datasets: [
-//       {
-//         label: '# of Votes',
-//         data: [12, 19, 3, 5, 2, 3],
-//         backgroundColor: [
-//           'rgba(255, 99, 132, 0.2)',
-//           'rgba(54, 162, 235, 0.2)',
-//           'rgba(255, 206, 86, 0.2)',
-//           'rgba(75, 192, 192, 0.2)',
-//           'rgba(153, 102, 255, 0.2)',
-//           'rgba(255, 159, 64, 0.2)',
-//         ],
-//         borderColor: [
-//           'rgba(255, 99, 132, 1)',
-//           'rgba(54, 162, 235, 1)',
-//           'rgba(255, 206, 86, 1)',
-//           'rgba(75, 192, 192, 1)',
-//           'rgba(153, 102, 255, 1)',
-//           'rgba(255, 159, 64, 1)',
-//         ],
-//         borderWidth: 1,
-//       },
-//     ],
-//   };
-
-//   const options = {
-//     responsive: true,
-//     maintainAspectRatio: false,
-//     plugins:
-//     {
-//       legend: {
-//         position: 'right'
-//       }
-//     },
-//   }
-
-
-
 
   const Section = ({ title, bg, children }) => (
     <Box
@@ -242,7 +223,6 @@ export default function ProjectDetails() {
     </div>
   );
 
-  // 👇 Project Details Content (Tiles)
   const ProjectDetailsContent = () => {
     const projectInfo = [
       { label: 'Project Name', value: 'NextGen Dashboard' },
@@ -290,37 +270,117 @@ export default function ProjectDetails() {
       </Box>
     );
   };
-//   const Section = ({ title, bg }) => (
-//     <Box
-//       sx={{
-//         backgroundColor: bg,
-//         color: 'white',
-//         position: 'relative',
-//         height: '100%',
-//         width: '100%',
-//         px: 1,
-//         py: 0.5,
-//         boxSizing: 'border-box',
-//         border: '1px dotted #ccc',
-//       }}
-//     >
-//       <IconButton
-//         size="small"
-//         sx={{ position: 'absolute', top: 2, right: 2, color: 'red', p: 0.5 }}
-//       >
-//         <CloseIcon fontSize="small" />
-//       </IconButton>
-//       <Typography variant="body2">{title}</Typography>
-//     </Box>
-//   );
 
-//   return (
-//     <Box sx={{ width: '100%', height: '100vh', display: 'flex', flexDirection: 'column' }}>
-//       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-//         <Tabs value={value} onChange={handleChange} aria-label="tabs">
-//           <Tab label="Summary" {...a11yProps(0)} />
-//         </Tabs>
-//       </Box>
+  const InProgressTasks = () => (
+    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, overflowY: 'auto', height: '100%' }}>
+      {inProgressTasks.map((task, idx) => (
+        <Paper
+          key={idx}
+          elevation={3}
+          sx={{ p: 1, backgroundColor: '#fff', color: '#000', borderRadius: 1 }}
+        >
+          <Typography variant="body2" fontWeight={500}>
+            {task.name}
+          </Typography>
+        </Paper>
+      ))}
+    </Box>
+  );
+
+  const EmployeeStats = () => (
+    <Box sx={{ height: '100%', overflowY: 'auto', pr: 1 }}>
+      {employees.map((emp, idx) => {
+        const total = emp.completed + emp.overdue;
+        const performance = Math.round((emp.completed / total) * 100);
+
+        return (
+          <Paper key={idx} sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1, p: 1, backgroundColor: '#fff' }}>
+            <Avatar>{emp.name[0]}</Avatar>
+            <Box sx={{ flexGrow: 1 }}>
+              <Typography variant="body2" fontWeight={600}>
+                {emp.name}
+              </Typography>
+              <Typography variant="caption" color="text.secondary">
+                Joined: {emp.joined}
+              </Typography>
+              <Typography variant="caption" display="block">
+                Completed: {emp.completed}, Overdue: {emp.overdue}
+              </Typography>
+              <LinearProgress variant="determinate" value={performance} sx={{ height: 6, borderRadius: 1 }} />
+              <Typography variant="caption" color="text.secondary">
+                Performance: {performance}%
+              </Typography>
+            </Box>
+          </Paper>
+        );
+      })}
+    </Box>
+  );
+
+  const TodaysPlan = () => (
+    <Box sx={{ display: 'flex', flexDirection: 'row', gap: 2, overflowX: 'auto', height: '100%', py: 1, px: 1 }}>
+      {sprintPlans.map((sprint, idx) => (
+        <Paper
+          key={idx}
+          elevation={4}
+          sx={{
+            minWidth: 220,
+            backgroundColor: '#ffffff',
+            color: '#000',
+            p: 2,
+            borderRadius: 2,
+            flexShrink: 0,
+            boxShadow: '0px 3px 6px rgba(0,0,0,0.2)',
+          }}
+        >
+          <Typography variant="subtitle2" color="primary" fontWeight={600}>
+            {sprint.name}
+          </Typography>
+          <Typography variant="body2" mt={0.5} mb={1}>
+            {sprint.description}
+          </Typography>
+          <Typography variant="caption" display="block">
+            📘 Stories: {sprint.stories}
+          </Typography>
+           <Typography variant="caption" display="block">
+            📘 Tasks: {sprint.tasks}
+          </Typography>
+          <Typography variant="caption" display="block">
+            📘 SubTasks: {sprint.subtasks}
+          </Typography>
+            <Typography variant="caption" display="block">
+               🐞 Bugs: {sprint.bugs}
+          </Typography>
+          <Typography variant="caption" display="block" mb={1}>
+            📘 OverDue: {sprint.overdue}
+          </Typography>
+          <button
+            style={{
+              backgroundColor: '#1976d2',
+              color: 'white',
+              border: 'none',
+              borderRadius: '4px',
+              padding: '6px 12px',
+              cursor: 'pointer',
+              fontSize: '0.75rem',
+              marginTop: '8px',
+            }}
+          >
+            View Details
+          </button>
+        </Paper>
+      ))}
+    </Box>
+  );
+
+  
+  return (
+    <Box sx={{ width: '100%', height: '100vh', display: 'flex', flexDirection: 'column' }}>
+      <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+        <Tabs value={value} onChange={handleChange}>
+          <Tab label="Project Details" {...a11yProps(0)} />
+        </Tabs>
+      </Box>
 
       <Box sx={{ flexGrow: 1, overflow: 'hidden' }}>
         <CustomTabPanel value={value} index={0}>
@@ -334,7 +394,6 @@ export default function ProjectDetails() {
               height: '100%',
             }}
           >
-            {/* Project Details Section */}
             <Box sx={{ gridColumn: '1 / 3', gridRow: '1 / 2' }}>
               <Section title="Project Details" bg="#d68caa">
                 <ProjectDetailsContent />
@@ -342,7 +401,9 @@ export default function ProjectDetails() {
             </Box>
 
             <Box sx={{ gridColumn: '3 / 4', gridRow: '1 / 2' }}>
-              <Section title="Planned" bg="#72db84" />
+              <Section title="In Progress Tasks" bg="#72db84">
+                <InProgressTasks />
+              </Section>
             </Box>
 
             <Box sx={{ gridColumn: '4 / 5', gridRow: '1 / 2' }}>
@@ -351,27 +412,10 @@ export default function ProjectDetails() {
 
             <Box sx={{ gridColumn: '1 / 2', gridRow: '2 / 3' }}>
               <Section title="Status Pie Chart" bg="#cc8c2b">
-                <AccumulationChartComponent
-                  height="100%"
-                  width="100%"
-                  tooltip={{ enable: true }}
-                  legendSettings={{ visible: true }}
-                >
+                <AccumulationChartComponent height="100%" width="100%" tooltip={{ enable: true }} legendSettings={{ visible: true }}>
                   <Inject services={[PieSeries, AccumulationTooltip, AccumulationLegend, AccumulationDataLabel]} />
                   <AccumulationSeriesCollectionDirective>
-                    <AccumulationSeriesDirective
-                      dataSource={pieData}
-                      xName="x"
-                      yName="y"
-                      radius="80%"
-                      explode
-                      explodeOffset="10%"
-                      dataLabel={{
-                        visible: true,
-                        position: 'Outside',
-                        name: 'x',
-                      }}
-                    />
+                    <AccumulationSeriesDirective dataSource={pieData} xName="x" yName="y" radius="80%" explode explodeOffset="10%" dataLabel={{ visible: true, position: 'Outside', name: 'x' }} />
                   </AccumulationSeriesCollectionDirective>
                 </AccumulationChartComponent>
               </Section>
@@ -379,26 +423,10 @@ export default function ProjectDetails() {
 
             <Box sx={{ gridColumn: '2 / 3', gridRow: '2 / 3' }}>
               <Section title="Pie Chart 2" bg="#2bcc38">
-                <AccumulationChartComponent
-                  height="100%"
-                  width="100%"
-                  tooltip={{ enable: true }}
-                  legendSettings={{ visible: true }}
-                >
+                <AccumulationChartComponent height="100%" width="100%" tooltip={{ enable: true }} legendSettings={{ visible: true }}>
                   <Inject services={[PieSeries, AccumulationTooltip, AccumulationLegend, AccumulationDataLabel]} />
                   <AccumulationSeriesCollectionDirective>
-                    <AccumulationSeriesDirective
-                      dataSource={pieData}
-                      xName="x"
-                      yName="y"
-                      radius="80%"
-                      explode
-                      dataLabel={{
-                        visible: true,
-                        position: 'Inside',
-                        name: 'x',
-                      }}
-                    />
+                    <AccumulationSeriesDirective dataSource={pieData} xName="x" yName="y" radius="80%" explode dataLabel={{ visible: true, position: 'Inside', name: 'x' }} />
                   </AccumulationSeriesCollectionDirective>
                 </AccumulationChartComponent>
               </Section>
@@ -411,53 +439,17 @@ export default function ProjectDetails() {
             <Box sx={{ gridColumn: '4 / 5', gridRow: '2 / 3' }}>
               <Section title="Due" bg="#8378ea" />
             </Box>
-//       <Box sx={{ flexGrow: 1, overflow: 'hidden' }}>
-//         <CustomTabPanel value={value} index={0}>
-//           <Grid
-//             container
-//             spacing={0.5}
-//             sx={{
-//               display: 'grid',
-//               gridTemplateColumns: '1fr 1fr 1fr 1fr',
-//               gridTemplateRows: '30% 35% 35%',
-//               height: '100%',
-//             }}
-//           >
-//             {/* Row 1 */}
-//             <Box sx={{ gridColumn: '1 / 3', gridRow: '1 / 2' }}>
-//               <Section title="projectdetails" bg="#d68caa" />
-//             </Box>
-//             <Box sx={{ gridColumn: '3 / 4', gridRow: '1 / 2' }}>
-//               <Section title="planned" bg="#72db84" />
-//             </Box>
-//             <Box sx={{ gridColumn: '4 / 5', gridRow: '1 / 2' }}>
-//               <Section title="finished" bg="#594d77" />
-//             </Box>
-//             <Box sx={{ gridColumn: '1 / 2', gridRow: '2 / 3' }}>
-//               <Doughnut data={data} options={options} />
-//             </Box>
-//             <Box sx={{ gridColumn: '2 / 3', gridRow: '2 / 3' }}>
-//               <Pie data={data} options={options} />
-//             </Box>
-//             <Box sx={{ gridColumn: '3 / 4', gridRow: '2 / 3', width: '100%' }}>
-//               <GaugeChart
-//                 id="gauge-chart"
-//                 nrOfLevels={20}
-//                 percent={0.6}
-//                 colors={["#00FF00", "#FF0000"]}
-//                 arcWidth={0.3}
-//               />
-//             </Box>
-//             <Box sx={{ gridColumn: '4 / 5', gridRow: '2 / 3' }}>
-//               <Section title="due" bg="#8378ea" />
-//             </Box>
 
             <Box sx={{ gridColumn: '1 / 4', gridRow: '3 / 4' }}>
-              <Section title="Today's Plan" bg="#6ab17d" />
+              <Section title="Today's Plan" bg="#6ab17d">
+                <TodaysPlan />
+              </Section>
             </Box>
 
             <Box sx={{ gridColumn: '4 / 5', gridRow: '1 / 4' }}>
-              <Section title="Employee Stats" bg="#a04459" />
+              <Section title="Employee Stats" bg="#a04459">
+                <EmployeeStats />
+              </Section>
             </Box>
           </Grid>
         </CustomTabPanel>
@@ -465,16 +457,3 @@ export default function ProjectDetails() {
     </Box>
   );
 }
-//             {/* Row 3 */}
-//             <Box sx={{ gridColumn: '1 / 4', gridRow: '3 / 4' }}>
-//               <Section title="todaysplan" bg="#6ab17d" />
-//             </Box>
-//             <Box sx={{ gridColumn: '4 / 5', gridRow: '1 / 4' }}>
-//               <Section title="employeestats" bg="#a04459" />
-//             </Box>
-//           </Grid>
-//         </CustomTabPanel>
-//       </Box>
-//     </Box>
-//   );
-// }

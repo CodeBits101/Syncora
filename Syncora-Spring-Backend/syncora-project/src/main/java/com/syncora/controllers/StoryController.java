@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+
 import com.syncora.dtos.StoryReqDto;
 import com.syncora.security.JwtUtils;
 import com.syncora.services.StoryService;
@@ -34,6 +35,13 @@ private final JwtUtils jwtUtils;
 public ResponseEntity<?> getStories(@RequestHeader("Authorization") String authHeader) {
 	Long id = jwtUtils.getUserIdFromJwtToken(authHeader);
 	return ResponseEntity.status(HttpStatus.ACCEPTED).body(storyService.getStories(id));
+}
+
+@GetMapping("/bypidandsid/{pid}/{sid}")
+public ResponseEntity<?> getStoriesByProjectIdAndSprintId(@PathVariable Long pid ,@PathVariable Long sid,@RequestHeader("Authorization") String authHeader) {
+	Long id = jwtUtils.getUserIdFromJwtToken(authHeader);
+	System.out.println(id);
+	return ResponseEntity.status(HttpStatus.ACCEPTED).body(storyService.getStoriesByProjectIdAndSprintId(id,pid,sid));
 }
 
 @PostMapping("/add")

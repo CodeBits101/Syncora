@@ -28,10 +28,9 @@ import UnAuthorised from "./screens/main/UnAuthorised";
 import BacklogTable from "./components/BacklogTable/BacklogTable";
 
 import Calendar from "./components/Calendar/Calendar";
+import { ToastContainer } from "react-toastify";
 
-// import ProjectDetails from "./components/shared/ProjectDetails";
-
-
+import ProjectDetails from "./components/shared/ProjectDetails";
 
 function App() {
   const [count, setCount] = useState(0);
@@ -124,16 +123,10 @@ function App() {
 
         <Route path="/calendar" element={<Calendar />} />
 
-        <Route
-          path="/login"
-          element={<LoginPage setRole={setRole} />}
-
-        />
+        <Route path="/login" element={<LoginPage setRole={setRole} />} />
         <Route path="/register" element={<Signup />} />
 
         {/* for testing manager sprints screen */}
-
-
 
         <Route path="/projectstatus" element={<ProjectStatus />} />
         {/* 
@@ -146,10 +139,23 @@ function App() {
         <Route path="/" element={<AboutProject />} />
         <Route path="*" element={<NotFoundPage />} />
         <Route path="/unautho" element={<UnAuthorised />} />
-        {/* <Route path="/project/:projectName" element = {<ProjectDetails/>} /> */}
+        <Route path="/project/:projectName" element = {<ProjectDetails/>} />
       </Routes>
+      <ToastContainer
+        position="top-right"
+        autoClose={1500}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+      />
       {/* <div className='p-3'>SYNCORA 
       <p className='px-3'>This is project management system </p>
+
      </div> */}
     </>
   );
