@@ -169,6 +169,7 @@ export const addBug = async (data) => {
 export async function createSprint(data)
 {
   try{
+    console.log("in create print service");
     let url = `${config.serverUrl}/sprints`;
     const token = sessionStorage.getItem('token');
 
@@ -256,6 +257,8 @@ export async function updateSprint(values)
   try{
     values.startDate = formatToLocalDateTime(values.startDate);
     values.endDate = formatToLocalDateTime(values.endDate);
+    console.log("Full values object before update:", values);
+console.log("ID type:", typeof values.id, "ID value:", values.id);
     let url = `${config.serverUrl}/sprints/${values.id}`;
     const token = localStorage.getItem('token');
 

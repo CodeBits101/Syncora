@@ -55,7 +55,7 @@ public class SprintController {
 	 }
  
 	 @PutMapping("/{id}")
-	 public ResponseEntity<ApiResponse> updateSprint(@RequestBody SprintRequestDto requestDto,@PathVariable Long id)
+	 public ResponseEntity<ApiResponse> updateSprint(@RequestBody SprintRequestDto requestDto, @PathVariable Long id)
 	 {
 		 return ResponseEntity.ok(sprintService.updateSprint(requestDto, id));
 	 }

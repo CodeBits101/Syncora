@@ -142,7 +142,7 @@ const Sprints = () => {
   const handleDeleteSprint = async(sprintId, projectId) =>
     {
     try{
-      console.log(projectId);
+      
       setLoading(true);
       await deleteSprint(sprintId);
       toast.success("Sprint Deleted.");
@@ -166,9 +166,10 @@ const Sprints = () => {
   const handleUpdateSprint = async (values) => {
   try {
     console.log(values.id);
+    const projectId = selectedOption;
     await updateSprint(values); 
     toast.success("Sprint updated successfully!");
-    await fetchSprints();
+    await fetchSprints(projectId);
     setOpenModal(false);
     setSelectedSprint(null);
   } catch (ex) {
@@ -330,14 +331,7 @@ const Sprints = () => {
                           >
                             Complete Sprint
                           </Button>
-                          {/* <Button
-                            variant="outlined"
-                            color="info"
-                            onClick={() => navigate(`/sprint-report/${sprint.id}`)}
-                            startIcon={<AssessmentIcon />}
-                          >
-                            View Report
-                          </Button> */}
+                          
                         </>
                       )}
                       </Box>
