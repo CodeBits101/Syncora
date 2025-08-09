@@ -184,7 +184,7 @@ const LoginPage = ({ setRole }) => {
           </a>{" "}
         </p>
       </div>
-      <ToastContainer position="top-center" autoClose={1500} />
+      
     </div>
   );
 };

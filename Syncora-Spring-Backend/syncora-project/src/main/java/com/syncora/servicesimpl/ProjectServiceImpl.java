@@ -1,5 +1,6 @@
 package com.syncora.servicesimpl;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.modelmapper.ModelMapper;
@@ -7,19 +8,27 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.syncora.dtos.ApiResponse;
+import com.syncora.dtos.BackLogResponseDto;
+import com.syncora.dtos.BugRespDto;
 import com.syncora.dtos.ProjectReqDto;
 import com.syncora.dtos.ProjectResponseDto;
 import com.syncora.dtos.ProjectSelectionDto;
 import com.syncora.dtos.ProjectStatusCountDto;
+import com.syncora.dtos.StoryResponseDto;
 import com.syncora.entities.Employee;
 import com.syncora.entities.Project;
 import com.syncora.enums.ProjectStatus;
+import com.syncora.enums.TaskStatus;
 import com.syncora.exceptions.ApiException;
 import com.syncora.exceptions.ResourceNotFoundException;
+import com.syncora.repositories.BugRepo;
 import com.syncora.repositories.DeptRepo;
 import com.syncora.repositories.EmployeeRepo;
 import com.syncora.repositories.ProjectRepo;
+import com.syncora.repositories.StoryRepo;
+import com.syncora.repositories.TaskRepo;
 import com.syncora.services.ProjectService;
+import com.syncora.services.TaskRespDto;
 
 import lombok.AllArgsConstructor;
 
@@ -31,14 +40,18 @@ public class ProjectServiceImpl implements ProjectService{
 	private final ProjectRepo projectRepo;
 	private final ModelMapper modelMapper;
 	private final EmployeeRepo employeeRepo;
+	private final StoryRepo storyRepo ;  
+	private final BugRepo bugRepo ;  
+	private final TaskRepo taskRepo ;  
 	
 
 	
 	@Override
 	public List<ProjectResponseDto> getInProgressProjects() {
-		List<ProjectResponseDto> projects = projectRepo.findByProjectStatus(ProjectStatus.IN_PROGRESS).stream()
+		List<ProjectResponseDto> projects = projectRepo.findByProjectStatus(ProjectStatus.INPROGRESS).stream()
 				.map(project -> { ProjectResponseDto dto = modelMapper.map(project, ProjectResponseDto.class);
 				dto.setManagerId(project.getManager().getId());
+				dto.setManagerName(project.getManager().getEmpName());
 				return dto;
 				}).toList();
 		return projects;
@@ -49,6 +62,7 @@ public class ProjectServiceImpl implements ProjectService{
 		List<ProjectResponseDto> projects = projectRepo.findByProjectStatus(status).stream()
 		.map(project -> {ProjectResponseDto dto = modelMapper.map(project, ProjectResponseDto.class);
 		dto.setManagerId(project.getManager().getId());
+		dto.setManagerName(project.getManager().getEmpName()) ;
 		return dto;
 		}).toList();
 		return projects;
@@ -91,10 +105,42 @@ public class ProjectServiceImpl implements ProjectService{
 
 	@Override
 	public List<ProjectSelectionDto> getProjectByManagerId(Long managerId) {
-	    return projectRepo.findByManagerIdAndProjectStatus(managerId, ProjectStatus.IN_PROGRESS)
+	    return projectRepo.findByManagerIdAndProjectStatus(managerId, ProjectStatus.INPROGRESS)
 	        .stream()
 	        .map(project -> new ProjectSelectionDto(project.getId(), project.getTitle()))
 	        .toList();
+	}
+
+	@Override
+	public BackLogResponseDto getBackLogItems(Long id,Long managerId) {
+		Employee manager  = employeeRepo.findById(managerId)
+				.orElseThrow(()->new ResourceNotFoundException("Employee does not exist")) ;
+		
+		Project project  = projectRepo.findById(id)
+				.orElseThrow(()->new ResourceNotFoundException("Project does not exist")) ;
+		
+		
+	    List<StoryResponseDto> storyDTOs = storyRepo.findByStoryStatusAndCreatedByAndProject(TaskStatus.BACKLOG, manager ,project)
+	            .stream()
+	            .map(s -> new StoryResponseDto(s.getId() ,
+	            		s.getCreatedTimeStamp(),s.getUpdatedTimeStamp(),
+	            		s.getTitle(),s.getDescription(),s.getProject().getId(),s.getStartDate()
+	            		,s.getEndDate(),s.getActualStartDate(),s.getActualEndDate()))
+	            .toList();
+	    
+	
+	    
+	    List<TaskRespDto> taskDTOs = taskRepo.findByStatusAndCreatedByAndProject(TaskStatus.BACKLOG,manager,project)
+	            .stream()
+	            .map(t -> modelMapper.map(t, TaskRespDto.class))
+	            .toList();
+	    
+	    List<BugRespDto> bugDTOs = bugRepo.findByStatusAndReportedByAndProject(TaskStatus.BACKLOG,manager,project)
+	            .stream()
+	            .map(b -> modelMapper.map(b, BugRespDto.class))
+	            .toList();
+		
+		return new BackLogResponseDto(storyDTOs,bugDTOs,taskDTOs);
 	}
 
 
