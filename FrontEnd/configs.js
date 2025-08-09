@@ -191,10 +191,6 @@ export const tester = {
   ],
 };
 
-  
-}
-
-
 export const developer = {
   path: "devHome",
   menu: [

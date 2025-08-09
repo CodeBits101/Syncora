@@ -26,7 +26,12 @@ import EntityFormModal from "../BaseModal/BaseEntityModal";
 import storyFields from "../../FormConfigs/storyFields";
 import { taskFields } from "../../FormConfigs/taskFields";
 import { bugFields } from "../../FormConfigs/bugFields";
-import { getBacklogItems } from "./backlogService";
+import {
+  getBacklogItems,
+  deleteBug,
+  deleteStory,
+  deleteTask,
+} from "./backlogService";
 
 const typeIcons = {
   STORY: <BookmarkBorderOutlinedIcon fontSize="small" color="success" />,
@@ -38,7 +43,7 @@ const typeIcons = {
   Bug: <BugReportIcon fontSize="small" color="error" />,
 };
 
-const statusOptions = ["To Do", "In Progress", "Done"];
+// const statusOptions = ["To Do", "In Progress", "Done"];
 
 export default function BacklogTable() {
   const [modalOpen, setModalOpen] = useState(false);
@@ -57,7 +62,7 @@ export default function BacklogTable() {
     field: "",
     options: [],
   });
-  
+
   // New states for API integration
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -70,19 +75,22 @@ export default function BacklogTable() {
   }, [selectedOption, showMainUI]);
 
   const loadBacklogData = async () => {
-    if (!selectedOption) return;
-    
+    if (!selectedOption) {
+      console.log("LoadBacklogData method issue");
+      return;
+    }
+
     setLoading(true);
     setError(null);
-    
+
     try {
       // Extract project ID from selectedOption (assuming it's the project ID)
       const projectId = selectedOption;
       const data = await getBacklogItems(projectId);
       setRows(data);
     } catch (err) {
-      console.error('Failed to load backlog data:', err);
-      setError('Failed to load backlog data. Please try again.');
+      console.error("Failed to load backlog data:", err);
+      setError("Failed to load backlog data. Please try again.");
       // Fallback to empty array
       setRows([]);
     } finally {
@@ -124,8 +132,24 @@ export default function BacklogTable() {
     handleClose();
   };
 
-  const handleDelete = (id) => {
-    setRows((prevRows) => prevRows.filter((row) => row.id !== id));
+  const handleDelete = async (row) => {
+    try {
+      if (row.type === "BUG") {
+        console.log("Something");
+        await deleteBug(row.backendId);
+      }
+      if (row.type === "TASK") {
+        console.log("Something");
+        await deleteTask(row.backendId);
+      }
+      if (row.type === "STORY") {
+        console.log("Something");
+        await deleteStory(row.backendId);
+      }
+    } catch (err) {
+      console.error("Failed to delete item:", err);
+      setError("Failed to delete item. Please try again.");
+    }
   };
 
   const columns = [
@@ -160,14 +184,17 @@ export default function BacklogTable() {
       width: 120,
       renderCell: (params) => {
         const priorityStyles = {
-          HIGH: { color: "#ff4444", fontWeight: 400 },
-          MEDIUM: { color: "#ffbb33", fontWeight: 400 },
-          LOW: { color: "#00C851", fontWeight: 400 },
-          // Keep backward compatibility
-          High: { color: "#ff4444", fontWeight: 400 },
-          Medium: { color: "#ffbb33", fontWeight: 400 },
+          VERYHIGH: { color: "#cc0000", fontWeight: 400 }, // same deep red
+          HIGH: { color: "#ff6666", fontWeight: 400 }, // softer red than before
+          MEDIUM: { color: "#ffcc66", fontWeight: 400 }, // softer yellow-orange
+          LOW: { color: "#00C851", fontWeight: 400 }, // same green
+          // Backward compatibility
+          VeryHigh: { color: "#cc0000", fontWeight: 400 },
+          High: { color: "#ff6666", fontWeight: 400 },
+          Medium: { color: "#ffcc66", fontWeight: 400 },
           Low: { color: "#00C851", fontWeight: 400 },
         };
+
         return (
           <Box
             sx={{
@@ -215,7 +242,7 @@ export default function BacklogTable() {
             size="small"
             onClick={(e) => {
               e.stopPropagation();
-              handleDelete(params.row.id);
+              handleDelete(params.row); // Use backendId instead of gridId
             }}
             color="error"
           >
@@ -232,7 +259,7 @@ export default function BacklogTable() {
 
     // Handle both new (STORY, TASK, BUG) and old (Story, Task, Bug) formats
     const rowType = row.type?.toUpperCase();
-    
+
     switch (rowType) {
       case "STORY":
         fields = storyFields;
@@ -396,6 +423,7 @@ export default function BacklogTable() {
               <DataGrid
                 rows={filteredRows}
                 columns={columns}
+                getRowId={(row) => row.gridId} // tell DataGrid which field to use
                 initialState={{
                   pagination: {
                     paginationModel: {

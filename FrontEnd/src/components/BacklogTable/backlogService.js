@@ -24,7 +24,8 @@ export const fetchBacklogItems = async (projectId) => {
  */
 export const transformBacklogData = (backendData) => {
   return backendData.map(item => ({
-    id: item.id,
+    gridId: `${item.id}-${item.type}`, // unique for DataGrid
+    backendId: item.id,                // preserve real ID for API updates
     title: item.title,
     type: item.type, // STORY, TASK, BUG
     priority: item.priority, // HIGH, MEDIUM, LOW
@@ -49,4 +50,44 @@ export const getBacklogItems = async (projectId) => {
   }
 };
 
+/**
+ * Delete a story by id
+ * @param {number} id - backend id
+ */
+export const deleteStory = async (id) => {
+  try {
+    // adjust path if backend has a different route
+    await axios.delete(`${BASE_URL}/stories/${id}`);
+  } catch (error) {
+    console.error(`Error deleting story ${id}:`, error);
+    throw error;
+  }
+};
 
+/**
+ * Delete a task by id
+ * @param {number} id - backend id
+ */
+export const deleteTask = async (id) => {
+  try {
+    // adjust path if backend has a different route
+    await axios.delete(`${BASE_URL}/tasks/${id}`);
+  } catch (error) {
+    console.error(`Error deleting task ${id}:`, error);
+    throw error;
+  }
+};
+
+/**
+ * Delete a bug by id
+ * @param {number} id - backend id
+ */
+export const deleteBug = async (id) => {
+  try {
+    // adjust path if backend has a different route
+    await axios.delete(`${BASE_URL}/bugs/${id}`);
+  } catch (error) {
+    console.error(`Error deleting bug ${id}:`, error);
+    throw error;
+  }
+};
