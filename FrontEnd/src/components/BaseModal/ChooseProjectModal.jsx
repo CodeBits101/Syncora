@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Modal, Form, Button, Spinner } from "react-bootstrap";
 import axios from "axios";
+import { getAllInprogressProjects } from "../../services/manager/manager";
 
 export default function ChooseProjectModal({
   showModal,
@@ -27,12 +28,10 @@ export default function ChooseProjectModal({
       setError("");
       console.log("Fetching projects for manager:", managerId);
 
-      const res = await axios.get(
-        `http://localhost:8080/projects/manager/${managerId}`
-      );
+      const res = await getAllInprogressProjects();
 
       console.log("Projects API response:", res.data);
-      setProjects(res.data || []);
+      setProjects(res || []);
     } catch (err) {
       console.error("Error fetching projects:", err);
       setError("Failed to load projects. Please try again.");
@@ -44,7 +43,6 @@ export default function ChooseProjectModal({
   useEffect(() => {
     if (showModal && managerId) {
       fetchProjects();
-      
     }
   }, [showModal, managerId]);
 
@@ -70,10 +68,10 @@ export default function ChooseProjectModal({
             aria-label="Dropdown select"
           >
             <option value="">-- Select Option --</option>
-  {projects.map((project) => (
-    <option key={project.id} value={project.id}>
-      {project.projectTitle}
-    </option>
+            {projects.map((project) => (
+              <option key={project.id} value={project.id}>
+                {project.title}
+              </option>
             ))}
           </Form.Select>
         )}
@@ -83,6 +81,10 @@ export default function ChooseProjectModal({
           variant="primary"
           onClick={handleClose}
           disabled={!selectedOption}
+          style={{
+            cursor: selectedOption ? "pointer" : "not-allowed",
+            opacity: selectedOption ? 1 : 0.6, // optional for visual "disabled" effect
+          }}
         >
           Save
         </Button>

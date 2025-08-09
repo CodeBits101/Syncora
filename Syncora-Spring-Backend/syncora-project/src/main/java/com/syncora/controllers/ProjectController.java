@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -66,6 +67,14 @@ public class ProjectController {
 	public ResponseEntity<?> getProjectByManagerId(@PathVariable Long managerId)
 	{
 		return ResponseEntity.status(HttpStatus.ACCEPTED).body(projectService.getProjectByManagerId(managerId));
+		
+	}
+	
+	@GetMapping("/getbacklog/{id}")
+	public ResponseEntity<?> getBackLogItems(@PathVariable Long id,@RequestHeader("Authorization") String authHeader)
+	{ 
+		Long managerId = jwtUtls.getUserIdFromJwtToken(authHeader) ;
+		return ResponseEntity.status(HttpStatus.ACCEPTED).body(projectService.getBackLogItems(id,managerId));
 		
 	}
 	

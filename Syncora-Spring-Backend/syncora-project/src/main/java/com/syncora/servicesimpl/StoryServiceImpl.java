@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.syncora.dtos.ApiResponse;
 import com.syncora.dtos.BacklogItemDto;
+
 import com.syncora.dtos.StoryReqDto;
 import com.syncora.dtos.StoryResponseDto;
 import com.syncora.entities.Employee;
@@ -63,6 +64,7 @@ public List<StoryResponseDto> getStories(Long uId) {
 	List<Story> stories = project.getStories();
     return stories.stream().map(story -> {
         StoryResponseDto dto = new StoryResponseDto();
+        dto.setId(story.getId());
         dto.setTitle(story.getTitle());
         dto.setDescription(story.getDescription());
 
@@ -133,6 +135,47 @@ public ApiResponse deleteStory(Long id) {
     new ResourceNotFoundException("Story does not exist"));
 	storyRepo.deleteById(id);
 	return new ApiResponse("Story has been deleted successfully...");
+}
+
+@Override
+public List<StoryResponseDto> getStoriesByProjectIdAndSprintId(Long id, Long pid , Long sid) {
+	// TODO Auto-generated method stub
+	Employee emp = empRepo.findById(id)
+			.orElseThrow(()-> new ResourceNotFoundException("Employee does not exist by id...")) ;  
+	Project project = projectRepo.findById(pid)
+			.orElseThrow(()-> new ResourceNotFoundException("Project does not exist by id...")) ;  
+	Sprint sprint = sprintRepo.findById(sid)
+			.orElseThrow(()-> new ResourceNotFoundException("Story does not exist by id...")) ;  
+	List<StoryResponseDto> respList = storyRepo.findByProjectAndCurrentSprintAndCreatedBy(project,sprint , emp).stream()
+			.map(story -> {
+				 StoryResponseDto respDto = new StoryResponseDto();
+				 respDto.setId(story.getId()) ;
+				 respDto.setTitle(story.getTitle());
+				 respDto.setDescription(story.getDescription());
+
+			        if (story.getProject() != null) {
+			        	respDto.setProjectId(story.getProject().getId());
+			        }
+			        respDto.setStartDate(story.getStartDate());
+			        respDto.setEndDate(story.getEndDate());
+			        respDto.setActualStartDate(story.getActualStartDate());
+			        respDto.setActualEndDate(story.getActualEndDate());
+			        
+			        if(story.getCurrentSprint() != null)
+			        {
+			        	respDto.setCurrentSprint(story.getCurrentSprint().getId());
+			        }
+			        if (story.getCreatedBy() != null) {
+			        	respDto.setCreatedBy(story.getCreatedBy().getId());
+			        }
+			        respDto.setCreatedTimeStamp(story.getCreatedTimeStamp());
+			        respDto.setUpdatedTimeStamp(story.getUpdatedTimeStamp());
+			        respDto.setStoryStatus(story.getStoryStatus());
+			        return respDto ;
+			}).toList(); 
+			
+			; 
+	return respList;
 }
 
 

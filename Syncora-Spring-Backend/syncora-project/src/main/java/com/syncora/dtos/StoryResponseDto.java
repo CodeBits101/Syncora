@@ -4,13 +4,17 @@ import java.time.LocalDateTime;
 
 import com.syncora.enums.TaskStatus;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class StoryResponseDto {
-	
+@AllArgsConstructor
+@NoArgsConstructor
+public class StoryResponseDto extends BaseDto {
+
 	private String title;
     private String description;
     private Long projectId;
@@ -21,7 +25,16 @@ public class StoryResponseDto {
 	private Long currentSprint;
 	private TaskStatus storyStatus;
 	private Long createdBy;
-	private LocalDateTime createdTimeStamp;
-	private LocalDateTime updatedTimeStamp;
+	public StoryResponseDto(Long id , LocalDateTime createdTimeStamp , LocalDateTime updateTimeStamp,String title, String description, Long projectId, LocalDateTime startDate,
+			LocalDateTime endDate, LocalDateTime actualStartDate, LocalDateTime actualEndDate) {
+		super(id,createdTimeStamp,updateTimeStamp);
+		this.title = title;
+		this.description = description;
+		this.projectId = projectId;
+		this.startDate = startDate;
+		this.endDate = endDate;
+		this.actualStartDate = actualStartDate;
+		this.actualEndDate = actualEndDate;
+	}
 	
 }

@@ -1,6 +1,6 @@
 // storyFields.js
 
-const storyFields = (projects = [], stories = []) => [
+const storyFields = (projects = [], sprints = []) => [
   {
     name: "title",
     label: "Story Title",
@@ -23,26 +23,15 @@ const storyFields = (projects = [], stories = []) => [
     options: projects,
     required: true,
   },
-
   {
-    name: "sprintId", // renamed from storyPoint
-    label: "Select Sprints",
-    type: "select",
-    options: [
-      { value: 1, label: "Sprint Alpha" },
-      { value: 2, label: "Sprint Beta" },
-      { value: 3, label: "Sprint Gamma" },
-    ],
-  },
-  {
-    name: "startDate",
+    name: "start_date",
     label: "Planned Start Date",
     type: "date",
     required: true,
     InputLabelProps: { shrink: true },
   },
   {
-    name: "endDate",
+    name: "end_date",
     label: "Planned End Date",
     type: "date",
     required: true,
