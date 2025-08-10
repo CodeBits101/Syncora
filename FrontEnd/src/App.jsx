@@ -29,6 +29,7 @@ import BacklogTable from "./components/BacklogTable/BacklogTable";
 
 import Calendar from "./components/Calendar/Calendar";
 import { ToastContainer } from "react-toastify";
+import ProjectDetails from '../src/components/shared/ProjectDetails'
 
 // import ProjectDetails from "./components/shared/ProjectDetails";
 
@@ -139,7 +140,7 @@ function App() {
         <Route path="/" element={<AboutProject />} />
         <Route path="*" element={<NotFoundPage />} />
         <Route path="/unautho" element={<UnAuthorised />} />
-        {/* <Route path="/project/:projectName" element = {<ProjectDetails/>} /> */}
+       <Route path="/project/:projectName" element = {<ProjectDetails/>} />
       </Routes>
       <ToastContainer
         position="top-right"
