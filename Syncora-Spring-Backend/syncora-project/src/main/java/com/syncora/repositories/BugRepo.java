@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.syncora.entities.Bug;
+import com.syncora.entities.Employee;
 import com.syncora.entities.Story;
 import com.syncora.enums.TaskStatus;
 import com.syncora.entities.Project;

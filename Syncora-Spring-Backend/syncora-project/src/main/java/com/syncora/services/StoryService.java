@@ -21,4 +21,6 @@ public interface StoryService {
 	ApiResponse deleteStory(Long id);
 
 	List<StoryResponseDto> getStoriesByProjectIdAndSprintId(Long id, Long pid , Long sid);
+
+	StoryResponseDto getStoryById(Long id);
 }

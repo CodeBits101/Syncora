@@ -22,5 +22,6 @@ public interface TaskService {
 
 	List<TaskRespDto> getTaskByStatus(Long id);
 
+	TaskRespDto getTaskById(Long id);
 
 }

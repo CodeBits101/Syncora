@@ -17,4 +17,5 @@ public interface BugService {
 	ApiResponse changeStatus(TaskStatus changestatus, Long id);
 	List<BugRespDto> getBugByStatus(Long id);
 	ApiResponse deleteBug(Long id);
+	BugRespDto getBugById(Long id);
 }

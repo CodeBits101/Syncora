@@ -23,14 +23,17 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import ChooseProjectModal from "../BaseModal/ChooseProjectModal";
 import { exportPDF } from "../../utils/exportToPdf";
 import EntityFormModal from "../BaseModal/BaseEntityModal";
-import storyFields from "../../FormConfigs/storyFields";
-import { taskFields } from "../../FormConfigs/taskFields";
-import { bugFields } from "../../FormConfigs/bugFields";
+import { updateStoryFields } from "../../FormConfigs/storyFields";
+import { updateTaskFields } from "../../FormConfigs/taskFields";
+import { updateBugFields } from "../../FormConfigs/bugFields";
 import {
   getBacklogItems,
   deleteBug,
   deleteStory,
   deleteTask,
+  getBugById,
+  getStoryById,
+  getTaskById,
 } from "./backlogService";
 
 const typeIcons = {
@@ -66,10 +69,12 @@ export default function BacklogTable() {
   // New states for API integration
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-
+  const [clickedTypeId, setClickedTypeId] = useState(null);
+  const [projectId, setProjectId] = useState(null);
   // Load backlog data when project is selected
   useEffect(() => {
     if (selectedOption && showMainUI) {
+      console.log("In useEffect");
       loadBacklogData();
     }
   }, [selectedOption, showMainUI]);
@@ -85,8 +90,9 @@ export default function BacklogTable() {
 
     try {
       // Extract project ID from selectedOption (assuming it's the project ID)
-      const projectId = selectedOption;
-      const data = await getBacklogItems(projectId);
+      // const projectId = selectedOption;
+      // console.log(`This is what selectedOption is: ${projectId}`);
+      const data = await getBacklogItems(selectedOption);
       setRows(data);
     } catch (err) {
       console.error("Failed to load backlog data:", err);
@@ -134,21 +140,26 @@ export default function BacklogTable() {
 
   const handleDelete = async (row) => {
     try {
-      if (row.type === "BUG") {
-        console.log("Something");
+      setError(null);
+      setLoading(true);
+
+      const type = (row.type || "").toUpperCase();
+
+      if (type === "BUG") {
         await deleteBug(row.backendId);
-      }
-      if (row.type === "TASK") {
-        console.log("Something");
+      } else if (type === "TASK") {
         await deleteTask(row.backendId);
-      }
-      if (row.type === "STORY") {
-        console.log("Something");
+      } else if (type === "STORY") {
         await deleteStory(row.backendId);
       }
+
+      // refetch all items so UI is in sync with backend
+      await loadBacklogData();
     } catch (err) {
       console.error("Failed to delete item:", err);
       setError("Failed to delete item. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -253,41 +264,101 @@ export default function BacklogTable() {
     },
   ];
 
-  const handleUpdate = (row) => {
+  const handleUpdate = async (row) => {
     let fields = [];
     let title = "";
+    let initialValues = {};
 
     // Handle both new (STORY, TASK, BUG) and old (Story, Task, Bug) formats
+
     const rowType = row.type?.toUpperCase();
 
+    //api call here, get type by id and provide the obj returned by the api call to initialValues
     switch (rowType) {
       case "STORY":
-        fields = storyFields;
+        fields = updateStoryFields();
         title = "Edit Story";
+        const storyObj = await getStoryById(row.backendId);
+        const storyFrontendData = {
+          ...storyObj,
+          start_date: storyObj.startDate
+            ? storyObj.startDate.split("T")[0]
+            : "",
+          end_date: storyObj.endDate
+            ? storyObj.endDate.split("T")[0]
+            : "",
+        };
+
+        // Remove old keys
+        delete storyFrontendData.startDate;
+        delete storyFrontendData.endDate;
+
+        // console.log(frontendData);
+        initialValues = storyFrontendData;
+        // console.log(initialValues);
         break;
       case "BUG":
-        fields = bugFields;
+        fields = updateBugFields();
         title = "Edit Bug";
+        const bugObj = await getBugById(row.backendId);
+        const bugFrontendData = {
+          ...bugObj,
+          start_date: bugObj.startDate
+            ? bugObj.startDate.split("T")[0]
+            : "",
+          end_date: bugObj.endDate
+            ? bugObj.endDate.split("T")[0]
+            : "",
+        };
+
+        // Remove old keys
+        delete bugFrontendData.startDate;
+        delete bugFrontendData.endDate;
+
+        // console.log(frontendData);
+        initialValues = bugFrontendData;
+        // console.log(initialValues);
         break;
       case "TASK":
-        fields = taskFields;
+        fields = updateTaskFields()
         title = "Edit Task";
+        const taskObj = await getTaskById(row.backendId);
+        const taskFrontendData = {
+          ...taskObj,
+          start_date: taskObj.startDate
+            ? taskObj.startDate.split("T")[0]
+            : "",
+          end_date: taskObj.endDate
+            ? taskObj.endDate.split("T")[0]
+            : "",
+        };
+
+        // Remove old keys
+        delete taskFrontendData.startDate;
+        delete taskFrontendData.endDate;
+        // console.log(frontendData);
+        initialValues = taskFrontendData;
+        // console.log(initialValues);
         break;
+
       default:
         return;
     }
 
     // Construct initial values from the fields
-    const initialValues = {};
-    fields.forEach((field) => {
-      initialValues[field.name] = row[field.name] ?? ""; // Fallback to empty string
-    });
+
+    // fields.forEach((field) => {
+    //   initialValues[field.name] = row[field.name] ?? ""; // Fallback to empty string
+    // });
 
     setModalFields(fields);
     setModalTitle(title);
     setModalInitialValues(initialValues);
+    setProjectId(initialValues.projectId);
     setModalEntityType(row.type);
+    setClickedTypeId(row.backendId);
     setModalOpen(true);
+    
   };
 
   const handleModalSubmit = (updatedValues) => {
@@ -314,7 +385,7 @@ export default function BacklogTable() {
       </Box>
     );
   }
-
+  console.log(modalInitialValues);
   return (
     <>
       <ChooseProjectModal
@@ -479,6 +550,8 @@ export default function BacklogTable() {
         fields={modalFields}
         initialValues={modalInitialValues}
         onSubmit={handleModalSubmit}
+        gridLayout={true}
+        id={clickedTypeId}
       />
     </>
   );

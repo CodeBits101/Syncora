@@ -179,6 +179,34 @@ public List<StoryResponseDto> getStoriesByProjectIdAndSprintId(Long id, Long pid
 	return respList;
 }
 
+@Override
+public StoryResponseDto getStoryById(Long id) {
+    Story story = storyRepo.findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException("Story not found with id: " + id));
+
+    StoryResponseDto dto = new StoryResponseDto();
+
+    // BaseDto fields
+    dto.setId(story.getId());
+    dto.setCreatedTimeStamp(story.getCreatedTimeStamp());
+    dto.setUpdatedTimeStamp(story.getUpdatedTimeStamp());
+
+    // StoryResponseDto fields
+    dto.setTitle(story.getTitle());
+    dto.setProjectName(story.getProject().getTitle());
+    dto.setDescription(story.getDescription());
+    dto.setProjectId(story.getProject() != null ? story.getProject().getId() : null);
+    dto.setStartDate(story.getStartDate());
+    dto.setEndDate(story.getEndDate());
+    dto.setActualStartDate(story.getActualStartDate());
+    dto.setActualEndDate(story.getActualEndDate());
+    dto.setCurrentSprint(story.getCurrentSprint() != null ? story.getCurrentSprint().getId() : null);
+    dto.setStoryStatus(story.getStoryStatus());
+    dto.setCreatedBy(story.getCreatedBy() != null ? story.getCreatedBy().getId() : null);
+
+    return dto;
+}
+
 
 
 }

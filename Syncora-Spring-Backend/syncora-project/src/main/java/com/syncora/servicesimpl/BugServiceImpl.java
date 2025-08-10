@@ -177,4 +177,22 @@ public class BugServiceImpl implements BugService {
                 .collect(Collectors.toList());
     }
 
+	@Override
+	public BugRespDto getBugById(Long id) {
+	    Bug bug = bugRepo.findById(id)
+	            .orElseThrow(() -> new ResourceNotFoundException("Bug not found with id: " + id));
+	    BugRespDto respDto = modelMapper.map(bug, BugRespDto.class);
+	    respDto.setProjectName(bug.getProject().getTitle());
+	    respDto.setProjectId(bug.getProject().getId());
+	    if(bug.getSprint()!=null) {
+	    	respDto.setSprintName(bug.getSprint().getSprintName());
+	    }
+	    if(bug.getStory()!=null) {
+	    	respDto.setStoryName(bug.getStory().getTitle());
+	    }   
+	    respDto.setReportedBy(bug.getReportedBy().getEmpName());
+	    respDto.setAssignedTo(bug.getAssignedTo().getEmpName());
+	    respDto.setAssignedToId(bug.getAssignedTo().getId());
+	    return respDto;
+	}
 }

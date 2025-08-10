@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 
 import com.syncora.dtos.ApiResponse;
 import com.syncora.dtos.BacklogItemDto;
+import com.syncora.dtos.BugRespDto;
 import com.syncora.dtos.TaskReqDto;
 import com.syncora.entities.Employee;
 import com.syncora.entities.Project;
@@ -177,5 +178,24 @@ public List<BacklogItemDto> getBacklogTasks(Long projectId) {
 		return taskList;
 
 	}
+
+	@Override
+	public TaskRespDto getTaskById(Long id) {
+	    Task task = taskRepo.findById(id)
+	            .orElseThrow(() -> new ResourceNotFoundException("Task not found with id: " + id));
+	    TaskRespDto respDto = modelMapper.map(task, TaskRespDto.class);
+	    respDto.setProjectName(task.getProject().getTitle());
+	    respDto.setProjectId(task.getProject().getId());
+	    if(task.getSprint()!=null) {
+	    	respDto.setSprintName(task.getSprint().getSprintName());
+	    }
+	    if(task.getStory()!=null) {
+	    	respDto.setStoryName(task.getStory().getTitle());
+	    }   
+	    respDto.setAssignedTo(task.getAssignedTo().getEmpName());
+	    respDto.setAssignedToId(task.getAssignedTo().getId());
+	    return respDto;
+	}
+
 
 }
