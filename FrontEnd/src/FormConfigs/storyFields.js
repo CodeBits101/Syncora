@@ -1,6 +1,6 @@
 // storyFields.js
 
-const storyFields = (projects = [], sprints = []) => [
+export const storyFields = (projects = [], sprints = []) => [
   {
     name: "title",
     label: "Story Title",
@@ -39,4 +39,43 @@ const storyFields = (projects = [], sprints = []) => [
   },
 ];
 
-export default storyFields;
+
+
+export const updateStoryFields = (projects = [], sprints = []) => [
+  {
+    name: "title",
+    label: "Story Title",
+    type: "text",
+    placeholder: "Enter story title",
+    required: true,
+  },
+  {
+    name: "description",
+    label: "Description",
+    type: "textarea",
+    placeholder: "Describe the story",
+    required: false,
+  },
+
+  {
+    name: "projectName", // renamed from storyPoint
+    label: "Project Name",
+    type: "text",
+    required: true,
+  },
+  {
+    name: "start_date",
+    label: "Planned Start Date",
+    type: "date",
+    required: true,
+    InputLabelProps: { shrink: true },
+  },
+  {
+    name: "end_date",
+    label: "Planned End Date",
+    type: "date",
+    required: true,
+    InputLabelProps: { shrink: true },
+  },
+];
+

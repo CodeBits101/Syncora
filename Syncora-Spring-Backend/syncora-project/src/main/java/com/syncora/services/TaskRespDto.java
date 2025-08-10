@@ -30,4 +30,8 @@ public class TaskRespDto extends CommonReqDto {
 	private int storyPoint;
 	private boolean debugFlag;
 	private boolean testingFlag;
+	
+	//Newly added for backlog update
+	private Long projectId;
+	private Long assignedToId;
 }

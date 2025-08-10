@@ -11,7 +11,7 @@ public interface TaskService {
 
 	ApiResponse createTask(TaskReqDto dto , Long id);
 
-	List<BacklogItemDto> getBacklogTasks();
+	List<BacklogItemDto> getBacklogTasks(Long projectId);
 
 
 	ApiResponse deleteTask(Long id);
@@ -22,5 +22,6 @@ public interface TaskService {
 
 	List<TaskRespDto> getTaskByStatus(Long id);
 
+	TaskRespDto getTaskById(Long id);
 
 }

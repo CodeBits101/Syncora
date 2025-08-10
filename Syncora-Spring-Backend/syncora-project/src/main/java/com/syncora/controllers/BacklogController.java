@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -25,9 +26,9 @@ public class BacklogController {
     
     private final BacklogService backlogService;
     
-    @GetMapping("/items")
-    public ResponseEntity<List<BacklogItemDto>> getBacklogItems() {
-        List<BacklogItemDto> backlogItems = backlogService.getBacklogItems();
+    @GetMapping("/items/{projectId}")
+    public ResponseEntity<List<BacklogItemDto>> getBacklogItems(@PathVariable Long projectId) {
+        List<BacklogItemDto> backlogItems = backlogService.getBacklogItems(projectId);
         return ResponseEntity.ok(backlogItems);
     }
 }

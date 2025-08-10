@@ -16,6 +16,7 @@ import com.syncora.entities.Employee;
 import com.syncora.entities.Project;
 import com.syncora.entities.Sprint;
 import com.syncora.entities.Story;
+import com.syncora.enums.TaskPriority;
 import com.syncora.enums.TaskStatus;
 import com.syncora.exceptions.ResourceNotFoundException;
 import com.syncora.repositories.StoryRepo;
@@ -36,21 +37,21 @@ public class StoryServiceImpl implements StoryService {
    private final SprintRepo sprintRepo;
    private final EmployeeRepo empRepo;
    
-   @Override
-   public List<BacklogItemDto> getBacklogStories() {
-       List<Story> stories = storyRepo.findByCurrentSprintIsNull();
-       return stories.stream()
-               .map(story -> {
-                   
-                   return new BacklogItemDto(
-                       "STORY",
-                       story.getTitle(),
-                       story.getStoryStatus(),
-                       story.getId()
-                   );
-               })
-               .collect(Collectors.toList());
-   }
+       @Override
+    public List<BacklogItemDto> getBacklogStories(Long projectId) {
+        List<Story> stories = storyRepo.findByStoryStatusAndProjectId(TaskStatus.BACKLOG, projectId);
+        return stories.stream()
+                .map(story -> {
+                    return new BacklogItemDto(
+                        "STORY",
+                        story.getTitle(),
+                        TaskPriority.HIGH,  // Stories get HIGH priority
+                        null,               // Stories don't have assignedTo
+                        story.getId()
+                    );
+                })
+                .collect(Collectors.toList());
+    }
 
    @Override
 public List<StoryResponseDto> getStories(Long uId) {
@@ -176,6 +177,34 @@ public List<StoryResponseDto> getStoriesByProjectIdAndSprintId(Long id, Long pid
 			
 			; 
 	return respList;
+}
+
+@Override
+public StoryResponseDto getStoryById(Long id) {
+    Story story = storyRepo.findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException("Story not found with id: " + id));
+
+    StoryResponseDto dto = new StoryResponseDto();
+
+    // BaseDto fields
+    dto.setId(story.getId());
+    dto.setCreatedTimeStamp(story.getCreatedTimeStamp());
+    dto.setUpdatedTimeStamp(story.getUpdatedTimeStamp());
+
+    // StoryResponseDto fields
+    dto.setTitle(story.getTitle());
+    dto.setProjectName(story.getProject().getTitle());
+    dto.setDescription(story.getDescription());
+    dto.setProjectId(story.getProject() != null ? story.getProject().getId() : null);
+    dto.setStartDate(story.getStartDate());
+    dto.setEndDate(story.getEndDate());
+    dto.setActualStartDate(story.getActualStartDate());
+    dto.setActualEndDate(story.getActualEndDate());
+    dto.setCurrentSprint(story.getCurrentSprint() != null ? story.getCurrentSprint().getId() : null);
+    dto.setStoryStatus(story.getStoryStatus());
+    dto.setCreatedBy(story.getCreatedBy() != null ? story.getCreatedBy().getId() : null);
+
+    return dto;
 }
 
 

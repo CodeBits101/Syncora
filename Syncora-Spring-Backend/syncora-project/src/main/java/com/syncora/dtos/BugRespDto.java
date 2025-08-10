@@ -21,5 +21,7 @@ public class BugRespDto extends CommonReqDto {
 	private String sprintName; 
 	private String storyName; 
 	private int storyPoint;
+	private Long projectId;
+	private Long assignedToId;
 	
 }
