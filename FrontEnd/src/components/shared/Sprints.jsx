@@ -195,14 +195,7 @@ const Sprints = () => {
     }
   }, [selectedOption]);
 
-
-  const statusColorMap = {
-  INPROGRESS: "warning",
-  TODO: "default",
-  TESTING: "error",
-  DEPLOYMENT: "success",
-  BACKLOG: "primary"
-  };
+ 
 
   return (
     <>
@@ -293,7 +286,9 @@ const Sprints = () => {
                 overflow: "hidden",
                 backgroundColor: "white",
               }}>
-        <TableContainer component={Paper} sx={{ width: '100%', maxHeight: 300 }}>
+
+  
+  <TableContainer component={Paper} sx={{ width: '100%', maxHeight: 300 }}>
   <Table stickyHeader size="small"  sx={{ width: '100%', tableLayout: 'fixed' }}>
     <TableHead>
       <TableRow>
@@ -342,6 +337,7 @@ const Sprints = () => {
 
 
     {/* BUTTONS ROW */}
+    {userRole == "ROLE_MANAGER" &&(  
     <Box sx={{ mt: 3, display: "flex", gap: 2, flexWrap: "wrap" }}>
       {category === "BACKLOG" && (
         <>
@@ -399,9 +395,9 @@ const Sprints = () => {
         </>
       )}
     </Box>
-
+    )}
     {/* Warning */}
-    {category === "BACKLOG" && sprints.ACTIVE.length > 0 && (
+    {(category === "BACKLOG" && userRole == "ROLE_MANAGER") && sprints.ACTIVE.length > 0 && (
       <Typography variant="caption" color="error" sx={{ mt: 1, display: "block" }}>
         Cannot start new sprint while another sprint is active
       </Typography>
