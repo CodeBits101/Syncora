@@ -1,5 +1,7 @@
 package com.syncora.servicesimpl;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -174,7 +176,7 @@ public class SprintServiceImpl implements SprintService {
 	        .orElseThrow(() -> new ResourceNotFoundException("Sprint does not exist!"));
 
 	    SprintStatus status = sprint.getSprintStatus();
-
+// server side validation
 	    if (status == SprintStatus.ACTIVE || status == SprintStatus.COMPLETED) {
 	        throw new ApiException("Cannot delete Active or Completed sprints.");
 	    }
@@ -183,4 +185,26 @@ public class SprintServiceImpl implements SprintService {
 	    return new ApiResponse("Sprint deleted successfully.");
 	}
 
+	@Override
+	public ApiResponse startSprint(Long id, Long projectId) {
+		//server side validation
+		if(sprintRepo.existsByProjectIdAndSprintStatus(projectId, SprintStatus.ACTIVE))
+		{
+			throw new ApiException("Projet Already has an Active Sprint");
+		}
+		Sprint sprint = sprintRepo.findById(id).orElseThrow(()-> new ResourceNotFoundException("Sprint Does not exist"));
+		sprint.setSprintStatus(SprintStatus.ACTIVE);
+		sprint.setActualStartDate(LocalDateTime.now());
+		return new ApiResponse("Sprint Started");
+	}
+
+	@Override
+	public ApiResponse completeSprint(Long id) {
+		Sprint sprint = sprintRepo.findById(id).orElseThrow(()-> new ResourceNotFoundException("Sprint Does not exists"));
+		sprint.setSprintStatus(SprintStatus.COMPLETED);
+		sprint.setActualEndDate(LocalDateTime.now());
+		return new ApiResponse("Sprint Completed.");
+	}
+
+	
 }
