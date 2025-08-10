@@ -309,8 +309,7 @@ const Sprints = () => {
           <TableRow
             key={`${item.type}-${item.id}`}
             sx={{ '&:hover': { backgroundColor: '#f5f5f5' } }}
-          >
-            <TableCell>
+          ><TableCell>
               {item.type === 'task' ? (
                 <TaskIcon color="primary" sx={{ verticalAlign: 'middle', mr: 1 }} />
               ) : (
