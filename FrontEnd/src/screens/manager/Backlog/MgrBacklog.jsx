@@ -4,7 +4,7 @@ import { Box } from "@mui/material";
 import { Dropdown } from "react-bootstrap";
 
 import EntityFormModal from "../../../components/BaseModal/BaseEntityModal";
-import storyFields from "../../../FormConfigs/storyFields";
+import { storyFields } from "../../../FormConfigs/storyFields";
 
 import BacklogTable from "../../../components/BacklogTable/BacklogTable";
 import { sprintFields } from "../../../FormConfigs/sprintFields";
