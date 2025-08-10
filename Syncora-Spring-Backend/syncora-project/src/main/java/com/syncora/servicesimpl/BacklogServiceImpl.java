@@ -24,17 +24,17 @@ public class BacklogServiceImpl implements BacklogService {
     private final BugService bugService;
     
     @Override
-    public List<BacklogItemDto> getBacklogItems() {
+    public List<BacklogItemDto> getBacklogItems(Long projectId) {
         List<BacklogItemDto> backlogItems = new ArrayList<>();
         
-        // Add stories (no sprint)
-        backlogItems.addAll(storyService.getBacklogStories());
+        // Add stories (no sprint AND belong to project)
+        backlogItems.addAll(storyService.getBacklogStories(projectId));
         
-        // Add tasks (no sprint AND no story)
-        backlogItems.addAll(taskService.getBacklogTasks());
+        // Add tasks (no sprint AND no story AND belong to project)
+        backlogItems.addAll(taskService.getBacklogTasks(projectId));
         
-        // Add bugs (no sprint AND no story)
-        backlogItems.addAll(bugService.getBacklogBugs());
+        // Add bugs (no sprint AND no story AND belong to project)
+        backlogItems.addAll(bugService.getBacklogBugs(projectId));
         
         return backlogItems;
     }

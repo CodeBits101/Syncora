@@ -56,6 +56,12 @@ public ResponseEntity<?> updateStory(@RequestBody StoryReqDto dto, @PathVariable
 	
 }
 
+@GetMapping("/{id}")
+public ResponseEntity<?> getStoryById
+(@PathVariable Long id) { 
+    return ResponseEntity.status(HttpStatus.CREATED).body(storyService.getStoryById(id)) ; 
+}
+
 @DeleteMapping("/{id}")
 public ResponseEntity<?> deleteStory(@PathVariable long id)
 {

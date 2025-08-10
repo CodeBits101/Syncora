@@ -13,15 +13,18 @@ import com.syncora.entities.Project;
 
 
 
+import com.syncora.enums.TaskStatus;
 
 public interface TaskRepo extends JpaRepository<Task, Long> {
 
 
-	List<Task> findBySprintIsNullAndStoryIsNull();
+    	List<Task> findByStatusAndProjectId(TaskStatus status, Long projectId);
 
    List<Task> findByStory(Story story);
    
    List<Task> findByStatusAndCreatedByAndProject(TaskStatus status, Employee createdBy, Project project);
    
+
+   List<Task> findBySprint_Id(Long sprintId);
 
 }

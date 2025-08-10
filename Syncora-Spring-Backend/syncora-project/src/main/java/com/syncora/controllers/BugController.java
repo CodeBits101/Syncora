@@ -60,6 +60,12 @@ public class BugController {
        return ResponseEntity.status(HttpStatus.CREATED).body(bugService.getBugByStatus(id)) ; 
    }
    
+   @GetMapping("/{id}")
+   public ResponseEntity<?> getBugById
+   (@PathVariable Long id) { 
+       return ResponseEntity.status(HttpStatus.CREATED).body(bugService.getBugById(id)) ; 
+   }
+   
    @DeleteMapping("/{id}")
    public ResponseEntity<?> deleteBug(@PathVariable Long id) {
        return ResponseEntity.status(HttpStatus.CREATED).body(bugService.deleteBug(id)) ; 

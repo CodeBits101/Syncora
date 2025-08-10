@@ -25,6 +25,10 @@ public class StoryResponseDto extends BaseDto {
 	private Long currentSprint;
 	private TaskStatus storyStatus;
 	private Long createdBy;
+	
+	//Newly added field for help with backlog update feature story modal
+	private String projectName;
+	
 	public StoryResponseDto(Long id , LocalDateTime createdTimeStamp , LocalDateTime updateTimeStamp,String title, String description, Long projectId, LocalDateTime startDate,
 			LocalDateTime endDate, LocalDateTime actualStartDate, LocalDateTime actualEndDate) {
 		super(id,createdTimeStamp,updateTimeStamp);

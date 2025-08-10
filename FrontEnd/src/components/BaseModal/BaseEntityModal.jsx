@@ -45,10 +45,13 @@ export default function EntityFormModal({
   initialValues,
   onSubmit,
   gridLayout = false,
+  id,
   submitLabel = "Create"
 }) {
 // export default function EntityFormModal({ open, handleClose, title, fields, initialValues, onSubmit, submitLabel = "Create"}) {
   // Build base validation schema dynamically from fields
+
+  console.log(id)
 
   let schema = Yup.object(
     fields.reduce((acc, field) => {
@@ -292,7 +295,7 @@ export default function EntityFormModal({
                 {/* <Box mt={2} display="flex" justifyContent="flex-end" gap={2}>
                   <Button onClick={handleClose}>Cancel</Button>
                   <Button type="submit" variant="contained" color="primary">
-                    Create
+                    {id?"Update":"Create"}
                   </Button>
                 </Box> */}
               <Box mt={2} display="flex" justifyContent="flex-end" gap={2}>

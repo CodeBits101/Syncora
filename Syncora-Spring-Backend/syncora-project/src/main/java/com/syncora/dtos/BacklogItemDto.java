@@ -28,6 +28,13 @@ public class BacklogItemDto {
 		this.status = status;
 		this.id = id;
 	}
-    
-    
+	
+	public BacklogItemDto(String type, String title, TaskPriority priority, String assignedToName, Long id) {
+		this.type = type;
+		this.title = title;
+		this.priority = priority;
+		this.assignedToName = assignedToName;
+		this.id = id;
+	}
+        
 }

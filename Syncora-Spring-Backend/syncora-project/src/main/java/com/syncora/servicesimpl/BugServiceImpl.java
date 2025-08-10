@@ -159,8 +159,8 @@ public class BugServiceImpl implements BugService {
 	}
     
     @Override
-    public List<BacklogItemDto> getBacklogBugs() {
-        List<Bug> bugs = bugRepo.findBySprintIsNullAndStoryIsNull();
+    public List<BacklogItemDto> getBacklogBugs(Long projectId) {
+        List<Bug> bugs = bugRepo.findByStatusAndProjectId(TaskStatus.BACKLOG, projectId);
         return bugs.stream()
                 .map(bug -> {
                     String assignedToName = bug.getAssignedTo() != null ? 
@@ -169,13 +169,30 @@ public class BugServiceImpl implements BugService {
                     return new BacklogItemDto(
                         "BUG",
                         bug.getTitle(),
-                        bug.getStatus(),
+                        bug.getPriority(),
                         assignedToName,
-                        bug.getId(),
-                        bug.getPriority()
+                        bug.getId()
                     );
                 })
                 .collect(Collectors.toList());
     }
 
+	@Override
+	public BugRespDto getBugById(Long id) {
+	    Bug bug = bugRepo.findById(id)
+	            .orElseThrow(() -> new ResourceNotFoundException("Bug not found with id: " + id));
+	    BugRespDto respDto = modelMapper.map(bug, BugRespDto.class);
+	    respDto.setProjectName(bug.getProject().getTitle());
+	    respDto.setProjectId(bug.getProject().getId());
+	    if(bug.getSprint()!=null) {
+	    	respDto.setSprintName(bug.getSprint().getSprintName());
+	    }
+	    if(bug.getStory()!=null) {
+	    	respDto.setStoryName(bug.getStory().getTitle());
+	    }   
+	    respDto.setReportedBy(bug.getReportedBy().getEmpName());
+	    respDto.setAssignedTo(bug.getAssignedTo().getEmpName());
+	    respDto.setAssignedToId(bug.getAssignedTo().getId());
+	    return respDto;
+	}
 }

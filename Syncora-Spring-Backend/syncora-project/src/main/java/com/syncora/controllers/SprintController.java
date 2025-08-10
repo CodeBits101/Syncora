@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.syncora.dtos.ApiResponse;
 import com.syncora.dtos.SprintRequestDto;
 import com.syncora.dtos.SprintResponseDto;
+import com.syncora.dtos.SprintItemsRespDto;
 import com.syncora.services.SprintService;
 
 import lombok.AllArgsConstructor;
@@ -36,17 +37,17 @@ public class SprintController {
  private final SprintService sprintService ; 
 	
 	//  BASIC CRUD
-	 @GetMapping
-	 public ResponseEntity<List<SprintResponseDto>> getAllSprints()
-	 {
-		 return ResponseEntity.ok(sprintService.getAllSprints());
-	 }
-	 
-	 @GetMapping("/{id}")
-	 public ResponseEntity<List<SprintResponseDto>> getSprint(@PathVariable Long id)
-	 {
-		 return ResponseEntity.ok(sprintService.getSprintByProjectId(id));
-	 }
+ @GetMapping
+ public ResponseEntity<List<SprintResponseDto>> getAllSprints()
+ {
+     return ResponseEntity.ok(sprintService.getAllSprints());
+ }
+ 
+ @GetMapping("/{id}")
+ public ResponseEntity<List<SprintResponseDto>> getSprint(@PathVariable Long id)
+ {
+     return ResponseEntity.ok(sprintService.getSprintByProjectId(id));
+ }
 	 
 	 @PostMapping
 	 public ResponseEntity<ApiResponse> createSprint(@RequestBody SprintRequestDto requestDto)
@@ -78,6 +79,16 @@ public class SprintController {
 		 return ResponseEntity.ok(sprintService.completeSprint(id));
 	 }
 	 
- 
+	 @GetMapping("/project/{projectId}")
+	 public ResponseEntity<List<SprintResponseDto>> getSprintsByProject(@PathVariable Long projectId)
+	 {
+	     return ResponseEntity.ok(sprintService.getSprintByProjectId(projectId));
+	 }
+
+	 @GetMapping("/items/{sprintId}")
+		 public ResponseEntity<SprintItemsRespDto> getSprintItems(@PathVariable Long sprintId)
+		 {
+			 return ResponseEntity.ok(sprintService.getSprintItems(sprintId));
+		 }
  
 }

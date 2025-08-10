@@ -6,5 +6,5 @@ import com.syncora.dtos.BacklogItemDto;
 
 public interface BacklogService {
 
-	List<BacklogItemDto> getBacklogItems();
+	List<BacklogItemDto> getBacklogItems(Long projectId);
 }

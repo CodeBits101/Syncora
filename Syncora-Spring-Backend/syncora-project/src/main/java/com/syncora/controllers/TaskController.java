@@ -35,8 +35,6 @@ public class TaskController {
 	private final JwtUtils jwtUtils;
 	private  AuthenticationManager authenticationManager;
 	 private final TaskService taskService ; 
-	 
-	 
   
   @PostMapping("/add")
   public ResponseEntity<?> createTask
@@ -61,6 +59,12 @@ public class TaskController {
   public ResponseEntity<?> getTaskByStatus
   (@PathVariable Long id) { 
       return ResponseEntity.status(HttpStatus.CREATED).body(taskService.getTaskByStatus(id)) ; 
+  }
+  
+  @GetMapping("/{id}")
+  public ResponseEntity<?> getTaskById
+  (@PathVariable Long id) { 
+      return ResponseEntity.status(HttpStatus.CREATED).body(taskService.getTaskById(id)) ; 
   }
   
   @DeleteMapping("/{id}")
