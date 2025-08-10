@@ -27,6 +27,7 @@ public class SprintResponseDto {
     private Set<Long> storyIds;
     private List<TaskResponseDto> tasks;
     private List<BugRespDto> bugs;
+//    private List<SubtasksRespDto> subtasks;
     private SprintStatus sprintStatus;
     
     public void setTasks(List<TaskResponseDto> tasks) {

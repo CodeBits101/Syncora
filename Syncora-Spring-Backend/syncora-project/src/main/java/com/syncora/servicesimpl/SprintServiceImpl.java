@@ -149,9 +149,24 @@ public class SprintServiceImpl implements SprintService {
 			                .collect(Collectors.toList())
 			        );
 
+//					dto.setSubtasks(
+//							subtaskRepo.findBySprintId(sprint.getId())
+//	                    .stream()
+//	                    .map(subtask -> {
+//	                        SubtaskRespDto st = new SubtaskRespDto();
+//	                        st.setId(subtask.getId());
+//	                        st.setTaskId(subtask.getTask() != null ? subtask.getTask().getId() : null);
+//	                        st.setBugId(subtask.getBug() != null ? subtask.getBug().getId() : null);
+//	                        st.setTitle(subtask.getTitle());
+//	                        return st;
+//	                    })
+//	                    .collect(Collectors.toList())
+//	            );
+
 			        return dto;
 			    })
 			    .collect(Collectors.toList());
+
 
 	}				
 
