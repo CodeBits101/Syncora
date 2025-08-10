@@ -28,7 +28,7 @@ const EyeIconWrapper = styled('span')({
   alignItems: 'center',
 });
 
-const TaskCard = ({ task, index, columnId, overlay = false, updateTask = () => {} }) => {
+const TaskCard = ({ task, index, columnId, overlay = false, sprintId, projectId, updateTask = () => {} }) => {
   const id = `${columnId}:${index}`;
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id });
   const [modalOpen, setModalOpen] = React.useState(false);
@@ -109,7 +109,7 @@ const TaskCard = ({ task, index, columnId, overlay = false, updateTask = () => {
           <EyeIconWrapper onClick={e => { e.stopPropagation(); setModalTask(task); setModalOpen(true); }}>
             <VisibilityIcon fontSize="small" sx={{ opacity: 0.7 }} />
           </EyeIconWrapper>
-          <EyeModal open={modalOpen} onClose={() => setModalOpen(false)} task={modalTask} updateTask={updateTask} />
+          <EyeModal open={modalOpen} onClose={() => setModalOpen(false)} task={modalTask} updateTask={updateTask} sprintId={sprintId} projectId={projectId}/>
         </Box>
       </CardContent>
     </Card>

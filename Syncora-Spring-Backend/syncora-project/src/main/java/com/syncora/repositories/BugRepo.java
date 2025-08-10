@@ -19,4 +19,5 @@ public interface BugRepo extends JpaRepository<Bug, Long> {
 	List<Bug> findByStory(Story story);
 	
 	List<Bug> findByStatusAndReportedByAndProject(TaskStatus status, Employee reportedBy, Project project);
+
 }

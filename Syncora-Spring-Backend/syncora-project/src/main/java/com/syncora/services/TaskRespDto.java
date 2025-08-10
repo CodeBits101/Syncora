@@ -34,4 +34,5 @@ public class TaskRespDto extends CommonReqDto {
 	//Newly added for backlog update
 	private Long projectId;
 	private Long assignedToId;
+	
 }

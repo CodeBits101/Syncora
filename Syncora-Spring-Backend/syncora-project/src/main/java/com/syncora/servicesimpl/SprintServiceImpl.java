@@ -121,38 +121,90 @@ public class SprintServiceImpl implements SprintService {
 			            .map(Story::getId)
 			            .collect(Collectors.toSet())
 			        );
-
+			        
 			        dto.setTasks(
-			            sprint.getTasks()
-			                .stream()
-			                .map(task -> {
-			                    TaskResponseDto t = new TaskResponseDto();
-			                    t.setId(task.getId());
-			                    t.setTitle(task.getTitle());
-			                    t.setStatus(task.getStatus());
-			                    return t;
-			                })
-			                .collect(Collectors.toList())
-			        );
+			        	    sprint.getTasks()
+			        	        .stream()
+			        	        .map(task -> {
+			        	            TaskRespDto t = new TaskRespDto();
+			        	            t.setId(task.getId());
+			        	            t.setTitle(task.getTitle());
+			        	            t.setStatus(task.getStatus());
+			        	            t.setPriority(task.getPriority());
+			        	            t.setDescription(task.getDescription());
+			        	            t.setStartDate(task.getStartDate());
+			        	            t.setEndDate(task.getEndDate());
+			        	            
+			        	            if (task.getAssignedTo() != null) {
+			        	                t.setAssignedTo(task.getAssignedTo().getEmpName());
+			        	                t.setAssignedToId(task.getAssignedTo().getId());
+			        	            }
+			        	            if (task.getCreatedBy() != null) {
+			        	                t.setCreatedBy(task.getCreatedBy().getEmpName());
+			        	            }
+			        	            if (task.getProject() != null) {
+			        	                t.setProjectName(task.getProject().getTitle());
+			        	                t.setProjectId(task.getProject().getId());
+			        	            }
+			        	            if (task.getSprint() != null) {
+			        	                t.setSprintName(task.getSprint().getSprintName());
+			        	            }
+			        	            if (task.getStory() != null) {
+			        	                t.setStoryName(task.getStory().getTitle());
+			        	            }
+			        	            
+			        	            t.setDebugCount(task.getDebugCount());
+			        	            t.setStoryPoint(task.getStoryPoint());
+			        	            t.setDebugFlag(task.isDebugFlag());
+			        	            t.setTestingFlag(task.isTestingFlag());
+
+			        	            return t;
+			        	        })
+			        	        .collect(Collectors.toList())
+			        	);
+
 
 			        dto.setBugs(
-			            sprint.getBugs()
-			                .stream()
-			                .map(bug -> {
-			                    BugRespDto b = new BugRespDto();
-			                    b.setId(bug.getId());
-			                    b.setTitle(bug.getTitle());
-			                    b.setPriority(bug.getPriority());
-			                    b.setStatus(bug.getStatus());
-			                    return b;
-			                })
-			                .collect(Collectors.toList())
-			        );
+			        	    sprint.getBugs()
+			        	        .stream()
+			        	        .map(bug -> {
+			        	            BugRespDto b = new BugRespDto();
+			        	            b.setId(bug.getId());
+			        	            b.setTitle(bug.getTitle());
+			        	            b.setPriority(bug.getPriority());
+			        	            b.setStatus(bug.getStatus());
+			        	            b.setDescription(bug.getDescription());
+			        	            b.setStartDate(bug.getStartDate());
+			        	            b.setEndDate(bug.getEndDate());
 
+			        	            if (bug.getAssignedTo() != null) {
+			        	                b.setAssignedTo(bug.getAssignedTo().getEmpName());
+			        	                b.setAssignedToId(bug.getAssignedTo().getId());
+			        	            }
+			        	            if (bug.getReportedBy() != null) {
+			        	                b.setReportedBy(bug.getReportedBy().getEmpName());
+			        	            }
+			        	            if (bug.getProject() != null) {
+			        	                b.setProjectName(bug.getProject().getTitle());
+			        	                b.setProjectId(bug.getProject().getId());
+			        	            }
+			        	            if (bug.getSprint() != null) {
+			        	                b.setSprintName(bug.getSprint().getSprintName());
+			        	            }
+			        	            if (bug.getStory() != null) {
+			        	                b.setStoryName(bug.getStory().getTitle());
+//			        	                b.setStoryPoint(bug.getStory().getStoryPoint());
+			        	            }
+
+			        	            b.setReopenCount(bug.getReopenCount());
+
+			        	            return b;
+			        	        })
+			        	        .collect(Collectors.toList())
+			        	);
 			        return dto;
 			    })
 			    .collect(Collectors.toList());
-
 	}				
 
 	@Override

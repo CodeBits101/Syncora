@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Dialog, DialogTitle, DialogContent, Divider, Typography, IconButton, Box, Button, Stack, Fade } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 
-export default function JiraModal({ open, onClose, task, updateTask }) {
+export default function JiraModal({ open, onClose, task, updateTask, sprintId, projectId }) {
   // Fallbacks for missing fields
   const get = (v, fallback = '-') => (v ? v : fallback);
   const getPriorityColor = priority => {

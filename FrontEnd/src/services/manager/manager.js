@@ -83,6 +83,7 @@ export const getSprintByProjectId = async (projectId) => {
       },
     });
     console.log("fetched data ", response.data)
+    console.log(response.data[0].description)
     return response.data;
 
   } catch (error) {

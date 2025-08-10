@@ -131,7 +131,7 @@ function App() {
         {/* 
         {getRoleRoutes()} */}
 
-        <Route path="/scrumBoard" element={<TaskBoard />} />
+        <Route path="/scrumBoard/:sprintId/:projectId" element={<TaskBoard />} />
 
         {getRoleRoutes()}
 

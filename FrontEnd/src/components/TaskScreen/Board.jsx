@@ -12,7 +12,8 @@ import {
 import { SortableContext, rectSortingStrategy } from "@dnd-kit/sortable";
 import Column from "./Column";
 import TaskCard from "./TaskCard";
-import { initialData } from "./data/mockData";
+import { fetchBoardData } from "./data/taskScreenService";
+// import { initialData } from "./data/mockData";
 
 // Mathematical logic for visual indicator and insertion:
 // For the card being hovered (over.id), get its bounding rect (top, height).
@@ -89,13 +90,48 @@ function DndMonitor({ setDropLineIndex, setDropLineCol, data }) {
   return null;
 }
 
-const Board = () => {
-  const [data, setData] = useState(initialData);
+const Board = ({ sprintId, projectId }) => {
+  const emptyBoard = {
+  columnOrder: [],
+  columns: {},
+  tasks: {}
+};
+
+const [data, setData] = useState(emptyBoard);
   const [activeId, setActiveId] = useState(null);
   const [overId, setOverId] = useState(null);
   const [dropLineIndex, setDropLineIndex] = useState(null);
   const [dropLineCol, setDropLineCol] = useState(null);
   const lastPointerY = useRef(null);
+  const [loading, setLoading] = useState(false);
+const [error, setError] = useState(null);
+
+
+  useEffect(() => {
+    if (!sprintId && !projectId) return;
+
+    const loadData = async () => {
+      setLoading(true);
+      setError(null);
+      console.log("This runs")
+      try {
+        const fetchedData = await fetchBoardData(sprintId, projectId);
+        console.log(data)
+        console.log(`fetched data: ${fetchedData}`)
+        console.log(data)
+        setData(fetchedData);
+        console.log("This runs in try")
+      } catch (err) {
+        // console.log(err)
+        console.log("This runs whenever an err is caught")
+        setError("Error loading board data");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadData();
+  }, [sprintId, projectId]);
 
   // Add updateTask function
   const updateTask = (taskId, updates) => {
@@ -167,6 +203,7 @@ const Board = () => {
       setData(prev => {
         // Get the new status from the target column's title
         const newStatus = prev.columns[toCol].title;
+ 
         return {
           ...prev,
           columns: {
@@ -218,6 +255,8 @@ const Board = () => {
               height="100%"
             >
               <Column
+                sprintId={sprintId} 
+                projectId={projectId}
                 column={data.columns[colId]}
                 tasks={data.columns[colId].taskIds.map((id, idx) => {
                   const cardId = `${colId}:${idx}`;
@@ -238,7 +277,7 @@ const Board = () => {
         {activeId && (() => {
           const [colId, idx] = activeId.split(":");
           const task = data.tasks[data.columns[colId].taskIds[parseInt(idx, 10)]];
-          return <TaskCard task={task} index={parseInt(idx, 10)} columnId={colId} overlay />;
+          return <TaskCard sprintId={sprintId} projectId={projectId} task={task} index={parseInt(idx, 10)} columnId={colId} overlay />;
         })()}
       </DragOverlay>
     </DndContext>

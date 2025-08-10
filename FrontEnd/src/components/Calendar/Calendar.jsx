@@ -287,31 +287,31 @@ const [projectName, setProjectName] = useState("");
       ];
     });
 
-    const today = new Date();
+    // const today = new Date();
     const standupEvents = [];
 
-    for (let i = 0; i < 30; i++) {
-      const date = new Date(today);
-      date.setDate(date.getDate() + i);
+    // for (let i = 0; i < 30; i++) {
+    //   const date = new Date(today);
+    //   date.setDate(date.getDate() + i);
 
-      const day = date.getDay();
-      if (day !== 0 && day !== 6) {
-        const start = new Date(date);
-        start.setHours(8, 0, 0);
-        const end = new Date(date);
-        end.setHours(9, 0, 0);
+    //   const day = date.getDay();
+    //   if (day !== 0 && day !== 6) {
+    //     const start = new Date(date);
+    //     start.setHours(8, 0, 0);
+    //     const end = new Date(date);
+    //     end.setHours(9, 0, 0);
 
-        standupEvents.push({
-          Id: 2000 + i,
-          Subject: "Daily Standup",
-          StartTime: start,
-          EndTime: end,
-          IsAllDay: false,
-          CategoryColor: "#e6ffcc",
-          type: "standup",
-        });
-      }
-    }
+    //     standupEvents.push({
+    //       Id: 2000 + i,
+    //       Subject: "Daily Standup",
+    //       StartTime: start,
+    //       EndTime: end,
+    //       IsAllDay: false,
+    //       CategoryColor: "#e6ffcc",
+    //       type: "standup",
+    //     });
+    //   }
+    // }
 
     setEvents(sortEvents([...sprintEvents, ...standupEvents]));
   }, [sprints]);
