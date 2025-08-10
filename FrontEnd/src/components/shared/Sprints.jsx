@@ -1,11 +1,12 @@
+import React from "react";
 import { useState, useEffect } from "react";
-import axios from "axios";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import DoneIcon from '@mui/icons-material/Done';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditNoteRoundedIcon from '@mui/icons-material/EditNoteRounded';
-import AssessmentIcon from '@mui/icons-material/Assessment';
+import BugReportIcon from "@mui/icons-material/BugReport";
+import TaskIcon from "@mui/icons-material/Task";
 import EntityFormModal from "../BaseModal/BaseEntityModal";
 import { sprintFields } from "../../FormConfigs/sprintFields";
 import { SiPolymerproject } from "react-icons/si";
@@ -18,11 +19,19 @@ import {
   Divider,
   Grid,
   Paper,
-  Chip,
   Accordion,
   AccordionSummary,
   AccordionDetails,
   Button,
+  Table,
+  TableHead,
+  TableRow,
+  TableCell,
+  TableBody,
+  TableContainer,
+  TablePagination,
+  
+
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { completeSprint, createSprint, deleteSprint, startSprint, updateSprint } from "../../services/manager/manager";
@@ -33,7 +42,8 @@ import { getSprintByProjectId } from "../../services/manager/manager";
 const Sprints = () => {
   const userRole = localStorage.getItem("role");
   const managerId = localStorage.getItem("empId");
-
+  const [page, setPage] = React.useState(0);
+  const [rowsPerPage, setRowsPerPage] = React.useState(3);
   const [openModal, setOpenModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -78,9 +88,8 @@ const Sprints = () => {
       setLoading(true);
       setError("");
       const res = await getSprintByProjectId(projectId)
+      console.log("fetch data "+res.data)
       const sprintList = res || [];
-      console.log("Sprints fetched:", JSON.stringify(res.data, null, 2));
-
       // Group sprints by status
       const grouped = {
         ACTIVE: sprintList.filter((s) => s.sprintStatus === "ACTIVE"),
@@ -186,6 +195,15 @@ const Sprints = () => {
     }
   }, [selectedOption]);
 
+
+  const statusColorMap = {
+  INPROGRESS: "warning",
+  TODO: "default",
+  TESTING: "error",
+  DEPLOYMENT: "success",
+  BACKLOG: "primary"
+  };
+
   return (
     <>
       <ChooseProjectModal
@@ -198,11 +216,11 @@ const Sprints = () => {
       />
 
       {showMainUI && (
-        <Box p={4} sx={{ backgroundColor: "#f4faff", minHeight: "100vh" }}>
+        <Box p={4} sx={{ backgroundColor: "#f6faffff", minHeight: "100vh" }}>
           <ToastContainer/>
           <Box display="flex" justifyContent="space-between" mb={4}>
             <Typography variant="h5" sx={{ fontWeight: "bold" }}>
-              Project: <span style={{ color: "#1976d2" }}>{projectName}</span> — Sprints
+              Project: <span style={{ color: "#1976d2" }}>{selectedOption?.title}</span> — Sprints
             </Typography>
             <Box display="flex" sx={{ gap: 2 }} justifyContent="flex-end" mb={2}>
               {userRole === "ROLE_MANAGER" && (
@@ -238,11 +256,11 @@ const Sprints = () => {
               <Typography
                 variant="h6"
                 gutterBottom
-                sx={{ textTransform: "capitalize", color: "#1565c0" }}
+                sx={{ textTransform: "capitalize", color: "#050505ff" }}
               >
                 {category} Sprints
               </Typography>
-              <Divider sx={{ mb: 2, backgroundColor: "#bbdefb" }} />
+              <Divider sx={{ mb: 2, backgroundColor: "#7baad0ff" }} />
 
               {sprints[category].length === 0 ? (
                 <Typography color="text.secondary">
@@ -250,98 +268,147 @@ const Sprints = () => {
                 </Typography>
               ) : (
                 sprints[category].map((sprint) => (
-                  <Accordion
-                    key={sprint.id}
-                    sx={{ mb: 1, backgroundColor: "#e3f2fd" }}
-                  >
-                    <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                      <Grid container alignItems="center">
-                        <Grid item xs={9}>
-                          <Typography
-                            variant="subtitle1"
-                            sx={{ fontWeight: "500" }}
-                          >
-                            {sprint.sprintName}
-                          </Typography>
-                        </Grid>
-                        <Grid item xs={3}>
-                          <Typography variant="caption" color="textSecondary">
-                            {`${sprint.startDate} – ${sprint.endDate}`}
-                          </Typography>
-                        </Grid>
-                      </Grid>
-                    </AccordionSummary>
-                    <AccordionDetails>
-                      <Box sx={{ display: 'flex', gap: 2 }}>
-                      <Button
-                        variant="contained"
-                        sx={{ mt: 2 }}
-                        color="primary"
-                        onClick={() => navigate("/scrumBoard")}
-                      >
-                        <MdOutlineDashboardCustomize
-                          size={20}
-                          color="white"
-                          style={{ marginRight: "10px" }}
-                        />{" "}
-                        Taskboard
-                      </Button>
-                      {/* SPRINT UPDATE STATUS FUNCTIONS */}
-                      {category === "BACKLOG" && (
-                        <>
-                        {/* Start Sprint */}
-                          <Button
-                            variant="contained"
-                            sx={{ backgroundColor: "#3daa51ff", mt: 2 }}
-                            disabled={sprints.ACTIVE.length > 0}
-                            onClick={() => handleStartSprint(sprint.id, sprint.projectId)}
-                            startIcon={<PlayArrowIcon />}
-                          >
-                            Start Sprint
-                          </Button>
-                          {/* Delete button */}
-                          <Button
-                            variant="contained"
-                            color="error"
-                            sx={{ mt: 2 }}
-                            onClick={() => handleDeleteSprint(sprint.id, sprint.projectId)}
-                            startIcon={<DeleteIcon />}
-                          >
-                            Delete Sprint
-                          </Button>
-                          <Button
-                            variant="contained"
-                            color="secondary"
-                            sx={{ mt: 2 }}
-                            // onClick={() => handleUpdateSprint(sprint)}
-                            onClick={() => openUpdateSprintModal(sprint)}
-                            startIcon={< EditNoteRoundedIcon />}
-                          >
-                            Update Sprint
-                          </Button>
-                          </>
-                      )}
-                      {category === "ACTIVE" && (
-                        <>
-                          <Button
-                            variant="contained"
-                            sx={{ backgroundColor: "#802fe3ff", mt: 2 }}
-                            onClick={() => handleCompleteSprint(sprint.id, sprint.projectId)}
-                            startIcon={<DoneIcon />}
-                          >
-                            Complete Sprint
-                          </Button>
-                          
-                        </>
-                      )}
-                      </Box>
-                      {category === "BACKLOG" && sprints.ACTIVE.length > 0 && (
-                        <Typography variant="caption" color="error" sx={{ mt: 1, display: 'block' }}>
-                          Cannot start new sprint while another sprint is active
-                        </Typography>
-                      )}
-                    </AccordionDetails>
-                  </Accordion>
+<Accordion key={sprint.id} sx={{ mb: 1, backgroundColor: "#ffffffff" }}>
+  <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+     <Grid container alignItems="center" gap={2}>
+      <Grid item xs={9}>
+        <Typography variant="subtitle1" sx={{ fontWeight: "500" }}>
+          {sprint.sprintName}
+        </Typography>
+      </Grid>
+      <Grid item xs={3}>
+        <Typography variant="caption" color="textSecondary">
+          {`${formatDateForInput(sprint.startDate)} – ${formatDateForInput(sprint.endDate)}`}
+        </Typography>
+      </Grid>
+    </Grid>
+  </AccordionSummary>
+
+  <AccordionDetails>
+    <Grid container spacing={3}>
+      <Grid item xs={12}
+      sx={{
+                boxShadow: 3,
+                borderRadius: 3,
+                overflow: "hidden",
+                backgroundColor: "white",
+              }}>
+        <TableContainer component={Paper} sx={{ width: '100%', maxHeight: 300 }}>
+  <Table stickyHeader size="small"  sx={{ width: '100%', tableLayout: 'fixed' }}>
+    <TableHead>
+      <TableRow>
+        <TableCell sx={{ fontWeight: 'bold' }}>Type</TableCell>
+        <TableCell sx={{ fontWeight: 'bold' }}>Title</TableCell>
+        <TableCell sx={{ fontWeight: 'bold' }}>Status</TableCell>
+      </TableRow>
+    </TableHead>
+    <TableBody>
+      {[...sprint.tasks.map(t => ({...t, type: 'task'})), ...sprint.bugs.map(b => ({...b, type: 'bug'}))]
+        ?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+        .map((item) => (
+          <TableRow
+            key={`${item.type}-${item.id}`}
+            sx={{ '&:hover': { backgroundColor: '#f5f5f5' } }}
+          ><TableCell>
+              {item.type === 'task' ? (
+                <TaskIcon color="primary" sx={{ verticalAlign: 'middle', mr: 1 }} />
+              ) : (
+                <BugReportIcon color="error" sx={{ verticalAlign: 'middle', mr: 1 }} />
+              )}
+              {item.type === 'task' ? 'Task' : 'Bug'}
+            </TableCell>
+            <TableCell>{item.title}</TableCell>
+            <TableCell>{item.status}</TableCell> {/* Added status value */}
+          </TableRow>
+        ))}
+    </TableBody>
+  </Table>
+  <TablePagination
+    component="div"
+    count={(sprint.tasks?.length || 0) + (sprint.bugs?.length || 0)}
+    page={page}
+    onPageChange={(e, newPage) => setPage(newPage)}
+    rowsPerPage={rowsPerPage}
+    onRowsPerPageChange={(e) => {
+      setRowsPerPage(parseInt(e.target.value, 10));
+      setPage(0);
+    }}
+    rowsPerPageOptions={[3]}
+  />
+</TableContainer>
+
+      </Grid>
+    </Grid>
+
+
+    {/* BUTTONS ROW */}
+    <Box sx={{ mt: 3, display: "flex", gap: 2, flexWrap: "wrap" }}>
+      {category === "BACKLOG" && (
+        <>
+          <Button
+            variant="contained"
+            size="small"
+            sx={{ backgroundColor: "#3daa51ff" }}
+            disabled={sprints.ACTIVE.length > 0}
+            onClick={() => handleStartSprint(sprint.id, sprint.projectId)}
+            startIcon={<PlayArrowIcon />}
+          >
+            Start Sprint
+          </Button>
+          <Button
+            variant="contained"
+            color="error"
+            onClick={() => handleDeleteSprint(sprint.id, sprint.projectId)}
+            startIcon={<DeleteIcon />}
+          >
+            Delete Sprint
+          </Button>
+          <Button
+            variant="contained"
+            color="secondary"
+            onClick={() => openUpdateSprintModal(sprint)}
+            startIcon={<EditNoteRoundedIcon />}
+          >
+            Update Sprint
+          </Button>
+        </>
+      )}
+
+      {category === "ACTIVE" && (
+        <>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => navigate("/scrumBoard")}
+          >
+            <MdOutlineDashboardCustomize
+              size={20}
+              color="white"
+              style={{ marginRight: "10px" }}
+            />
+            Taskboard
+          </Button>
+          <Button
+            variant="contained"
+            sx={{ backgroundColor: "#802fe3ff" }}
+            onClick={() => handleCompleteSprint(sprint.id, sprint.projectId)}
+            startIcon={<DoneIcon />}
+          >
+            Complete Sprint
+          </Button>
+        </>
+      )}
+    </Box>
+
+    {/* Warning */}
+    {category === "BACKLOG" && sprints.ACTIVE.length > 0 && (
+      <Typography variant="caption" color="error" sx={{ mt: 1, display: "block" }}>
+        Cannot start new sprint while another sprint is active
+      </Typography>
+    )}
+  </AccordionDetails>
+</Accordion>
+
                 ))
               )}
             </Box>

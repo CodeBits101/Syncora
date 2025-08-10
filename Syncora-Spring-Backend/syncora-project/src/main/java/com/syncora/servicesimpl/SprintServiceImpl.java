@@ -10,8 +10,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.syncora.dtos.ApiResponse;
+import com.syncora.dtos.BugRespDto;
 import com.syncora.dtos.SprintRequestDto;
 import com.syncora.dtos.SprintResponseDto;
+import com.syncora.dtos.TaskResponseDto;
 import com.syncora.entities.Bug;
 import com.syncora.dtos.SprintItemsRespDto;
 import com.syncora.dtos.BugRespDto;
@@ -97,10 +99,8 @@ public class SprintServiceImpl implements SprintService {
 		List<Sprint> sprints = sprintRepo.findByProject_Id(id);
 		if (sprints.isEmpty()) {
 	        throw new ResourceNotFoundException("No Sprints Found ");
-	    }
-//	 return sprints.stream()
-//               .map(sprint -> modelMapper.map(sprint, SprintResponseDto.class))
-//               .collect(Collectors.toList());
+		}
+		
 		return sprints.stream()
 			    .map(sprint -> {
 			        SprintResponseDto dto = new SprintResponseDto();
@@ -114,16 +114,46 @@ public class SprintServiceImpl implements SprintService {
 			            dto.setProjectId(sprint.getProject().getId());
 			        if (sprint.getManager() != null)
 			            dto.setManagerId(sprint.getManager().getId());
+
 			        dto.setSprintStatus(sprint.getSprintStatus());
-			        dto.setStoryIds(sprint.getStories().stream().map(Story::getId).collect(Collectors.toSet()));
-			        dto.setTaskIds(sprint.getTasks().stream().map(Task::getId).collect(Collectors.toList()));
-//			        dto.setBugIds(sprint.getBugs().stream().map(Bug::getId).collect(Collectors.toList()));
+			        dto.setStoryIds(sprint.getStories()
+			            .stream()
+			            .map(Story::getId)
+			            .collect(Collectors.toSet())
+			        );
+
+			        dto.setTasks(
+			            sprint.getTasks()
+			                .stream()
+			                .map(task -> {
+			                    TaskResponseDto t = new TaskResponseDto();
+			                    t.setId(task.getId());
+			                    t.setTitle(task.getTitle());
+			                    t.setStatus(task.getStatus());
+			                    return t;
+			                })
+			                .collect(Collectors.toList())
+			        );
+
+			        dto.setBugs(
+			            sprint.getBugs()
+			                .stream()
+			                .map(bug -> {
+			                    BugRespDto b = new BugRespDto();
+			                    b.setId(bug.getId());
+			                    b.setTitle(bug.getTitle());
+			                    b.setPriority(bug.getPriority());
+			                    b.setStatus(bug.getStatus());
+			                    return b;
+			                })
+			                .collect(Collectors.toList())
+			        );
 
 			        return dto;
 			    })
 			    .collect(Collectors.toList());
 
-	}
+	}				
 
 	@Override
 	public ApiResponse addSprint(SprintRequestDto requestDto) {

@@ -2,6 +2,7 @@ import { config } from "../config";
 import axios from "axios";
 import { toast } from 'react-toastify';
 import { formatToLocalDateTime } from "../../utils/formatToLocalDateTime";
+import React from "react";
 
 export async function getAllInprogressProjects() {
   try {
@@ -81,7 +82,9 @@ export const getSprintByProjectId = async (projectId) => {
         token,
       },
     });
+    console.log("fetched data ", response.data)
     return response.data;
+
   } catch (error) {
     console.error(`Error fetching projects for status ${status}:`, error);
     throw error;
