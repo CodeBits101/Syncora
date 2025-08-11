@@ -1,12 +1,14 @@
 package com.syncora.servicesimpl;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.syncora.dtos.ApiResponse;
 import com.syncora.dtos.SubtaskReqDto;
+import com.syncora.dtos.SubtasksRespDto;
 import com.syncora.entities.Employee;
 import com.syncora.entities.SubTask;
 import com.syncora.exceptions.ResourceNotFoundException;
@@ -57,14 +59,41 @@ public class SubtaskServiceImpl implements SubtaskService {
 	}
 
 	@Override
-	public List<SubTask> getSubTasksByUserAndTask(Long createdById, Long taskId) {
-	    return subtaskRepo.findByCreatedByIdAndTaskId(createdById, taskId);
+	public List<SubtasksRespDto> getSubTasksByUserAndTask(Long createdById, Long TaskId) {
+	    List<SubTask> subtasks = subtaskRepo.findByCreatedByIdAndTaskId(createdById, TaskId);
+
+	    // Map each Subtask entity to SubtasksRespDto
+	    return subtasks.stream()
+	            .map(s -> new SubtasksRespDto(
+	                    s.getId(),
+	                    s.getTask() != null ? s.getTask().getId() : null,
+	                    s.getBug() != null ? s.getBug().getId() : null,
+	                    s.getTitle(),
+	                    s.getStatus()
+	            ))
+	            .collect(Collectors.toList());
 	}
 
 	@Override
-	public List<SubTask> getSubTasksByUserAndBug(Long createdById, Long bugId) {
-		return subtaskRepo.findByCreatedByIdAndBugId(createdById, bugId);
+	public List<SubtasksRespDto> getSubTasksByUserAndBug(Long createdById, Long bugId) {
+	    List<SubTask> subtasks = subtaskRepo.findByCreatedByIdAndBugId(createdById, bugId);
+
+	    // Map each Subtask entity to SubtasksRespDto
+	    return subtasks.stream()
+	            .map(s -> new SubtasksRespDto(
+	                    s.getId(),
+	                    s.getTask() != null ? s.getTask().getId() : null,
+	                    s.getBug() != null ? s.getBug().getId() : null,
+	                    s.getTitle(),
+	                    s.getStatus()
+	            ))
+	            .collect(Collectors.toList());
 	}
 
-
+	@Override
+	public ApiResponse deleteSubtask(Long id) {
+		// TODO Auto-generated method stub
+    	subtaskRepo.deleteById(id); 
+    	return new ApiResponse("Subtask Deleted successfully");
+	}
 }

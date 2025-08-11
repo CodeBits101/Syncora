@@ -3,7 +3,7 @@ import { Box, Typography } from '@mui/material';
 import { useDroppable } from '@dnd-kit/core';
 import TaskCard from './TaskCard';
 
-const Column = ({ column, tasks, dropLineIndex = null, updateTask }) => {
+const Column = ({ column, tasks, dropLineIndex = null, updateTask, sprintId, projectId }) => {
   const { setNodeRef, isOver } = useDroppable({ id: column.id });
 
   // Drop line style
