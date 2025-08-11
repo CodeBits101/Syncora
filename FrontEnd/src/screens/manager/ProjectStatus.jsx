@@ -1,14 +1,25 @@
 import React, { useEffect, useState } from "react";
 import { Card, Container, Row, Col, Spinner } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
-import { RiProgress3Line } from "react-icons/ri";
 import trimToWords from "../../utils/trimToWords";
 import { colors } from "../../utils/color";
 import "./ProjectStatus.css";
-import { getProjectsByStatus } from "../../services/manager/manager";
-import ProjectStatusMap from "../../components/shared/ProjectStatusMap";
+import {
+  deleteProject,
+  getCurrentProjectEmpList,
+  getProjectsByStatus,
+  getUnassignedEmpList,
+  updateProject,
+} from "../../services/manager/manager"; import ProjectStatusMap from "../../components/shared/ProjectStatusMap";
+import EntityFormModal from "./../../components/BaseModal/BaseEntityModal";
+import { editProjectFields } from "../../FormConfigs/projectFields";
 
-const ProjectCard = ({ project, bgColor, status }) => {
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import DeleteProjectModal from "../../components/shared/DeleteProjectModal";
+
+
+const ProjectCard = ({ project, bgColor, status, onEdit, onDelete }) => {
   const navigate = useNavigate();
   console.log(status)
   return (
@@ -30,7 +41,7 @@ const ProjectCard = ({ project, bgColor, status }) => {
           {trimToWords(project.managerName, 1) || "No Manager"}
         </Card.Text>
 
-        <div className="d-flex justify-content-between">
+        <div className="d-flex justify-content-between mb-2">
           <Card.Link
             className="hyperlink text-white"
             onClick={() => navigate("/scrumBoard")}
@@ -44,6 +55,20 @@ const ProjectCard = ({ project, bgColor, status }) => {
             View Project Details
           </Card.Link>
         </div>
+        <div className="d-flex justify-content-between">
+          <Card.Link
+            className="hyperlink text-white"
+            onClick={() => onEdit(project)}
+          >
+            Edit Project
+          </Card.Link>
+          <Card.Link
+            className="hyperlink text-white"
+            onClick={() => { onDelete(project.id); }}
+          >
+            Delete Project
+          </Card.Link>
+        </div>
       </Card.Body>
     </Card>
   );
@@ -54,6 +79,14 @@ export default function ProjectStatus() {
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const [errorMsg, setErrorMsg] = useState("");
+
+  const [openEditModal, setOpenEditModal] = useState(false);
+  const [openDeleteModal, setOpenDeleteModal] = useState(false);
+  const [selectedProject, setSelectedProject] = useState(null);
+
+  const [employeesToAdd, setAddEmpList] = useState([]);
+  const [employeesToRemove, setRemoveEmpList] = useState([]);
+  const [selectedProjectId, setSelectedProjectId] = useState(null);
 
   const fetchProjects = async () => {
     setLoading(true);
@@ -73,8 +106,100 @@ export default function ProjectStatus() {
     fetchProjects();
   }, [status]);
 
+  const toDateInputValue = (dateString) => {
+    if (!dateString) return "";
+    return new Date(dateString).toISOString().slice(0, 10); // "yyyy-MM-dd"
+  };
+
+  const toISOStringWithTime = (dateStr) => {
+    if (!dateStr) return null;
+    const date = new Date(dateStr);
+    return date.toISOString();
+  };
+
+  const onEdit = async (project) => {
+    try {
+      const data1 = await getUnassignedEmpList();
+      const data2 = await getCurrentProjectEmpList(project.id);
+
+      setAddEmpList(
+        data1.map(emp => ({
+          id: emp.id,
+          empName: emp.empName,
+          department: emp.department,
+          empRole: emp.empRole,
+          currentManager: emp.currentManager
+        }))
+      );
+      setRemoveEmpList(
+        data2.map(emp => ({
+          id: emp.id,
+          empName: emp.empName,
+          department: emp.department,
+          empRole: emp.empRole,
+          currentManager: emp.currentManager
+        }))
+      );
+      setSelectedProject(project);
+      setOpenEditModal(true);
+    } catch (error) {
+      console.error("Failed to fetch employee lists:", error);
+    }
+  };
+
+  const onDelete = (id) => {
+    setSelectedProjectId(id);
+    setOpenDeleteModal(true);
+  };
+
+
+  const handleUpdateProject = async (formValues, { setSubmitting }) => {
+    try {
+      const payload = {
+        title: formValues.title,
+        description: formValues.description,
+        startDate: toISOStringWithTime(formValues.startDate),
+        endDate: toISOStringWithTime(formValues.endDate),
+        projectStatus: formValues.project_status || formValues.projectStatus,
+        managerId: formValues.managerId,
+        employeesToAdd: formValues.employeesToAdd || [],
+        employeesToRemove: formValues.employeesToRemove || [],
+      };
+
+      console.log("Updated project data:", payload);
+
+      await updateProject(selectedProject.id, payload);
+
+      await fetchProjects();
+
+      setOpenEditModal(false);
+      setSelectedProject(null);
+      setAddEmpList(null);
+      setRemoveEmpList(null);
+      toast.success("Project updated successfully...")
+    } catch (error) {
+      toast.error("Failed to update project:");
+      console.log("Failed to update project", error);
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const handleDeleteConfirm = async () => {
+    try {
+      await deleteProject(selectedProjectId);
+      toast.success("Project is deleted successfully");
+      setOpenDeleteModal(false);
+      await fetchProjects();
+    } catch (err) {
+      toast.error("Failed to delete project!");
+      console.error(err);
+    }
+  };
+
   return (
     <div className="p-4 bg-light min-vh-100 cursor-pointer">
+      <ToastContainer position="top-right" autoClose={1500} />
       <Container>
         <h2 className="mb-4 text-center text-dark fw-semibold">
           {status.toUpperCase()} PROJECTS
@@ -100,6 +225,8 @@ export default function ProjectStatus() {
                     project={project}
                     status={status}
                     bgColor={bgColor}
+                    onEdit={onEdit}
+                    onDelete={onDelete}
                   />
                 </Col>
               );
@@ -107,6 +234,37 @@ export default function ProjectStatus() {
           </Row>
         )}
       </Container>
+      <EntityFormModal
+        open={openEditModal}
+        handleClose={() => {
+          setOpenEditModal(false);
+          setSelectedProject(null);
+        }}
+        title="Edit Project"
+        fields={editProjectFields(employeesToAdd, employeesToRemove)}
+        initialValues={
+          selectedProject
+            ? {
+              title: selectedProject.title || "",
+              description: selectedProject.description || "",
+              startDate: toDateInputValue(selectedProject.startDate) || "",
+              endDate: toDateInputValue(selectedProject.endDate) || "",
+              projectStatus: selectedProject.projectStatus || "INPROGRESS",
+              managerId: selectedProject.managerId || "",
+              employeesToAdd: [],
+              employeesToRemove: [],
+            }
+            : {}
+        }
+        submitLabel="Update"
+        onSubmit={handleUpdateProject}
+      />
+
+      <DeleteProjectModal
+        open={openDeleteModal}
+        onClose={() => setOpenDeleteModal(false)}
+        onConfirm={handleDeleteConfirm}
+      />
     </div>
   );
 }
