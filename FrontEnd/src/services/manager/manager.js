@@ -8,10 +8,12 @@ export async function getAllInprogressProjects() {
   try {
     let url = `${config.serverUrl}/projects`;
 
-    const token = sessionStorage.getItem("token");
+    const token = localStorage.getItem("token");
 
     const response = await axios.get(url, {
-      headers: { token },
+     headers: {
+        Authorization: `Bearer ${token}`,
+      },
     });
 
     return response.data;
@@ -27,7 +29,9 @@ export async function getProjectsCountByStatus() {
     const token = localStorage.getItem("token");
 
     const response = await axios.get(url, {
-      headers: { token },
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     });
 
     return response.data;
@@ -40,11 +44,11 @@ export async function createProject(data) {
   try {
     let url = `${config.serverUrl}/projects`;
 
-    const token = sessionStorage.getItem("token");
+    const token = localStorage.getItem("token");
 
     const response = await axios.post(url, data, {
       headers: {
-        token,
+        Authorization: `Bearer ${token}`,
       },
     });
     return response.data;
@@ -53,14 +57,50 @@ export async function createProject(data) {
   }
 }
 
+export async function updateProject(projectId,data) {
+   try {
+    let url = `${config.serverUrl}/projects/${projectId}`;
+
+    const token = localStorage.getItem("token");
+
+    const response = await axios.put(url, data, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (ex) {
+    console.log(`exception: `, ex);
+  }
+}
+
+
+export async function deleteProject(pid) {
+  try {
+    const url = `${config.serverUrl}/projects/${pid}`;
+    const token = localStorage.getItem("token");
+
+    const response = await axios.delete(url, {
+    headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error(`Dele project operation failed`);
+    throw error;
+  }
+}
+
 export async function getProjectsByStatus(status) {
   try {
     const url = `${config.serverUrl}/projects/${status}`;
-    const token = sessionStorage.getItem("token");
+    const token = localStorage.getItem("token");
 
     const response = await axios.get(url, {
-      headers: {
-        token,
+    headers: {
+        Authorization: `Bearer ${token}`,
       },
     });
 
@@ -278,3 +318,39 @@ console.log("ID type:", typeof values.id, "ID value:", values.id);
   }
   
 }
+
+export const getCurrentProjectEmpList = async (pid) => {
+  try {
+    const url = `${config.serverUrl}/employees/project/${pid}`;
+    const token = localStorage.getItem("token");
+
+    const response = await axios.get(url, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    return response.data;
+  } catch (ex) {
+    console.log(`exception: `, ex);
+  }
+};
+
+
+export const getUnassignedEmpList = async () => {
+  try {
+    const url = `${config.serverUrl}/employees/unassigned`;
+
+    const token = localStorage.getItem("token");
+
+    const response = await axios.get(url, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    return response.data;
+  } catch (ex) {
+    console.log(`exception: `, ex);
+  }
+};

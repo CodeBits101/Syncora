@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import java.util.Arrays;
+import java.util.List;
 
 import com.syncora.dtos.AuthReqDto;
 import com.syncora.dtos.AuthResp;
@@ -74,8 +76,15 @@ public class EmployeeController {
 	}
 	
 	@GetMapping("/{role}")
-	public ResponseEntity<?> getEmployeeByRole(@PathVariable EmployeeType role){
-		return ResponseEntity.ok(empService.getEmployeeByRole(role)) ;
+	public ResponseEntity<?> getEmployeeByRole(@PathVariable String role){
+		EmployeeType employeeType;
+	    try {
+	        employeeType = EmployeeType.valueOf(role.toUpperCase());
+	    } catch (IllegalArgumentException e) {
+	    	return ResponseEntity.badRequest()
+	    		    .body("Invalid role: " + role + ". Valid roles are: " +Arrays.toString(EmployeeType.values()));
+	    }
+		return ResponseEntity.ok(empService.getEmployeeByRole(employeeType)) ;
 	}
 	
 	@PutMapping("/changepassword")
@@ -118,7 +127,16 @@ public class EmployeeController {
 		return ResponseEntity.ok(empService.getEmpsUnderManager(managerId));
 	}
 	
-	
+	@GetMapping("/unassigned")
+	public ResponseEntity<?> getUnassignedToProjectEmployees()
+	{
+		return ResponseEntity.ok(empService.getEmpsNotAssingedToProject(List.of(EmployeeType.ROLE_MANAGER, EmployeeType.ROLE_ADMIN)));
+	}
+
+	@GetMapping("/project/{projectId}")
+	public ResponseEntity<?> getEmployeesByProject(@PathVariable Long projectId){
+		return ResponseEntity.ok(empService.getEmployeesByProject(projectId));
+	}
 	
   
 }
