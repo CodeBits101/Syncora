@@ -7,6 +7,7 @@ import com.syncora.dtos.AuthReqDto;
 import com.syncora.dtos.ChangePassDto;
 import com.syncora.dtos.EmployeeReqDto;
 import com.syncora.dtos.EmployeeResponseDto;
+import com.syncora.dtos.EmpsForProjectRespDto;
 import com.syncora.enums.EmployeeType;
 
 public interface EmployeeService {
@@ -26,6 +27,9 @@ public interface EmployeeService {
 	ApiResponse updateProfile(EmployeeReqDto dto, Long userId);  
 	List<EmployeeResponseDto> getEmpsUnderManager(Long managerId);  
 	
+	List<EmpsForProjectRespDto> getEmpsNotAssingedToProject(List<EmployeeType> excludedRoles);
+	
+	List<EmpsForProjectRespDto> getEmployeesByProject(Long ProjectId);
 	
 	
 

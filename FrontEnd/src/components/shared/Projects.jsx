@@ -33,6 +33,7 @@ import {
   getAllInprogressProjects,
   getProjectsCountByStatus,
   createProject,
+  getUnassignedEmpList
 } from "../../services/manager/manager";
 
 import { toast, ToastContainer } from "react-toastify";
@@ -140,6 +141,8 @@ function Projects() {
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(true);
   const [projectCounts, setProjectCounts] = useState([]);
+  const [empList, setEmployees] = useState([]);
+
 
   const fetchProjects = async () => {
     setLoading(true);
@@ -167,6 +170,26 @@ function Projects() {
     const found = projectCounts.find((item) => item.status === status);
     return found ? found.count : 0;
   };
+
+  const handleOpenModal = async () => {
+  try {
+    const data = await getUnassignedEmpList();
+
+    setEmployees(
+      data.map(emp => ({
+        id: emp.id,
+        empName: emp.empName,
+        department: emp.department,
+        empRole: emp.empRole,
+        currentManager: emp.currentManager
+      }))
+    );
+
+    setOpenModal(true);
+  } catch (error) {
+    console.error("Failed to load employees", error);
+  }
+};
 
   const handleCreateProject = async (formData) => {
     try {
@@ -201,6 +224,7 @@ function Projects() {
         actualEndDate: endDateFormatted,
         projectStatus: "INPROGRESS",
         managerId: Number(managerId),
+        employeeIds: formData.empList || []
       };
 
       await createProject(payload);
@@ -232,7 +256,7 @@ function Projects() {
         <Button
           variant="contained"
           color="success"
-          onClick={() => setOpenModal(true)}
+          onClick={handleOpenModal}
         >
           + Create Project
         </Button>
@@ -388,7 +412,7 @@ function Projects() {
         open={openModal}
         handleClose={() => setOpenModal(false)}
         title="Create Project"
-        fields={projectFields}
+        fields={projectFields(empList)}
         initialValues={{
           title: "",
           description: "",

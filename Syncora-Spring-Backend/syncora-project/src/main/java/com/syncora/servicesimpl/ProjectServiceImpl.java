@@ -2,6 +2,7 @@ package com.syncora.servicesimpl;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.ArrayList;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -11,12 +12,14 @@ import com.syncora.dtos.ApiResponse;
 import com.syncora.dtos.BackLogResponseDto;
 import com.syncora.dtos.BugRespDto;
 import com.syncora.dtos.ProjectReqDto;
+import com.syncora.dtos.ProjectEditReqDto;
 import com.syncora.dtos.ProjectResponseDto;
 import com.syncora.dtos.ProjectSelectionDto;
 import com.syncora.dtos.ProjectStatusCountDto;
 import com.syncora.dtos.StoryResponseDto;
 import com.syncora.entities.Employee;
 import com.syncora.entities.Project;
+import com.syncora.enums.EmployeeType;
 import com.syncora.enums.ProjectStatus;
 import com.syncora.enums.TaskStatus;
 import com.syncora.exceptions.ApiException;
@@ -45,27 +48,55 @@ public class ProjectServiceImpl implements ProjectService{
 	private final TaskRepo taskRepo ;  
 	
 
-	
-	@Override
-	public List<ProjectResponseDto> getInProgressProjects() {
-		List<ProjectResponseDto> projects = projectRepo.findByProjectStatus(ProjectStatus.INPROGRESS).stream()
-				.map(project -> { ProjectResponseDto dto = modelMapper.map(project, ProjectResponseDto.class);
-				dto.setManagerId(project.getManager().getId());
-				dto.setManagerName(project.getManager().getEmpName());
-				return dto;
-				}).toList();
-		return projects;
+	private ProjectResponseDto mapToProjectResponseDto(Project project) {
+	    ProjectResponseDto dto = modelMapper.map(project, ProjectResponseDto.class);
+	    dto.setManagerId(project.getManager().getId());
+	    dto.setManagerName(project.getManager().getEmpName());
+	    return dto;
 	}
 	
 	@Override
-	public List<ProjectResponseDto> getProjectsByStatus(ProjectStatus status) {
-		List<ProjectResponseDto> projects = projectRepo.findByProjectStatus(status).stream()
-		.map(project -> {ProjectResponseDto dto = modelMapper.map(project, ProjectResponseDto.class);
-		dto.setManagerId(project.getManager().getId());
-		dto.setManagerName(project.getManager().getEmpName()) ;
-		return dto;
-		}).toList();
-		return projects;
+	public List<ProjectResponseDto> getInProgressProjects(Long empId) {
+	    Employee emp = employeeRepo.findById(empId)
+	            .orElseThrow(() -> new ResourceNotFoundException("Employee does not exist"));
+
+	    List<Project> projects;
+
+	    switch (emp.getEmpRole()) {
+	        case ROLE_MANAGER -> 
+	            projects = projectRepo.findByManagerAndProjectStatus(emp, ProjectStatus.INPROGRESS);
+	        case ROLE_ADMIN -> 
+	            projects = projectRepo.findByProjectStatus(ProjectStatus.INPROGRESS);
+	        default -> 
+	            throw new ApiException("Unauthorized request");
+	    }
+
+	    return projects.stream()
+	            .map(this::mapToProjectResponseDto)
+	            .toList();
+	}
+
+	
+	@Override
+	public List<ProjectResponseDto> getProjectsByStatus(Long empId, ProjectStatus status) {
+	    Employee employee = employeeRepo.findById(empId)
+	            .orElseThrow(() -> new ResourceNotFoundException("Employee does not exist"));
+
+	    List<Project> projects;
+
+	    if (employee.getEmpRole() == EmployeeType.ROLE_ADMIN) {
+	        projects = projectRepo.findByProjectStatus(status);
+	    } 
+	    else if (employee.getEmpRole() == EmployeeType.ROLE_MANAGER) {
+	        projects = projectRepo.findByManagerAndProjectStatus(employee, status);
+	    } 
+	    else {
+	        throw new ApiException("Unauthorized request");
+	    }
+
+	    return projects.stream()
+	            .map(this::mapToProjectResponseDto)
+	            .toList();
 	}
 	
 	@Override
@@ -75,15 +106,34 @@ public class ProjectServiceImpl implements ProjectService{
 		project.setProjectStatus(ProjectStatus.INPROGRESS);
 		Employee manager = employeeRepo.findById(dto.getManagerId()).orElseThrow(()-> new ResourceNotFoundException("employee does not exists with this id")) ;
 		project.setManager(manager);
+		  if (dto.getEmployeeIds() != null && !dto.getEmployeeIds().isEmpty()) {
+		        List<Employee> employees = employeeRepo.findAllById(dto.getEmployeeIds());
+		        for (Employee emp : employees) {
+		            project.addEmployee(emp);
+		        }
+		    }
 		projectRepo.save(project);
 		return new ApiResponse("Project has been created successfully...");
 	}
 	
 	@Override
-	public ApiResponse updateProject(Long id, ProjectReqDto dto) {
+	public ApiResponse updateProject(Long id, ProjectEditReqDto dto) {
 		Project project = projectRepo.findById(id).orElseThrow(()->
-	      new ResourceNotFoundException("Dept does not exist"));
-		modelMapper.map(dto, project);
+	      new ResourceNotFoundException("Project does not exist"));
+			modelMapper.map(dto, project);
+		  if (dto.getEmployeesToAdd() != null && !dto.getEmployeesToAdd().isEmpty()) {
+		        List<Employee> employees = employeeRepo.findAllById(dto.getEmployeesToAdd());
+		        for (Employee emp : employees) {
+		            project.addEmployee(emp);
+		        }
+		    }
+		  
+		  if (dto.getEmployeesToRemove() != null && !dto.getEmployeesToRemove().isEmpty()) {
+		        List<Employee> employees = employeeRepo.findAllById(dto.getEmployeesToRemove());
+		        for (Employee emp : employees) {
+		            project.removeEmployee(emp);
+		        }
+		    }		  
 		projectRepo.save(project);
 		return new ApiResponse("Project is updated successfully...");
 	}
@@ -92,17 +142,38 @@ public class ProjectServiceImpl implements ProjectService{
 	public ApiResponse deleteProject(Long id) {
 		Project project = projectRepo.findById(id).orElseThrow(()->
 	      new ResourceNotFoundException("Project does not exist"));
+		
+		if (project.getEmpList() != null && !project.getEmpList().isEmpty()) {
+		    List<Employee> employees = project.getEmpList();
+		    for (Employee emp : new ArrayList<>(employees)) {
+		        project.removeEmployee(emp);
+		        employeeRepo.save(emp);
+		    }
+		}
 		projectRepo.deleteById(id);
 		return new ApiResponse("Project is deleted successfully...");
 	}
 	
 	@Override
-	public List<ProjectStatusCountDto> getProjectByStatusCount()
-	{
-		List<ProjectStatusCountDto> projectsWithStatusCount = projectRepo.countProjectsByStatus();
-		return projectsWithStatusCount.stream().map(types -> modelMapper.map(types, ProjectStatusCountDto.class)).toList();
-	}
+	public List<ProjectStatusCountDto> getProjectByStatusCount(Long empId) {
+	    Employee employee = employeeRepo.findById(empId)
+	            .orElseThrow(() -> new ResourceNotFoundException("Employee does not exist"));
 
+	    List<ProjectStatusCountDto> projectsWithStatusCount;
+
+	    if (employee.getEmpRole() == EmployeeType.ROLE_ADMIN) {
+	        projectsWithStatusCount = projectRepo.countProjectsByStatus();
+	    } else if (employee.getEmpRole() == EmployeeType.ROLE_MANAGER) {
+	        projectsWithStatusCount = projectRepo.countProjectsByStatus(empId);
+	    } else {
+	        throw new ApiException("Unauthorized request");
+	    }
+
+	    return projectsWithStatusCount.stream()
+	            .map(dto -> modelMapper.map(dto, ProjectStatusCountDto.class))
+	            .toList();
+	}
+	
 	@Override
 	public List<ProjectSelectionDto> getProjectByManagerId(Long managerId) {
 	    return projectRepo.findByManagerIdAndProjectStatus(managerId, ProjectStatus.INPROGRESS)
