@@ -25,13 +25,12 @@ import { manager, developer, admin, tester, roleExtraRoutes } from "../configs";
 import Home from "./Layout/Home/Home";
 import TaskBoard from "./components/TaskScreen/TaskBoard";
 import UnAuthorised from "./screens/main/UnAuthorised";
-import BacklogTable from "./components/BacklogTable/BacklogTable";
 
 import Calendar from "./components/Calendar/Calendar";
 import { ToastContainer } from "react-toastify";
 import ProjectDetails from '../src/components/shared/ProjectDetails'
 
-// import ProjectDetails from "./components/shared/ProjectDetails";
+import ProjectDetails from "./components/shared/ProjectDetails";
 
 function App() {
   const [count, setCount] = useState(0);
@@ -118,7 +117,7 @@ function App() {
       <Routes>
         <Route path="/profile" element={<ProfileCard />} />
         <Route path="/dev" element={<AboutDev />} />
-        <Route path="/backlog" element={<BacklogTable />} />
+        {/* <Route path="/backlog" element={<BacklogTable />} /> */}
 
         {/* <Route path="/manager/projects/:taskstatus" element={<ProjectStatus />} /> */}
 
@@ -140,7 +139,11 @@ function App() {
         <Route path="/" element={<AboutProject />} />
         <Route path="*" element={<NotFoundPage />} />
         <Route path="/unautho" element={<UnAuthorised />} />
+
        <Route path="/project/:projectName" element = {<ProjectDetails/>} />
+
+        <Route path="/project/:projectName" element = {<ProjectDetails/>} />
+
       </Routes>
       <ToastContainer
         position="top-right"
@@ -156,6 +159,7 @@ function App() {
       />
       {/* <div className='p-3'>SYNCORA 
       <p className='px-3'>This is project management system </p>
+
      </div> */}
     </>
   );

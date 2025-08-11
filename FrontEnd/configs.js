@@ -116,18 +116,18 @@ export const manager = {
       path: "calendar",
       component: lazy(() => import("./src/components/Calendar/Calendar")),
     },
-    {
-      label: "Tasks",
-      icon: TaskAlt,
-      path: "tasks",
-      component: lazy(() => import("./src/components/shared/Tasks")),
-    },
-    {
-      label: "Bugs",
-      icon: BugReport,
-      path: "bugs",
-      component: lazy(() => import("./src/components/shared/Bugs")),
-    },
+    // {
+    //   label: "Tasks",
+    //   icon: TaskAlt,
+    //   path: "tasks",
+    //   component: lazy(() => import("./src/components/shared/Tasks")),
+    // },
+    // {
+    //   label: "Bugs",
+    //   icon: BugReport,
+    //   path: "bugs",
+    //   component: lazy(() => import("./src/components/shared/Bugs")),
+    // },
 
     // // {label:'In Progress', icon:AutoGraph, path: 'inprogress', component: lazy(()=> import('./src/components/shared/TaskStatusList'))},
     // // {label: 'On Hold', icon:HourglassBottom, path: 'onhold', component: lazy(()=> import('./src/components/shared/TaskStatusList'))},
@@ -168,24 +168,24 @@ export const tester = {
       path: "closedbugs",
       component: lazy(() => import("./src/components/shared/Bugs")),
     },
-    {
-      label: "In Progress",
-      icon: AutoGraph,
-      path: "inprogress",
-      component: lazy(() => import("./src/components/shared/TaskStatusList")),
-    },
-    {
-      label: "On Hold",
-      icon: HourglassBottom,
-      path: "onhold",
-      component: lazy(() => import("./src/components/shared/TaskStatusList")),
-    },
-    {
-      label: "Completed",
-      icon: CheckCircle,
-      path: "completed",
-      component: lazy(() => import("./src/components/shared/TaskStatusList")),
-    },
+    // {
+    //   label: "In Progress",
+    //   icon: AutoGraph,
+    //   path: "inprogress",
+    //   component: lazy(() => import("./src/components/shared/TaskStatusList")),
+    // },
+    // {
+    //   label: "On Hold",
+    //   icon: HourglassBottom,
+    //   path: "onhold",
+    //   component: lazy(() => import("./src/components/shared/TaskStatusList")),
+    // },
+    // {
+    //   label: "Completed",
+    //   icon: CheckCircle,
+    //   path: "completed",
+    //   component: lazy(() => import("./src/components/shared/TaskStatusList")),
+    // },
   ],
 };
 
@@ -216,24 +216,24 @@ export const developer = {
       path: "bugs",
       component: lazy(() => import("./src/components/shared/Bugs")),
     },
-    {
-      label: "In Progress",
-      icon: AutoGraph,
-      path: "inprogress",
-      component: lazy(() => import("./src/components/shared/TaskStatusList")),
-    },
-    {
-      label: "On Hold",
-      icon: HourglassBottom,
-      path: "onhold",
-      component: lazy(() => import("./src/components/shared/TaskStatusList")),
-    },
-    {
-      label: "Completed",
-      icon: CheckCircle,
-      path: "completed",
-      component: lazy(() => import("./src/components/shared/TaskStatusList")),
-    },
+    // {
+    //   label: "In Progress",
+    //   icon: AutoGraph,
+    //   path: "inprogress",
+    //   component: lazy(() => import("./src/components/shared/TaskStatusList")),
+    // },
+    // {
+    //   label: "On Hold",
+    //   icon: HourglassBottom,
+    //   path: "onhold",
+    //   component: lazy(() => import("./src/components/shared/TaskStatusList")),
+    // },
+    // {
+    //   label: "Completed",
+    //   icon: CheckCircle,
+    //   path: "completed",
+    //   component: lazy(() => import("./src/components/shared/TaskStatusList")),
+    // },
   ],
 };
 

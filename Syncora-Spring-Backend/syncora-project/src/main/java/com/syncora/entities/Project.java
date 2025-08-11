@@ -55,5 +55,15 @@ public class Project extends CommonEntity {
   private void generateProjectCode() {
       this.projectCode = "PROJ-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
   }
+
+	public void addEmployee(Employee emp) {
+	  empList.add(emp);
+	  emp.setProject(this);
+	}
+  
+ 	public void removeEmployee(Employee emp) {
+	  empList.remove(emp);
+	  emp.setProject(null);
+ 	}
   
 }

@@ -1,6 +1,7 @@
 package com.syncora.dtos;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import com.syncora.enums.ProjectStatus;
 
@@ -16,9 +17,9 @@ public class ProjectReqDto {
     private LocalDateTime endDate;
     private LocalDateTime actualStartDate;
     private LocalDateTime actualEndDate;
-
     private ProjectStatus projectStatus;
-
     private Long managerId;
+    private List<Long> employeeIds;
+
 
 }

@@ -11,13 +11,20 @@ import com.syncora.entities.Sprint;
 import com.syncora.enums.TaskStatus;
 
 
+import com.syncora.enums.TaskStatus;
 
 public interface StoryRepo extends JpaRepository<Story, Long> {
 
-	List<Story> findByCurrentSprintIsNull();
+
 	List<Story> findAllByProject_Id(Long projectId);
 	List<Story> findByProjectAndCurrentSprintAndCreatedBy
 	(Project project, Sprint currentSprint, Employee createdBy);
 	List<Story> findByStoryStatusAndCreatedByAndProject
 	(TaskStatus storyStatus, Employee createdBy, Project project);
+
+    List<Story> findByStoryStatusAndProjectId(TaskStatus storyStatus, Long projectId);
+
+    List<Story> findBySprints_Id(Long sprintId);
+    List<Story> findByCurrentSprint_Id(Long sprintId);
+
 }

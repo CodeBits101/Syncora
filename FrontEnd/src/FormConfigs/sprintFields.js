@@ -6,8 +6,8 @@ export const sprintFields = [
   
   { name: "sprintName", label: "Sprint Name", type: "text", required: true },
   { name: "description", label: "Description", type: "textarea" },
-  { name: "startDate", label: "Planned Start Date", type: "date", required: true },
-  { name: "endDate", label: "Planned End Date", type: "date", required: true },
+  // { name: "startDate", label: "Planned Start Date", type: "date", required: true },
+  // { name: "endDate", label: "Planned End Date", type: "date", required: true },
   { name: "status", label: "Status", type: "hidden", required: true },
    { name: "startDate", label: "Planned Start Date", type: "date", required: true , InputLabelProps: { shrink: true } },
   { name: "endDate", label: "Planned End Date", type: "date", required: true, InputLabelProps: { shrink: true }  },

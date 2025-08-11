@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 
 import com.syncora.dtos.ApiResponse;
 import com.syncora.dtos.BacklogItemDto;
+import com.syncora.dtos.BugRespDto;
 import com.syncora.dtos.TaskReqDto;
 import com.syncora.entities.Employee;
 import com.syncora.entities.Project;
@@ -89,17 +90,25 @@ public class TaskServiceImpl implements TaskService {
 		return new ApiResponse("Task Created successfully");
 	}
 
-	@Override
-	public List<BacklogItemDto> getBacklogTasks() {
-		List<Task> tasks = taskRepo.findBySprintIsNullAndStoryIsNull();
-		return tasks.stream().map(task -> {
-			String assignedToName = task.getAssignedTo() != null ? task.getAssignedTo().getEmpName() : "Unassigned";
-			return new BacklogItemDto("TASK", task.getTitle(), task.getStatus(), assignedToName, task.getId(),
-					task.getPriority()
+@Override
+public List<BacklogItemDto> getBacklogTasks(Long projectId) {
+	List<Task> tasks = taskRepo.findByStatusAndProjectId(TaskStatus.BACKLOG, projectId);
+	return tasks.stream()
+			.map(task -> {
+				String assignedToName = task.getAssignedTo() != null ? 
+					task.getAssignedTo().getEmpName() : 
+					"Unassigned";
+				return new BacklogItemDto(
+					"TASK",
+					task.getTitle(),
+					task.getPriority(),
+					assignedToName,
+					task.getId()
+				);
+			})
+			.collect(Collectors.toList());
+}
 
-			);
-		}).collect(Collectors.toList());
-	}
 
 	@Override
 	public ApiResponse deleteTask(Long id) {
@@ -169,5 +178,24 @@ public class TaskServiceImpl implements TaskService {
 		return taskList;
 
 	}
+
+	@Override
+	public TaskRespDto getTaskById(Long id) {
+	    Task task = taskRepo.findById(id)
+	            .orElseThrow(() -> new ResourceNotFoundException("Task not found with id: " + id));
+	    TaskRespDto respDto = modelMapper.map(task, TaskRespDto.class);
+	    respDto.setProjectName(task.getProject().getTitle());
+	    respDto.setProjectId(task.getProject().getId());
+	    if(task.getSprint()!=null) {
+	    	respDto.setSprintName(task.getSprint().getSprintName());
+	    }
+	    if(task.getStory()!=null) {
+	    	respDto.setStoryName(task.getStory().getTitle());
+	    }   
+	    respDto.setAssignedTo(task.getAssignedTo().getEmpName());
+	    respDto.setAssignedToId(task.getAssignedTo().getId());
+	    return respDto;
+	}
+
 
 }

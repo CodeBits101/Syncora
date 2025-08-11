@@ -10,7 +10,7 @@ import com.syncora.dtos.StoryResponseDto;
 
 public interface StoryService {
 
-	List<BacklogItemDto> getBacklogStories();
+	List<BacklogItemDto> getBacklogStories(Long projectId);
 
 	List<StoryResponseDto> getStories(Long id);
 	
@@ -21,4 +21,6 @@ public interface StoryService {
 	ApiResponse deleteStory(Long id);
 
 	List<StoryResponseDto> getStoriesByProjectIdAndSprintId(Long id, Long pid , Long sid);
+
+	StoryResponseDto getStoryById(Long id);
 }

@@ -30,7 +30,7 @@ export default function ChooseProjectModal({
 
       const res = await getAllInprogressProjects();
 
-      console.log("Projects API response:", res.data);
+      console.log("Projects API response:", res);
       setProjects(res || []);
     } catch (err) {
       console.error("Error fetching projects:", err);
