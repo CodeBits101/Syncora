@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.syncora.entities.Employee;
+import com.syncora.entities.Project;
 import com.syncora.enums.EmployeeType;
 
 public interface EmployeeRepo extends JpaRepository<Employee, Long> {
@@ -13,5 +14,7 @@ public interface EmployeeRepo extends JpaRepository<Employee, Long> {
    boolean existsByEmail(String email) ; 
    List<Employee> findByEmpRole(EmployeeType role);
    List<Employee> findByManager_Id(Long managerId);
+   List<Employee> findByProjectIsNullAndEmpRoleNotIn(List<EmployeeType> roles);
+   List<Employee> findByProject(Project project);
 
 }

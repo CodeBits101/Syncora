@@ -14,13 +14,16 @@ import com.syncora.dtos.ChangePassDto;
 import com.syncora.dtos.DeptDto;
 import com.syncora.dtos.EmployeeReqDto;
 import com.syncora.dtos.EmployeeResponseDto;
+import com.syncora.dtos.EmpsForProjectRespDto;
 import com.syncora.entities.Department;
 import com.syncora.entities.Employee;
+import com.syncora.entities.Project;
 import com.syncora.enums.EmployeeType;
 import com.syncora.exceptions.ApiException;
 import com.syncora.exceptions.ResourceNotFoundException;
 import com.syncora.repositories.DeptRepo;
 import com.syncora.repositories.EmployeeRepo;
+import com.syncora.repositories.ProjectRepo;
 import com.syncora.services.EmployeeService;
 
 import lombok.AllArgsConstructor;
@@ -33,6 +36,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 	
 	private final EmployeeRepo empRepo ; 
 	private final DeptRepo deptRepo ;
+	private final ProjectRepo projectRepo;
     private PasswordEncoder passwordEncoder ; 
 	private ModelMapper modelMapper;
 	
@@ -199,7 +203,35 @@ public class EmployeeServiceImpl implements EmployeeService {
 	}
 
 
-
+	@Override
+	public List<EmpsForProjectRespDto> getEmpsNotAssingedToProject(List<EmployeeType> excludedRoles) {
+		List<EmpsForProjectRespDto> empList = empRepo.findByProjectIsNullAndEmpRoleNotIn(excludedRoles).stream()
+				.map(emp -> {
+					EmpsForProjectRespDto dto = modelMapper.map(emp, EmpsForProjectRespDto.class);
+			        if (emp.getDepartment() != null) {
+		            dto.setDepartment(emp.getDepartment().getDeptName());
+		            dto.setCurrentManager(emp.getManager().getEmpName());
+			        }
+			        return dto;
+				}).toList();
+		return empList;
+	}
+	
+	@Override 
+	public List<EmpsForProjectRespDto> getEmployeesByProject(Long projectId) {
+		Project project  = projectRepo.findById(projectId)
+				.orElseThrow(()->new ResourceNotFoundException("Project does not exist"));
+		List<EmpsForProjectRespDto> empList = empRepo.findByProject(project).stream()
+				.map(emp -> {
+					EmpsForProjectRespDto dto = modelMapper.map(emp, EmpsForProjectRespDto.class);
+			        if (emp.getDepartment() != null) {
+		            dto.setDepartment(emp.getDepartment().getDeptName());
+		            dto.setCurrentManager(emp.getManager().getEmpName());
+			        }
+			        return dto;
+				}).toList();
+		return empList;
+	}	
 
 
 	

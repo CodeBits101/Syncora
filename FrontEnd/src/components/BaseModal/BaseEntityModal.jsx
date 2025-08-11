@@ -6,6 +6,11 @@ import {
   Button,
   TextField,
   MenuItem,
+  FormControl,
+  InputLabel,
+  Select,
+  OutlinedInput,
+  Chip
 } from "@mui/material";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
@@ -48,7 +53,7 @@ export default function EntityFormModal({
   id,
   submitLabel = "Create"
 }) {
-// export default function EntityFormModal({ open, handleClose, title, fields, initialValues, onSubmit, submitLabel = "Create"}) {
+  // export default function EntityFormModal({ open, handleClose, title, fields, initialValues, onSubmit, submitLabel = "Create"}) {
   // Build base validation schema dynamically from fields
 
   // console.log(id)
@@ -135,10 +140,10 @@ export default function EntityFormModal({
                     display: gridLayout ? "grid" : "block",
                     gridTemplateColumns: gridLayout
                       ? {
-                          xs: "1fr", // mobile
-                          sm: "1fr 1fr", // tablet
-                          md: "1fr 1fr 1fr", // desktop
-                        }
+                        xs: "1fr", // mobile
+                        sm: "1fr 1fr", // tablet
+                        md: "1fr 1fr 1fr", // desktop
+                      }
                       : "none",
                     gap: gridLayout ? 2 : 0,
                   }}
@@ -220,6 +225,91 @@ export default function EntityFormModal({
                       );
                     }
 
+                    if (field.type === "multiselect-chip") {
+                      return (
+                        <FormControl key={field.name} fullWidth margin="normal">
+                          <InputLabel id={`${field.name}-label`}>{field.label}</InputLabel>
+                          <Select
+                            labelId={`${field.name}-label`}
+                            id={field.name}
+                            multiple
+                            value={values[field.name] || []}
+                            onChange={(e) => {
+                              handleChange({
+                                target: { name: field.name, value: e.target.value }
+                              });
+                            }}
+                            input={<OutlinedInput label={field.label} />}
+                            renderValue={(selected) => (
+                              <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
+                                {selected.map((id) => {
+                                  const emp = field.options.find((opt) => opt.id === id);
+                                  return (
+                                    <Chip
+                                      key={id}
+                                      label={emp ? emp.empName : id}
+                                      sx={{ backgroundColor: "#e3f2fd" }}
+                                    />
+                                  );
+                                })}
+                              </Box>
+                            )}
+                            MenuProps={{
+                              PaperProps: {
+                                style: {
+                                  maxHeight: 48 * 4.5 + 8,
+                                  width: 420
+                                }
+                              }
+                            }}
+                          >
+                            {field.options.length === 0 ? (
+                              <MenuItem disabled sx={{ color: "text.secondary", fontStyle: "italic" }}>
+                                🚫 No unassigned employees available
+                              </MenuItem>
+                            ) : (
+                              field.options.map((option) => (
+                                <MenuItem
+                                  key={option.id}
+                                  value={option.id}
+                                  sx={{
+                                    alignItems: "flex-start",
+                                    py: 1.2,
+                                    borderBottom: "1px solid #f0f0f0",
+                                    "&:last-child": { borderBottom: "none" },
+                                  }}
+                                >
+                                  <Box>
+                                    <Typography
+                                      variant="subtitle1"
+                                      sx={{ fontWeight: 600, color: "primary.main" }}
+                                    >
+                                      👤 {option.empName}
+                                    </Typography>
+
+                                    <Typography
+                                      variant="body2"
+                                      sx={{ color: "text.secondary", mt: 0.3 }}
+                                    >
+                                      🏢 <strong>Dept:</strong> {option.department} &nbsp; | &nbsp;
+                                      💼 <strong>Desg:</strong> {option.empRole}
+                                    </Typography>
+
+                                    <Typography
+                                      variant="body2"
+                                      sx={{ color: "text.secondary", mt: 0.3 }}
+                                    >
+                                      👨‍💼 <strong>Manager:</strong> {option.currentManager}
+                                    </Typography>
+                                  </Box>
+                                </MenuItem>
+                              ))
+                            )}
+                          </Select>
+                        </FormControl>
+                      );
+                    }
+
                     return (
                       <TextField
                         key={field.name}
@@ -291,14 +381,14 @@ export default function EntityFormModal({
                     </TextField>
                   )}
                 </Box>
-              <Box mt={2} display="flex" justifyContent="flex-end" gap={2}>
-                <Button onClick={handleClose}>Cancel</Button>
-                <Button type="submit" variant="contained" color="primary">
-                  {submitLabel}
-                </Button>
-              </Box>
+                <Box mt={2} display="flex" justifyContent="flex-end" gap={2}>
+                  <Button onClick={handleClose}>Cancel</Button>
+                  <Button type="submit" variant="contained" color="primary">
+                    {submitLabel}
+                  </Button>
+                </Box>
               </Form>
-                  </>                 
+            </>
           )}
         </Formik>
       </Box>

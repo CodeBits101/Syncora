@@ -1,5 +1,7 @@
 package com.syncora.dtos;
 
+import java.time.LocalDateTime;
+
 import com.syncora.enums.TaskPriority;
 import com.syncora.enums.TaskStatus;
 
@@ -18,5 +20,9 @@ public class TaskResponseDto {
 	private TaskStatus status;
     private TaskPriority priority;
     private String title;
+    private LocalDateTime startDate;
+	
+	
+	private LocalDateTime endDate;
 
 }

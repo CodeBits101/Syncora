@@ -10,16 +10,15 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class ProjectReqDto {
+public class ProjectEditReqDto {
 	private String title;
     private String description;
     private LocalDateTime startDate;
     private LocalDateTime endDate;
-    private LocalDateTime actualStartDate;
-    private LocalDateTime actualEndDate;
     private ProjectStatus projectStatus;
     private Long managerId;
-    private List<Long> employeeIds;
+    private List<Long> employeesToAdd;
+    private List<Long> employeesToRemove;
 
 
 }

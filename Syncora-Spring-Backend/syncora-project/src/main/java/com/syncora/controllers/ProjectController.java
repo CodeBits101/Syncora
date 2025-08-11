@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.syncora.dtos.ProjectEditReqDto;
 import com.syncora.dtos.ProjectReqDto;
 import com.syncora.enums.ProjectStatus;
 import com.syncora.security.JwtUtils;
@@ -32,14 +33,16 @@ public class ProjectController {
 	private final JwtUtils jwtUtls;
 
 	@GetMapping
-	public ResponseEntity<?> getAllInprogressProjects(){
-		return ResponseEntity.status(HttpStatus.ACCEPTED).body(projectService.getInProgressProjects());
+	public ResponseEntity<?> getAllInprogressProjects(@RequestHeader("Authorization") String authHeader){
+		Long managerId = jwtUtls.getUserIdFromJwtToken(authHeader) ;
+		return ResponseEntity.status(HttpStatus.ACCEPTED).body(projectService.getInProgressProjects(managerId));
 	}
 	
 	@GetMapping("/{category}")
-	public ResponseEntity<?> getAllProjectsByStatus(@PathVariable String category) {
+	public ResponseEntity<?> getAllProjectsByStatus(@PathVariable String category, @RequestHeader("Authorization") String authHeader ) {
+		Long managerId = jwtUtls.getUserIdFromJwtToken(authHeader) ;
 		ProjectStatus status = ProjectStatus.valueOf(category.toUpperCase());
-		return ResponseEntity.status(HttpStatus.ACCEPTED).body(projectService.getProjectsByStatus(status));
+		return ResponseEntity.status(HttpStatus.ACCEPTED).body(projectService.getProjectsByStatus(managerId,status));
 	}
 	
 	@PostMapping
@@ -49,7 +52,7 @@ public class ProjectController {
 	}
 	
 	@PutMapping("/{id}")
-	public ResponseEntity<?> updateProject(@PathVariable Long id,@RequestBody ProjectReqDto dto) {
+	public ResponseEntity<?> updateProject(@PathVariable Long id,@RequestBody ProjectEditReqDto dto) {
 		return ResponseEntity.status(HttpStatus.OK).body(projectService.updateProject(id, dto));
 	}
 	
@@ -59,8 +62,9 @@ public class ProjectController {
 	}
 	
 	@GetMapping("/statuscount")
-	public ResponseEntity<?> getProjectsByStatusCount() {
-		return ResponseEntity.status(HttpStatus.ACCEPTED).body(projectService.getProjectByStatusCount());
+	public ResponseEntity<?> getProjectsByStatusCount(@RequestHeader("Authorization") String authHeader) {
+		Long managerId = jwtUtls.getUserIdFromJwtToken(authHeader);
+		return ResponseEntity.status(HttpStatus.ACCEPTED).body(projectService.getProjectByStatusCount(managerId));
 	}
 	
 	@GetMapping("/manager/{managerId}")
