@@ -51,6 +51,8 @@ const TaskCard = ({ task, index, columnId, overlay = false, sprintId, projectId,
     // No special background for subtasks
   };
 
+  // console.log("In TaskCard, task: ", task)
+
   return (
     <Card ref={setNodeRef} {...attributes} {...listeners} sx={style} data-card-id={id}>
       <CardContent sx={{ p: 1.5, height: '100%', position: 'relative', overflow: 'hidden' }}>

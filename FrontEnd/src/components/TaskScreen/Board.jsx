@@ -13,6 +13,7 @@ import { SortableContext, rectSortingStrategy } from "@dnd-kit/sortable";
 import Column from "./Column";
 import TaskCard from "./TaskCard";
 import { fetchBoardData } from "./data/taskScreenService";
+import { changeBugStatus, changeTaskStatus } from "../../services/manager/manager";
 // import { initialData } from "./data/mockData";
 
 // Mathematical logic for visual indicator and insertion:
@@ -130,6 +131,8 @@ const [error, setError] = useState(null);
       }
     };
 
+    console.log(data)
+
     loadData();
   }, [sprintId, projectId]);
 
@@ -151,77 +154,95 @@ const [error, setError] = useState(null);
 
   const handleDragStart = ({ active }) => setActiveId(active.id);
 
-  const handleDragEnd = ({ active, over }) => {
-    setActiveId(null);
-    setOverId(null);
-    setDropLineIndex(null);
-    setDropLineCol(null);
-    if (!over) return;
+  const handleDragEnd = async ({ active, over }) => {
+  setActiveId(null);
+  setOverId(null);
+  setDropLineIndex(null);
+  setDropLineCol(null);
 
-    const [fromCol, fromIdx] = active.id.split(":");
-    let toCol, toIdx;
-    let insertAt = null;
+  if (!over) return;
 
-    if (typeof over.id === 'string' && over.id.includes(':')) {
-      [toCol, toIdx] = over.id.split(":");
-      toIdx = parseInt(toIdx, 10);
-      // Unified: always use dropLineIndex if set
-      insertAt = (dropLineCol === toCol && dropLineIndex !== null) ? dropLineIndex : data.columns[toCol].taskIds.length;
-    } else {
-      toCol = over.id;
-      // Unified: always use dropLineIndex if set
-      insertAt = (dropLineCol === toCol && dropLineIndex !== null) ? dropLineIndex : data.columns[toCol].taskIds.length;
-    }
+  const [fromCol, fromIdx] = active.id.split(":");
+  let toCol, toIdx;
+  let insertAt = null;
 
-    const sourceTaskId = data.columns[fromCol].taskIds[parseInt(fromIdx, 10)];
+  if (typeof over.id === 'string' && over.id.includes(':')) {
+    [toCol, toIdx] = over.id.split(":");
+    toIdx = parseInt(toIdx, 10);
+    insertAt = (dropLineCol === toCol && dropLineIndex !== null) 
+      ? dropLineIndex 
+      : data.columns[toCol].taskIds.length;
+  } else {
+    toCol = over.id;
+    insertAt = (dropLineCol === toCol && dropLineIndex !== null) 
+      ? dropLineIndex 
+      : data.columns[toCol].taskIds.length;
+  }
 
-    if (fromCol === toCol && parseInt(fromIdx, 10) === insertAt) return;
+  const sourceTaskId = data.columns[fromCol].taskIds[parseInt(fromIdx, 10)];
 
+  if (fromCol === toCol && parseInt(fromIdx, 10) === insertAt) return;
+
+  // ✅ Get task and backend info BEFORE state update
+  const task = data.tasks[sourceTaskId];
+  let newStatus = data.columns[toCol].title;
+  let newStatusForBackend = newStatus === "IN PROGRESS" ? "INPROGRESS" : newStatus;
+  let backendIdToUpdate = task.backendId;
+
+  // ✅ Update state
+  setData(prev => {
     if (fromCol === toCol) {
-      const newTaskIds = Array.from(data.columns[fromCol].taskIds);
+      const newTaskIds = Array.from(prev.columns[fromCol].taskIds);
       const from = parseInt(fromIdx, 10);
       let to = insertAt;
       newTaskIds.splice(from, 1);
-      // If moving down, adjust for shifted indices
       if (to > from) to--;
       newTaskIds.splice(to, 0, sourceTaskId);
 
-      setData(prev => ({
+      return {
         ...prev,
         columns: {
           ...prev.columns,
           [fromCol]: { ...prev.columns[fromCol], taskIds: newTaskIds },
         },
-      }));
+      };
     } else {
-      const sourceTaskIds = Array.from(data.columns[fromCol].taskIds);
+      const sourceTaskIds = Array.from(prev.columns[fromCol].taskIds);
       sourceTaskIds.splice(parseInt(fromIdx, 10), 1);
 
-      const targetTaskIds = Array.from(data.columns[toCol].taskIds);
+      const targetTaskIds = Array.from(prev.columns[toCol].taskIds);
       targetTaskIds.splice(insertAt, 0, sourceTaskId);
 
-      setData(prev => {
-        // Get the new status from the target column's title
-        const newStatus = prev.columns[toCol].title;
- 
-        return {
-          ...prev,
-          columns: {
-            ...prev.columns,
-            [fromCol]: { ...prev.columns[fromCol], taskIds: sourceTaskIds },
-            [toCol]: { ...prev.columns[toCol], taskIds: targetTaskIds },
+      return {
+        ...prev,
+        columns: {
+          ...prev.columns,
+          [fromCol]: { ...prev.columns[fromCol], taskIds: sourceTaskIds },
+          [toCol]: { ...prev.columns[toCol], taskIds: targetTaskIds },
+        },
+        tasks: {
+          ...prev.tasks,
+          [sourceTaskId]: {
+            ...task,
+            status: newStatus, // frontend display value stays the same
           },
-          tasks: {
-            ...prev.tasks,
-            [sourceTaskId]: {
-              ...prev.tasks[sourceTaskId],
-              status: newStatus,
-            },
-          },
-        };
-      });
+        },
+      };
     }
-  };
+  });
+
+  // ✅ Now these vars have values
+  if (backendIdToUpdate !== null && task.type === 'bug') {
+    console.log("About to call APIs for bug");
+    await changeBugStatus(newStatusForBackend, backendIdToUpdate);
+  }
+
+  if (backendIdToUpdate !== null && task.type === 'task') {
+    console.log("About to call APIs for task");
+    await changeTaskStatus(newStatusForBackend, backendIdToUpdate);
+  }
+};
+
 
   return (
     <DndContext
@@ -277,6 +298,7 @@ const [error, setError] = useState(null);
         {activeId && (() => {
           const [colId, idx] = activeId.split(":");
           const task = data.tasks[data.columns[colId].taskIds[parseInt(idx, 10)]];
+          // console.log("In Board, task to be passed: ", task)
           return <TaskCard sprintId={sprintId} projectId={projectId} task={task} index={parseInt(idx, 10)} columnId={colId} overlay />;
         })()}
       </DragOverlay>

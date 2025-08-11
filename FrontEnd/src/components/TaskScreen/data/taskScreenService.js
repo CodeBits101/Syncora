@@ -83,36 +83,23 @@ const fetchSprints = async (projectId) => {
     }
   }
 
+export const mapApiSubtasksToRichFormat = (apiSubtasks) => {
+  return apiSubtasks.map(subtask => ({
+    id: `task-${subtask.id}`,        // formatted id like dummy data
+    backendId: subtask.id,
+    title: subtask.title,
+    description: '',                 // no description from API, so empty string or default
+    type: 'subtask',                // fixed value
+    priority: 'green',              // default priority, change if you want
+    createdAt: null,                // no createdAt from API, set null or default
+    updatedAt: null,                // same as above
+    assignee: '-',                 // default placeholder, since API doesn't provide
+    creator: '-',                  // default placeholder
+    dueDate: null,                 // no dueDate, set null
+    sprint: '-',                  // no sprint info, placeholder
+    comments: null,
+    attachments: null,
+    status: subtask.status || 'TODO', // use API status or default to TODO
+  }));
+}
 
-// function mapTasksToStatusGroups(tasks) {
-//   // Mapping from normalized API status to the dummy object key and title
-//   const statusMap = {
-//     TODO: { id: 'todo', title: 'TODO' },
-//     INPROGRESS: { id: 'in-progress', title: 'IN PROGRESS' },
-//     TESTING: { id: 'testing', title: 'TESTING' },
-//     DEPLOYMENT: { id: 'deployment', title: 'DEPLOYMENT' },
-//   };
-
-//   // Initialize result with empty taskIds arrays
-//   const result = {
-//     'todo': { id: 'todo', title: 'TODO', taskIds: [] },
-//     'in-progress': { id: 'in-progress', title: 'IN PROGRESS', taskIds: [] },
-//     'testing': { id: 'testing', title: 'TESTING', taskIds: [] },
-//     'deployment': { id: 'deployment', title: 'DEPLOYMENT', taskIds: [] },
-//   };
-
-//   tasks.forEach((task, index) => {
-//     const normalizedStatus = task.status.toUpperCase();
-
-//     // Find mapped status info, default to TODO if unknown
-//     const mappedStatus = statusMap[normalizedStatus] || statusMap.TODO;
-
-//     // Create dummy key using index or task.id, e.g. task-1
-//     const taskKey = `task-${task.id}`;
-
-//     // Add to the corresponding taskIds array
-//     result[mappedStatus.id].taskIds.push(taskKey);
-//   });
-
-//   return result;
-// }

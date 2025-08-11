@@ -30,7 +30,7 @@ const TaskBoard = () => {
         <Box
           height="50px"
           sx={{
-            background: 'linear-gradient(to right, #1E4DB7, #5B86E5, #ffffff)',
+            background: '#1E4DB7',
             mb: 2,
             borderRadius: '4px',
             mx: 2,
