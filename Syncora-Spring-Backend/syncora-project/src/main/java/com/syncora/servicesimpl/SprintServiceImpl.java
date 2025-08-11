@@ -130,6 +130,8 @@ public class SprintServiceImpl implements SprintService {
 			                    t.setId(task.getId());
 			                    t.setTitle(task.getTitle());
 			                    t.setStatus(task.getStatus());
+			                    t.setStartDate(task.getStartDate());
+			                    t.setEndDate(task.getEndDate());
 			                    return t;
 			                })
 			                .collect(Collectors.toList())
@@ -144,6 +146,8 @@ public class SprintServiceImpl implements SprintService {
 			                    b.setTitle(bug.getTitle());
 			                    b.setPriority(bug.getPriority());
 			                    b.setStatus(bug.getStatus());
+			                    b.setStartDate(bug.getStartDate());
+			                    b.setEndDate(bug.getEndDate());
 			                    return b;
 			                })
 			                .collect(Collectors.toList())
