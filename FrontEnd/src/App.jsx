@@ -30,8 +30,6 @@ import Calendar from "./components/Calendar/Calendar";
 import { ToastContainer } from "react-toastify";
 import ProjectDetails from '../src/components/shared/ProjectDetails'
 
-import ProjectDetails from "./components/shared/ProjectDetails";
-
 function App() {
   const [count, setCount] = useState(0);
   const [role, setRole] = useState(localStorage.getItem("role"));
