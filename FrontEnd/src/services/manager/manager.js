@@ -169,23 +169,24 @@ export const addBug = async (data) => {
 
 
 // ***************** SPRINT FUNCTIONS ************************
-export async function createSprint(data)
-{
-  try{
-    console.log("in create print service");
+export async function createSprint(data) {
+  try {
+    console.log("in create sprint service");
     let url = `${config.serverUrl}/sprints`;
     const token = sessionStorage.getItem('token');
 
     const response = await axios.post(url, data, {
-      headers: token,
-    })
+      headers: {
+        Authorization: `Bearer ${token}` 
+      }
+    });
+
     return response.data;
-  }
-  catch(ex){
+  } catch (ex) {
     console.log("Exception : ", ex);
   }
- 
 }
+
 
 export async function startSprint(sprintId, projectId) {
   try {
