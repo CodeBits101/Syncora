@@ -48,7 +48,7 @@ const typeIcons = {
 
 // const statusOptions = ["To Do", "In Progress", "Done"];
 
-export default function BacklogTable() {
+export default function BacklogTable({loadStatus}) {
   const [modalOpen, setModalOpen] = useState(false);
   const [modalTitle, setModalTitle] = useState("");
   const [modalFields, setModalFields] = useState([]);
@@ -65,6 +65,7 @@ export default function BacklogTable() {
     field: "",
     options: [],
   });
+   
 
   // New states for API integration
   const [loading, setLoading] = useState(false);
@@ -77,7 +78,7 @@ export default function BacklogTable() {
       console.log("In useEffect");
       loadBacklogData();
     }
-  }, [selectedOption, showMainUI]);
+  }, [selectedOption, showMainUI ,loadStatus ]);
 
   const loadBacklogData = async () => {
     if (!selectedOption) {

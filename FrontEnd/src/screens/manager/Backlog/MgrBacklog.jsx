@@ -43,6 +43,7 @@ function MgrBacklog() {
   const [selectedOption, setSelectedOption] = useState("");
   const [inProgressProject, setInProgressProject] = useState([]);
   const [employees, setEmployees] = useState([]);
+  const[loadStatus , setLoadStatus] = useState(false) ;
 
   //fetching in progress projects
   const fetchInProgressProjects = async () => {
@@ -109,6 +110,7 @@ function MgrBacklog() {
     console.log(response);
     if (response) {
       toast.success("Story created successfully!");
+      setLoadStatus(!loadStatus)
     }
     console.log("Story Created:", payload);
     // TODO: call your API here
@@ -151,6 +153,7 @@ function MgrBacklog() {
       const response = await addTask(payload);
       if (response) {
         toast.success("Task created successfully!");
+         setLoadStatus(!loadStatus)
       }
       setOpenModal(false);
     } catch (error) {
@@ -191,6 +194,7 @@ function MgrBacklog() {
       console.log(response)
       if (response) {
         toast.success("Bug created successfully!");
+         setLoadStatus(!loadStatus)
       }
       setOpenModal(false);
     } catch (error) {
@@ -291,7 +295,7 @@ function MgrBacklog() {
           />
         )}
       </Box>
-      <BacklogTable />
+      <BacklogTable loadStatus={loadStatus} />
     </div>
   );
 }

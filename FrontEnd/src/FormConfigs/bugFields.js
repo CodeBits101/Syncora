@@ -44,7 +44,6 @@ export const bugFields = (projects = [], employees = []) => [
   },
 ];
 
-
 export const updateBugFields = (projects = [], employees = []) => [
   { name: "title", label: "Bug Title", type: "text", required: true },
 
@@ -63,8 +62,7 @@ export const updateBugFields = (projects = [], employees = []) => [
   {
     name: "projectName",
     label: "Project title",
-    type: "text",
-    required: true,
+    type: "readonly",
   },
   {
     name: "description",
@@ -89,4 +87,3 @@ export const updateBugFields = (projects = [], employees = []) => [
     required: true,
   },
 ];
-

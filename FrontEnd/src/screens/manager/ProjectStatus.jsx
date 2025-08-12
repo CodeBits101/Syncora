@@ -93,6 +93,7 @@ export default function ProjectStatus() {
     setErrorMsg("");
     try {
       const data = await getProjectsByStatus(status);
+      console.log(data)
       setProjects(data);
     } catch (err) {
       setErrorMsg("Failed to fetch projects. Please try again later.");
@@ -258,6 +259,7 @@ export default function ProjectStatus() {
         }
         submitLabel="Update"
         onSubmit={handleUpdateProject}
+        gridLayout={true}
       />
 
       <DeleteProjectModal
