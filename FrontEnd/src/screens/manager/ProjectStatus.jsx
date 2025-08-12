@@ -10,7 +10,8 @@ import {
   getProjectsByStatus,
   getUnassignedEmpList,
   updateProject,
-} from "../../services/manager/manager"; import ProjectStatusMap from "../../components/shared/ProjectStatusMap";
+} from "../../services/manager/manager";
+import ProjectStatusMap from "../../components/shared/ProjectStatusMap";
 import EntityFormModal from "./../../components/BaseModal/BaseEntityModal";
 import { editProjectFields } from "../../FormConfigs/projectFields";
 
@@ -21,10 +22,9 @@ import { Box, IconButton } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 
-
 const ProjectCard = ({ project, bgColor, status, onEdit, onDelete }) => {
   const navigate = useNavigate();
-  console.log(status)
+  console.log(status);
   return (
     <Card className="project-card h-100" style={{ backgroundColor: bgColor }}>
       <Card.Body>
@@ -33,7 +33,26 @@ const ProjectCard = ({ project, bgColor, status, onEdit, onDelete }) => {
             {trimToWords(project.title, 3) || "No Project"}
           </Card.Title>
           <Card.Text className="mb-1">
-            <ProjectStatusMap status={status} />
+            <div className="d-flex align-items-center">
+               <IconButton
+                size="medium"
+                onClick={() => onEdit(project)}
+                color="primary"
+              >
+                <EditIcon fontSize="medium" />
+              </IconButton>
+              <IconButton
+                size="medium"
+                onClick={() => {
+                  onDelete(project.id);
+                }}
+                color="error"
+              >
+                <DeleteIcon fontSize="medium" />
+              </IconButton>
+              <ProjectStatusMap status={status} />
+             
+            </div>
           </Card.Text>
         </div>
         <Card.Subtitle className="mb-2 text-white-50">
@@ -44,7 +63,7 @@ const ProjectCard = ({ project, bgColor, status, onEdit, onDelete }) => {
           {trimToWords(project.managerName, 1) || "No Manager"}
         </Card.Text>
 
-        <div className="d-flex justify-content-evenly align-items-center mb-2">
+        <div className="d-flex justify-content-evenly align-items-center mt-2 " style={{marginLeft:'-7%'}}>
           <Card.Link
             className="hyperlink text-white"
             onClick={() => navigate("/scrumBoard")}
@@ -57,20 +76,6 @@ const ProjectCard = ({ project, bgColor, status, onEdit, onDelete }) => {
           >
             View Project Details
           </Card.Link>
-          <IconButton
-            size="medium"
-            onClick={() => onEdit(project)}
-            color="primary"
-          >
-            <EditIcon fontSize="medium" />
-          </IconButton>
-          <IconButton
-            size="medium"
-            onClick={() => { onDelete(project.id); }}
-            color="error"
-          >
-            <DeleteIcon fontSize="medium" />
-          </IconButton>
         </div>
       </Card.Body>
     </Card>
@@ -96,7 +101,7 @@ export default function ProjectStatus() {
     setErrorMsg("");
     try {
       const data = await getProjectsByStatus(status);
-      console.log(data)
+      console.log(data);
       setProjects(data);
     } catch (err) {
       setErrorMsg("Failed to fetch projects. Please try again later.");
@@ -127,21 +132,21 @@ export default function ProjectStatus() {
       const data2 = await getCurrentProjectEmpList(project.id);
 
       setAddEmpList(
-        data1.map(emp => ({
+        data1.map((emp) => ({
           id: emp.id,
           empName: emp.empName,
           department: emp.department,
           empRole: emp.empRole,
-          currentManager: emp.currentManager
+          currentManager: emp.currentManager,
         }))
       );
       setRemoveEmpList(
-        data2.map(emp => ({
+        data2.map((emp) => ({
           id: emp.id,
           empName: emp.empName,
           department: emp.department,
           empRole: emp.empRole,
-          currentManager: emp.currentManager
+          currentManager: emp.currentManager,
         }))
       );
       setSelectedProject(project);
@@ -155,7 +160,6 @@ export default function ProjectStatus() {
     setSelectedProjectId(id);
     setOpenDeleteModal(true);
   };
-
 
   const handleUpdateProject = async (formValues, { setSubmitting }) => {
     try {
@@ -180,7 +184,7 @@ export default function ProjectStatus() {
       setSelectedProject(null);
       setAddEmpList(null);
       setRemoveEmpList(null);
-      toast.success("Project updated successfully...")
+      toast.success("Project updated successfully...");
     } catch (error) {
       toast.error("Failed to update project:");
       console.log("Failed to update project", error);
@@ -249,15 +253,15 @@ export default function ProjectStatus() {
         initialValues={
           selectedProject
             ? {
-              title: selectedProject.title || "",
-              description: selectedProject.description || "",
-              startDate: toDateInputValue(selectedProject.startDate) || "",
-              endDate: toDateInputValue(selectedProject.endDate) || "",
-              projectStatus: selectedProject.projectStatus || "INPROGRESS",
-              managerId: selectedProject.managerId || "",
-              employeesToAdd: [],
-              employeesToRemove: [],
-            }
+                title: selectedProject.title || "",
+                description: selectedProject.description || "",
+                startDate: toDateInputValue(selectedProject.startDate) || "",
+                endDate: toDateInputValue(selectedProject.endDate) || "",
+                projectStatus: selectedProject.projectStatus || "INPROGRESS",
+                managerId: selectedProject.managerId || "",
+                employeesToAdd: [],
+                employeesToRemove: [],
+              }
             : {}
         }
         submitLabel="Update"

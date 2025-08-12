@@ -10,7 +10,7 @@ import {
   InputLabel,
   Select,
   OutlinedInput,
-  Chip
+  Chip,
 } from "@mui/material";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
@@ -51,7 +51,7 @@ export default function EntityFormModal({
   onSubmit,
   gridLayout = false,
   id,
-  submitLabel = "Create"
+  submitLabel = "Create",
 }) {
   // export default function EntityFormModal({ open, handleClose, title, fields, initialValues, onSubmit, submitLabel = "Create"}) {
   // Build base validation schema dynamically from fields
@@ -114,7 +114,6 @@ export default function EntityFormModal({
     }
   };
 
-
   return (
     <Modal open={open} onClose={handleClose}>
       <Box
@@ -140,10 +139,10 @@ export default function EntityFormModal({
                     display: gridLayout ? "grid" : "block",
                     gridTemplateColumns: gridLayout
                       ? {
-                        xs: "1fr", // mobile
-                        sm: "1fr 1fr", // tablet
-                        md: "1fr 1fr 1fr", // desktop
-                      }
+                          xs: "1fr", // mobile
+                          sm: "1fr 1fr", // tablet
+                          md: "1fr 1fr 1fr", // desktop
+                        }
                       : "none",
                     gap: gridLayout ? 2 : 0,
                   }}
@@ -197,16 +196,22 @@ export default function EntityFormModal({
                           }
                           helperText={touched[field.name] && errors[field.name]}
                         >
-                          {field.options.map((option) => (
-                            <MenuItem
-                              key={option.id ?? option}
-                              value={option.id ?? option}
-                            >
-                              {field.name === "assignedToId"
-                                ? option.empName
-                                : option.title || "Unknown"}
+                          {field.options && field.options.length > 0 ? (
+                            field.options.map((option) => (
+                              <MenuItem
+                                key={option.id ?? option}
+                                value={option.id ?? option}
+                              >
+                                {field.name === "assignedToId"
+                                  ? option.empName
+                                  : option.title || "Unknown"}
+                              </MenuItem>
+                            ))
+                          ) : (
+                            <MenuItem disabled>
+                              🚫 No Employees assigned to project
                             </MenuItem>
-                          ))}
+                          )}
                         </TextField>
                       );
                     }
@@ -228,7 +233,9 @@ export default function EntityFormModal({
                     if (field.type === "multiselect-chip") {
                       return (
                         <FormControl key={field.name} fullWidth margin="normal">
-                          <InputLabel id={`${field.name}-label`}>{field.label}</InputLabel>
+                          <InputLabel id={`${field.name}-label`}>
+                            {field.label}
+                          </InputLabel>
                           <Select
                             labelId={`${field.name}-label`}
                             id={field.name}
@@ -236,14 +243,25 @@ export default function EntityFormModal({
                             value={values[field.name] || []}
                             onChange={(e) => {
                               handleChange({
-                                target: { name: field.name, value: e.target.value }
+                                target: {
+                                  name: field.name,
+                                  value: e.target.value,
+                                },
                               });
                             }}
                             input={<OutlinedInput label={field.label} />}
                             renderValue={(selected) => (
-                              <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
+                              <Box
+                                sx={{
+                                  display: "flex",
+                                  flexWrap: "wrap",
+                                  gap: 0.5,
+                                }}
+                              >
                                 {selected.map((id) => {
-                                  const emp = field.options.find((opt) => opt.id === id);
+                                  const emp = field.options.find(
+                                    (opt) => opt.id === id
+                                  );
                                   return (
                                     <Chip
                                       key={id}
@@ -258,13 +276,19 @@ export default function EntityFormModal({
                               PaperProps: {
                                 style: {
                                   maxHeight: 48 * 4.5 + 8,
-                                  width: 420
-                                }
-                              }
+                                  width: 420,
+                                },
+                              },
                             }}
                           >
                             {field.options.length === 0 ? (
-                              <MenuItem disabled sx={{ color: "text.secondary", fontStyle: "italic" }}>
+                              <MenuItem
+                                disabled
+                                sx={{
+                                  color: "text.secondary",
+                                  fontStyle: "italic",
+                                }}
+                              >
                                 🚫 No unassigned employees available
                               </MenuItem>
                             ) : (
@@ -282,7 +306,10 @@ export default function EntityFormModal({
                                   <Box>
                                     <Typography
                                       variant="subtitle1"
-                                      sx={{ fontWeight: 600, color: "primary.main" }}
+                                      sx={{
+                                        fontWeight: 600,
+                                        color: "primary.main",
+                                      }}
                                     >
                                       👤 {option.empName}
                                     </Typography>
@@ -291,15 +318,17 @@ export default function EntityFormModal({
                                       variant="body2"
                                       sx={{ color: "text.secondary", mt: 0.3 }}
                                     >
-                                      🏢 <strong>Dept:</strong> {option.department} &nbsp; | &nbsp;
-                                      💼 <strong>Desg:</strong> {option.empRole}
+                                      🏢 <strong>Dept:</strong>{" "}
+                                      {option.department} &nbsp; | &nbsp; 💼{" "}
+                                      <strong>Desg:</strong> {option.empRole}
                                     </Typography>
 
                                     <Typography
                                       variant="body2"
                                       sx={{ color: "text.secondary", mt: 0.3 }}
                                     >
-                                      👨‍💼 <strong>Manager:</strong> {option.currentManager}
+                                      👨‍💼 <strong>Manager:</strong>{" "}
+                                      {option.currentManager}
                                     </Typography>
                                   </Box>
                                 </MenuItem>

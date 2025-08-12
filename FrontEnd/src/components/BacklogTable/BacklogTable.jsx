@@ -26,6 +26,7 @@ import EntityFormModal from "../BaseModal/BaseEntityModal";
 import { updateStoryFields } from "../../FormConfigs/storyFields";
 import { updateTaskFields } from "../../FormConfigs/taskFields";
 import { updateBugFields } from "../../FormConfigs/bugFields";
+import LogoutModal from "../shared/LogoutModal";
 import {
   getBacklogItems,
   deleteBug,
@@ -35,6 +36,7 @@ import {
   getStoryById,
   getTaskById,
 } from "./backlogService";
+import { toast, ToastContainer } from "react-toastify";
 
 const typeIcons = {
   STORY: <BookmarkBorderOutlinedIcon fontSize="small" color="success" />,
@@ -48,7 +50,11 @@ const typeIcons = {
 
 // const statusOptions = ["To Do", "In Progress", "Done"];
 
-export default function BacklogTable({loadStatus}) {
+export default function BacklogTable({
+  loadStatus,
+  selectedOption,
+  setSelectedOption,
+}) {
   const [modalOpen, setModalOpen] = useState(false);
   const [modalTitle, setModalTitle] = useState("");
   const [modalFields, setModalFields] = useState([]);
@@ -56,7 +62,9 @@ export default function BacklogTable({loadStatus}) {
   const [modalEntityType, setModalEntityType] = useState(null);
   const [showModal, setShowModal] = useState(true);
   const [showMainUI, setShowMainUI] = useState(false);
-  const [selectedOption, setSelectedOption] = useState("");
+  const [logoutModalOpen, setLogoutModalOpen] = useState(false);
+  const [selectedRow, setSelectedRow] = useState(null);
+
   const [rows, setRows] = useState([]);
   const [filter, setFilter] = useState("all"); // 'all', 'story', 'task', 'bug'
   const [anchorEl, setAnchorEl] = useState(null);
@@ -65,7 +73,6 @@ export default function BacklogTable({loadStatus}) {
     field: "",
     options: [],
   });
-   
 
   // New states for API integration
   const [loading, setLoading] = useState(false);
@@ -78,7 +85,7 @@ export default function BacklogTable({loadStatus}) {
       console.log("In useEffect");
       loadBacklogData();
     }
-  }, [selectedOption, showMainUI ,loadStatus ]);
+  }, [selectedOption, showMainUI, loadStatus]);
 
   const loadBacklogData = async () => {
     if (!selectedOption) {
@@ -139,19 +146,28 @@ export default function BacklogTable({loadStatus}) {
     handleClose();
   };
 
-  const handleDelete = async (row) => {
+  const handleDeleteClick = (rowData) => {
+    setSelectedRow(rowData); // store the row if needed
+    setLogoutModalOpen(true);
+  };
+  console.log(selectedRow);
+
+  const handleDelete = async () => {
     try {
       setError(null);
       setLoading(true);
 
-      const type = (row.type || "").toUpperCase();
+      const type = (selectedRow.type || "").toUpperCase();
 
       if (type === "BUG") {
-        await deleteBug(row.backendId);
+        await deleteBug(selectedRow.backendId);
+        toast.success("Bug deleted");
       } else if (type === "TASK") {
-        await deleteTask(row.backendId);
+        await deleteTask(selectedRow.backendId);
+        toast.success("Task deleted");
       } else if (type === "STORY") {
-        await deleteStory(row.backendId);
+        await deleteStory(selectedRow.backendId);
+        toast.success("Story deleted");
       }
 
       // refetch all items so UI is in sync with backend
@@ -159,8 +175,10 @@ export default function BacklogTable({loadStatus}) {
     } catch (err) {
       console.error("Failed to delete item:", err);
       setError("Failed to delete item. Please try again.");
+      toast.error("Error in deleting...");
     } finally {
       setLoading(false);
+      setLogoutModalOpen(false)
     }
   };
 
@@ -254,7 +272,7 @@ export default function BacklogTable({loadStatus}) {
             size="small"
             onClick={(e) => {
               e.stopPropagation();
-              handleDelete(params.row); // Use backendId instead of gridId
+              handleDeleteClick(params.row);
             }}
             color="error"
           >
@@ -285,9 +303,7 @@ export default function BacklogTable({loadStatus}) {
           start_date: storyObj.startDate
             ? storyObj.startDate.split("T")[0]
             : "",
-          end_date: storyObj.endDate
-            ? storyObj.endDate.split("T")[0]
-            : "",
+          end_date: storyObj.endDate ? storyObj.endDate.split("T")[0] : "",
         };
 
         // Remove old keys
@@ -304,12 +320,8 @@ export default function BacklogTable({loadStatus}) {
         const bugObj = await getBugById(row.backendId);
         const bugFrontendData = {
           ...bugObj,
-          start_date: bugObj.startDate
-            ? bugObj.startDate.split("T")[0]
-            : "",
-          end_date: bugObj.endDate
-            ? bugObj.endDate.split("T")[0]
-            : "",
+          start_date: bugObj.startDate ? bugObj.startDate.split("T")[0] : "",
+          end_date: bugObj.endDate ? bugObj.endDate.split("T")[0] : "",
         };
 
         // Remove old keys
@@ -321,17 +333,13 @@ export default function BacklogTable({loadStatus}) {
         // console.log(initialValues);
         break;
       case "TASK":
-        fields = updateTaskFields()
+        fields = updateTaskFields();
         title = "Edit Task";
         const taskObj = await getTaskById(row.backendId);
         const taskFrontendData = {
           ...taskObj,
-          start_date: taskObj.startDate
-            ? taskObj.startDate.split("T")[0]
-            : "",
-          end_date: taskObj.endDate
-            ? taskObj.endDate.split("T")[0]
-            : "",
+          start_date: taskObj.startDate ? taskObj.startDate.split("T")[0] : "",
+          end_date: taskObj.endDate ? taskObj.endDate.split("T")[0] : "",
         };
 
         // Remove old keys
@@ -359,7 +367,6 @@ export default function BacklogTable({loadStatus}) {
     setModalEntityType(row.type);
     setClickedTypeId(row.backendId);
     setModalOpen(true);
-    
   };
 
   const handleModalSubmit = (updatedValues) => {
@@ -542,6 +549,25 @@ export default function BacklogTable({loadStatus}) {
               ))}
             </Box>
           </Popover>
+          <LogoutModal
+            open={logoutModalOpen}
+            onClose={() => setLogoutModalOpen(false)}
+            onConfirm={handleDelete}
+            text={"Are you sure you want to delete ?"}
+            btnRightText={"Delete"}
+          />
+          <ToastContainer
+            position="top-center"
+            autoClose={1500}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            theme="colored"
+          />
         </div>
       )}
       <EntityFormModal

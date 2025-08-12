@@ -1,8 +1,8 @@
 import React from "react";
 import { MdOutlineDone, MdOutlinePending } from "react-icons/md";
-import { statusIcons,fallbackIcon } from "../../utils/projectStatusIcons";
+import { statusIcons, fallbackIcon } from "../../utils/projectStatusIcons";
 
-export default function ProjectStatusMap({status }) {
+export default function ProjectStatusMap({ status }) {
   const Icon = statusIcons[status] || fallbackIcon;
   const colorMap = {
     inprogress: "#FBF5DE",
@@ -13,6 +13,10 @@ export default function ProjectStatusMap({status }) {
     DEFAULT: "#B0BEC5",
   };
   return (
-   <Icon size={20} color={colorMap[status] || colorMap.DEFAULT} className="mt-1" /> 
-  )
+    <Icon
+      size={24}
+      color={colorMap[status] || colorMap.DEFAULT}
+      className="ms-2"
+    />
+  );
 }

@@ -16,7 +16,9 @@ import {
   addTask,
   createSprint,
   getAllInprogressProjects,
+  getEmployeesByProjectId,
   getSprintByProjectId,
+  getUnassignedEmpList,
 } from "../../../services/manager/manager";
 import { ToastContainer, toast } from "react-toastify";
 import { formatToLocalDateTime } from "../../../utils/formatToLocalDateTime";
@@ -44,7 +46,9 @@ function MgrBacklog() {
   const [selectedOption, setSelectedOption] = useState("");
   const [inProgressProject, setInProgressProject] = useState([]);
   const [employees, setEmployees] = useState([]);
-  const[loadStatus , setLoadStatus] = useState(false) ;
+  const [loadStatus, setLoadStatus] = useState(false);
+  const [selectedProject, setSelectedProject] = useState("");
+  const userRole = localStorage.getItem("role");
 
   //fetching in progress projects
   const fetchInProgressProjects = async () => {
@@ -61,7 +65,7 @@ function MgrBacklog() {
 
   const fetchEmployees = async () => {
     try {
-      const response = await getEmployeeByRole("ROLE_DEVELOPER");
+      const response = await getEmployeesByProjectId(selectedProject);
       console.log(response);
       // Assuming response contains employees data
       setEmployees(response);
@@ -111,7 +115,7 @@ function MgrBacklog() {
     console.log(response);
     if (response) {
       toast.success("Story created successfully!");
-      setLoadStatus(!loadStatus)
+      setLoadStatus(!loadStatus);
     }
     console.log("Story Created:", payload);
     // TODO: call your API here
@@ -154,7 +158,7 @@ function MgrBacklog() {
       const response = await addTask(payload);
       if (response) {
         toast.success("Task created successfully!");
-         setLoadStatus(!loadStatus)
+        setLoadStatus(!loadStatus);
       }
       setOpenModal(false);
     } catch (error) {
@@ -192,10 +196,10 @@ function MgrBacklog() {
     };
     try {
       const response = await addBug(payload);
-      console.log(response)
+      console.log(response);
       if (response) {
         toast.success("Bug created successfully!");
-         setLoadStatus(!loadStatus)
+        setLoadStatus(!loadStatus);
       }
       setOpenModal(false);
     } catch (error) {
@@ -204,25 +208,23 @@ function MgrBacklog() {
     }
   };
 
-  const handleCreateSprint = async(data) => {
-    console.log("Creating Sprint with data:", data);
+  const handleCreateSprint = async (data) => {
+    console.log("Create Sprint is clicked :: ");
     const payload = {
       ...data,
-      sprintId: "",
-      projectId: "",
+      managerId: localStorage.getItem("empId") || Cookies.get("empId"),
+      projectId: selectedProject,
+      startDate: formatToLocalDateTime(data.startDate),
+      endDate: formatToLocalDateTime(data.endDate),
     };
-    console.log("Sprint with payload:", payload);
-    try{
-      // const response = await createSprint(payload);
-      console.log(response)
-      if(response)
-        toast.success("Sprint Created successfully.");
+    try {
+      const createdSprint = await createSprint(payload);
+      console.log("Sprint created :", createdSprint);
       setOpenModal(false);
-    }
-    catch(ex)
-    {
-      console.error("Sprint error", ex);
-      toast.error("Sprint Creation Failed.")
+      toast.success("Sprint Created Successfully");
+    } catch (error) {
+      console.error("Failed to create Sprint", error);
+      toast.error("Sprint Creation failed");
     }
   };
 
@@ -239,17 +241,17 @@ function MgrBacklog() {
         return {
           title: "Create Sprint",
           fields: sprintFields,
-          initialValues: { 
-                sprintName: "",
-                description: "",
-                startDate: "",
-                endDate: "",
-                status: "BACKLOG",
-           },
-          onSubmit: handleCreateSprint
+          initialValues: {
+            sprintName: "",
+            description: "",
+            startDate: "",
+            endDate: "",
+            status: "BACKLOG",
+          },
+          onSubmit: handleCreateSprint,
         };
 
-      case "task":  
+      case "task":
         return {
           title: "Create Task",
           fields: taskFields(inProgressProject, employees),
@@ -297,7 +299,7 @@ function MgrBacklog() {
   useEffect(() => {
     fetchInProgressProjects();
     fetchEmployees();
-  }, []);
+  }, [selectedProject]);
 
   return (
     <div>
@@ -312,7 +314,23 @@ function MgrBacklog() {
           />
         )}
       </Box>
-      <BacklogTable loadStatus={loadStatus} />
+      <BacklogTable
+        loadStatus={loadStatus}
+        selectedOption={selectedProject}
+        setSelectedOption={setSelectedProject}
+      />
+      <ToastContainer
+        position="top-center"
+        autoClose={1500}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+      />
     </div>
   );
 }

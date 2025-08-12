@@ -142,9 +142,9 @@ const Signup = () => {
             <InputGroup.Text
               variant="outline-primary"
               onClick={() => setShowAddDepartmentModal(true)} // opens modal
-              style={{ cursor: 'pointer', width: '10.5%' }}
+              style={{ cursor: "pointer", width: "10.5%" }}
             >
-              + 
+              +
             </InputGroup.Text>
           </InputGroup>
         </Form.Group>
@@ -178,7 +178,7 @@ const Signup = () => {
     // validation logic
     const emailRegex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
     const phoneRegex = /^[0-9]{10}$/;
-    
+
     if (!formData.empName.trim()) {
       toast.error("Name is required");
       return;
@@ -349,12 +349,26 @@ const Signup = () => {
           </div>
           <p className="auth-footer">
             Have an account?{" "}
-            <a onClick={()=>navigate('/login')} className="auth-link cursor-pointer">
+            <a
+              onClick={() => navigate("/login")}
+              className="auth-link cursor-pointer"
+            >
               Log in
             </a>
           </p>
         </div>
-       
+        <ToastContainer
+          position="top-center"
+          autoClose={1500}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="colored"
+        />
       </div>
     </div>
   );

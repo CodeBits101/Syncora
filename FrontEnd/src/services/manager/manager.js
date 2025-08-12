@@ -1,6 +1,6 @@
 import { config } from "../config";
 import axios from "axios";
-import { toast } from 'react-toastify';
+import { toast } from "react-toastify";
 import { formatToLocalDateTime } from "../../utils/formatToLocalDateTime";
 import React from "react";
 
@@ -11,7 +11,7 @@ export async function getAllInprogressProjects() {
     const token = localStorage.getItem("token");
 
     const response = await axios.get(url, {
-     headers: {
+      headers: {
         Authorization: `Bearer ${token}`,
       },
     });
@@ -57,8 +57,8 @@ export async function createProject(data) {
   }
 }
 
-export async function updateProject(projectId,data) {
-   try {
+export async function updateProject(projectId, data) {
+  try {
     let url = `${config.serverUrl}/projects/${projectId}`;
 
     const token = localStorage.getItem("token");
@@ -74,14 +74,13 @@ export async function updateProject(projectId,data) {
   }
 }
 
-
 export async function deleteProject(pid) {
   try {
     const url = `${config.serverUrl}/projects/${pid}`;
     const token = localStorage.getItem("token");
 
     const response = await axios.delete(url, {
-    headers: {
+      headers: {
         Authorization: `Bearer ${token}`,
       },
     });
@@ -99,7 +98,7 @@ export async function getProjectsByStatus(status) {
     const token = localStorage.getItem("token");
 
     const response = await axios.get(url, {
-    headers: {
+      headers: {
         Authorization: `Bearer ${token}`,
       },
     });
@@ -122,10 +121,9 @@ export const getSprintByProjectId = async (projectId) => {
         token,
       },
     });
-    console.log("fetched data ", response.data)
-    console.log(response.data[0].description)
+    console.log("fetched data ", response.data);
+    console.log(response.data[0].description);
     return response.data;
-
   } catch (error) {
     console.error(`Error fetching projects for status ${status}:`, error);
     throw error;
@@ -194,16 +192,20 @@ export const changeTaskStatus = async (status, id) => {
 
     const token = localStorage.getItem("token");
 
-    const response = await axios.put(url, {}, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const response = await axios.put(
+      url,
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
     return response.data;
   } catch (error) {
     console.log(`exception: `, error);
   }
-}
+};
 
 //Bugs APis here
 export const addBug = async (data) => {
@@ -229,18 +231,22 @@ export const changeBugStatus = async (status, id) => {
 
     const token = localStorage.getItem("token");
 
-    const response = await axios.put(url, {}, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const response = await axios.put(
+      url,
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
     return response.data;
   } catch (error) {
     console.log(`exception: `, error);
   }
-}
+};
 
-//Subtasks APIs here 
+//Subtasks APIs here
 
 export const getSubTasksByUserAndTask = async (taskId) => {
   try {
@@ -249,12 +255,12 @@ export const getSubTasksByUserAndTask = async (taskId) => {
     const response = await axios.get(`${config.serverUrl}/subtasks/tasks`, {
       params: { createdById, taskId },
       headers: {
-        Authorization: `Bearer ${token}`
-      }
+        Authorization: `Bearer ${token}`,
+      },
     });
     return response.data;
   } catch (error) {
-    console.error('Error fetching task subtasks:', error);
+    console.error("Error fetching task subtasks:", error);
     throw error;
   }
 };
@@ -263,17 +269,17 @@ export const getSubTasksByUserAndBug = async (bugId) => {
   try {
     const token = localStorage.getItem("token");
     const createdById = localStorage.getItem("empId");
-    console.log("Created ", createdById)
+    console.log("Created ", createdById);
     const response = await axios.get(`${config.serverUrl}/subtasks/bugs`, {
       params: { createdById, bugId },
       headers: {
-        Authorization: `Bearer ${token}`
-      }
+        Authorization: `Bearer ${token}`,
+      },
     });
-    console.log("response data ", response.data)
+    console.log("response data ", response.data);
     return response.data;
   } catch (error) {
-    console.error('Error fetching bug subtasks:', error);
+    console.error("Error fetching bug subtasks:", error);
     throw error;
   }
 };
@@ -297,12 +303,12 @@ export async function createSprint(data) {
   try {
     console.log("in create sprint service");
     let url = `${config.serverUrl}/sprints`;
-    const token = sessionStorage.getItem('token');
+    const token = localStorage.getItem("token");
 
     const response = await axios.post(url, data, {
       headers: {
-        Authorization: `Bearer ${token}` 
-      }
+        Authorization: `Bearer ${token}`,
+      },
     });
 
     return response.data;
@@ -311,19 +317,18 @@ export async function createSprint(data) {
   }
 }
 
-
 export async function startSprint(sprintId, projectId) {
   try {
     console.log("Starting sprint", { sprintId, projectId });
 
     let url = `${config.serverUrl}/sprints/${sprintId}/start?projectId=${projectId}`;
 
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem("token");
 
     const response = await axios.put(url, {
       headers: {
         Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
     });
 
@@ -336,72 +341,61 @@ export async function startSprint(sprintId, projectId) {
   }
 }
 
-
-export async function completeSprint(sprintId)
-{
-  try{
+export async function completeSprint(sprintId) {
+  try {
     let url = `${config.serverUrl}/sprints/${sprintId}/complete`;
-    const token = sessionStorage.getItem('token')
+    const token = localStorage.getItem("token");
 
     const response = await axios.put(url, {
       headers: {
         Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
     });
     toast.success("Sprint Completed.");
     return response.data;
-  }
-  catch(error)
-  {
+  } catch (error) {
     console.error("Failed to complete Sprint"), error;
     throw error;
   }
 }
 
-export async function deleteSprint(sprintId)
-{
-  try{
+export async function deleteSprint(sprintId) {
+  try {
     let url = `${config.serverUrl}/sprints/${sprintId}`;
-    const token = localStorage.getItem('token')
+    const token = localStorage.getItem("token");
 
     const response = await axios.delete(url, {
       headers: {
         Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
     });
     return response.data;
-  }
-  catch(error)
-  {
+  } catch (error) {
     console.error("Failed to delete Sprint"), error;
     throw error;
   }
 }
 
-export async function updateSprint(values)
-{
-  try{
+export async function updateSprint(values) {
+  try {
     values.startDate = formatToLocalDateTime(values.startDate);
     values.endDate = formatToLocalDateTime(values.endDate);
     console.log("Full values object before update:", values);
-console.log("ID type:", typeof values.id, "ID value:", values.id);
+    console.log("ID type:", typeof values.id, "ID value:", values.id);
     let url = `${config.serverUrl}/sprints/${values.id}`;
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem("token");
 
     const response = await axios.put(url, values, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-      "Content-Type": "application/json"
-             }
-});
-
-  }
-  catch(ex){
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+  } catch (ex) {
     console.log("Exception : ", ex);
   }
-  
 }
 
 export const getCurrentProjectEmpList = async (pid) => {
@@ -421,10 +415,27 @@ export const getCurrentProjectEmpList = async (pid) => {
   }
 };
 
-
 export const getUnassignedEmpList = async () => {
   try {
     const url = `${config.serverUrl}/employees/unassigned`;
+
+    const token = localStorage.getItem("token");
+
+    const response = await axios.get(url, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    return response.data;
+  } catch (ex) {
+    console.log(`exception: `, ex);
+  }
+};
+
+export const getEmployeesByProjectId = async (id) => {
+  try {
+    const url = `${config.serverUrl}/employees/project/${id}`;
 
     const token = localStorage.getItem("token");
 

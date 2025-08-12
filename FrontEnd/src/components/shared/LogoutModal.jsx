@@ -8,11 +8,11 @@ import Modal from '@mui/joy/Modal';
 import ModalDialog from '@mui/joy/ModalDialog';
 import WarningRoundedIcon from '@mui/icons-material/WarningRounded';
 
-export default function LogoutModal({open, onClose, onConfirm}) {
+export default function LogoutModal({open, onClose, onConfirm , text,btnRightText}) {
 
   return (
     <React.Fragment>
-      <Modal open={open} onClose={() => setOpen(false)}>
+      <Modal open={open} onClose={onClose}>
         <ModalDialog variant="outlined" role="alertdialog">
           <DialogTitle>
             <WarningRoundedIcon />
@@ -20,11 +20,11 @@ export default function LogoutModal({open, onClose, onConfirm}) {
           </DialogTitle>
           <Divider />
           <DialogContent>
-            Are you sure you want to Logout?
+            { text || "Are you sure you want to Logout?"}
           </DialogContent>
           <DialogActions>
             <Button variant="solid" color="danger" onClick={onConfirm}>
-              Logout
+              {btnRightText || "Logout"}
             </Button>
             <Button variant="plain" color="neutral" onClick={onClose}>
               Cancel
