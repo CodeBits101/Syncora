@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import ChooseProjectModal from "../BaseModal/ChooseProjectModal";
+import ProjectDetails from './ProjectDetails';
 
 function Dashboard() {
   const [showModal, setShowModal] = useState(true);
@@ -17,9 +18,7 @@ function Dashboard() {
       />
       {showMainUI && (
         <div>
-          <h1>
-            common template 'Dashboard' page for manager,developer, tester
-          </h1>
+          <ProjectDetails/>
         </div>
       )}
     </>
