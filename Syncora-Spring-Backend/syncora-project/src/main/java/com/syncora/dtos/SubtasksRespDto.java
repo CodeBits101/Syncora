@@ -1,5 +1,7 @@
 package com.syncora.dtos;
 
+import com.syncora.enums.TaskStatus;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,6 +16,5 @@ public class SubtasksRespDto {
 	    private Long taskId;
 	    private Long bugId;
 	    private String title;
-	
-
+	    private TaskStatus status;
 }

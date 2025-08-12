@@ -123,6 +123,7 @@ export const getSprintByProjectId = async (projectId) => {
       },
     });
     console.log("fetched data ", response.data)
+    console.log(response.data[0].description)
     return response.data;
 
   } catch (error) {
@@ -187,6 +188,23 @@ export const addTask = async (data) => {
   }
 };
 
+export const changeTaskStatus = async (status, id) => {
+  try {
+    const url = `${config.serverUrl}/tasks/${status}/${id}`;
+
+    const token = localStorage.getItem("token");
+
+    const response = await axios.put(url, {}, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.log(`exception: `, error);
+  }
+}
+
 //Bugs APis here
 export const addBug = async (data) => {
   try {
@@ -205,27 +223,94 @@ export const addBug = async (data) => {
   }
 };
 
+export const changeBugStatus = async (status, id) => {
+  try {
+    const url = `${config.serverUrl}/bugs/${status}/${id}`;
 
+    const token = localStorage.getItem("token");
 
+    const response = await axios.put(url, {}, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.log(`exception: `, error);
+  }
+}
+
+//Subtasks APIs here 
+
+export const getSubTasksByUserAndTask = async (taskId) => {
+  try {
+    const token = localStorage.getItem("token");
+    const createdById = localStorage.getItem("empId");
+    const response = await axios.get(`${config.serverUrl}/subtasks/tasks`, {
+      params: { createdById, taskId },
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching task subtasks:', error);
+    throw error;
+  }
+};
+
+export const getSubTasksByUserAndBug = async (bugId) => {
+  try {
+    const token = localStorage.getItem("token");
+    const createdById = localStorage.getItem("empId");
+    console.log("Created ", createdById)
+    const response = await axios.get(`${config.serverUrl}/subtasks/bugs`, {
+      params: { createdById, bugId },
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+    console.log("response data ", response.data)
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching bug subtasks:', error);
+    throw error;
+  }
+};
+
+export const deleteSubtaskById = async (subtaskId) => {
+  const token = localStorage.getItem("token");
+  try {
+    await axios.delete(`${config.serverUrl}/subtasks/${subtaskId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  } catch (error) {
+    console.error("Error deleting subtask:", error);
+    throw error;
+  }
+};
 
 // ***************** SPRINT FUNCTIONS ************************
-export async function createSprint(data)
-{
-  try{
-    console.log("in create print service");
+export async function createSprint(data) {
+  try {
+    console.log("in create sprint service");
     let url = `${config.serverUrl}/sprints`;
     const token = sessionStorage.getItem('token');
 
     const response = await axios.post(url, data, {
-      headers: token,
-    })
+      headers: {
+        Authorization: `Bearer ${token}` 
+      }
+    });
+
     return response.data;
-  }
-  catch(ex){
+  } catch (ex) {
     console.log("Exception : ", ex);
   }
- 
 }
+
 
 export async function startSprint(sprintId, projectId) {
   try {

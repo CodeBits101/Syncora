@@ -375,7 +375,7 @@ const Sprints = () => {
           <Button
             variant="contained"
             color="primary"
-            onClick={() => navigate("/scrumBoard")}
+            onClick={() => navigate(`/scrumBoard/${sprint.id}/${sprint.projectId}`)}
           >
             <MdOutlineDashboardCustomize
               size={20}

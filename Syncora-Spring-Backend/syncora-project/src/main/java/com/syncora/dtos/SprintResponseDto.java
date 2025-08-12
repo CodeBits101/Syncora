@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Set;
 
 import com.syncora.enums.SprintStatus;
+import com.syncora.services.TaskRespDto;
 
 
 @Getter
@@ -25,12 +26,12 @@ public class SprintResponseDto {
     private LocalDateTime EndDate;
     private Long managerId;
     private Set<Long> storyIds;
-    private List<TaskResponseDto> tasks;
+    private List<TaskRespDto> tasks;
     private List<BugRespDto> bugs;
 //    private List<SubtasksRespDto> subtasks;
     private SprintStatus sprintStatus;
     
-    public void setTasks(List<TaskResponseDto> tasks) {
+    public void setTasks(List<TaskRespDto> tasks) {
         this.tasks = tasks;
     }
 

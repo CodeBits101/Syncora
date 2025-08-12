@@ -17,6 +17,9 @@ import { editProjectFields } from "../../FormConfigs/projectFields";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import DeleteProjectModal from "../../components/shared/DeleteProjectModal";
+import { Box, IconButton } from "@mui/material";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 
 const ProjectCard = ({ project, bgColor, status, onEdit, onDelete }) => {
@@ -41,7 +44,7 @@ const ProjectCard = ({ project, bgColor, status, onEdit, onDelete }) => {
           {trimToWords(project.managerName, 1) || "No Manager"}
         </Card.Text>
 
-        <div className="d-flex justify-content-between mb-2">
+        <div className="d-flex justify-content-evenly align-items-center mb-2">
           <Card.Link
             className="hyperlink text-white"
             onClick={() => navigate("/scrumBoard")}
@@ -54,20 +57,20 @@ const ProjectCard = ({ project, bgColor, status, onEdit, onDelete }) => {
           >
             View Project Details
           </Card.Link>
-        </div>
-        <div className="d-flex justify-content-between">
-          <Card.Link
-            className="hyperlink text-white"
+          <IconButton
+            size="medium"
             onClick={() => onEdit(project)}
+            color="primary"
           >
-            Edit Project
-          </Card.Link>
-          <Card.Link
-            className="hyperlink text-white"
+            <EditIcon fontSize="medium" />
+          </IconButton>
+          <IconButton
+            size="medium"
             onClick={() => { onDelete(project.id); }}
+            color="error"
           >
-            Delete Project
-          </Card.Link>
+            <DeleteIcon fontSize="medium" />
+          </IconButton>
         </div>
       </Card.Body>
     </Card>

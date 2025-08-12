@@ -195,4 +195,27 @@ public class BugServiceImpl implements BugService {
 	    respDto.setAssignedToId(bug.getAssignedTo().getId());
 	    return respDto;
 	}
+
+//	@Override
+//	public List<BugRespDto> getBugBySprint(Long id) {
+//	    List<Bug> bugs = bugRepo.findBySprint(id);
+//
+//	    return bugs.stream()
+//	            .map(bug -> {
+//	                BugRespDto dto = modelMapper.map(bug, BugRespDto.class);
+//
+//	                // Manually map related entity names/IDs not directly handled by ModelMapper
+//	                dto.setProjectName(bug.getProject() != null ? bug.getProject().getTitle() : null);
+//	                dto.setProjectId(bug.getProject() != null ? bug.getProject().getId() : null);
+//	                dto.setSprintName(bug.getSprint() != null ? bug.getSprint().getName() : null);
+//	                dto.setStoryName(bug.getStory() != null ? bug.getStory().getTitle() : null);
+//	                dto.setAssignedTo(bug.getAssignedTo() != null ? bug.getAssignedTo().getName() : null);
+//	                dto.setAssignedToId(bug.getAssignedTo() != null ? bug.getAssignedTo().getId() : null);
+//	                dto.setReportedBy(bug.getReportedBy() != null ? bug.getReportedBy().getName() : null);
+//
+//	                return dto;
+//	            })
+//	            .collect(Collectors.toList());
+//	}
+
 }

@@ -2,8 +2,11 @@ import React from 'react';
 import { Box, Typography } from '@mui/material';
 import Board from './Board';
 import { IoChevronBackCircleOutline } from "react-icons/io5";
+import { useParams } from 'react-router-dom';
 
 const TaskBoard = () => {
+  const { sprintId, projectId } = useParams();
+
   return (
     <Box className = "pb-3" display="flex" height="100vh" width="100vw" overflow="hidden">
       <Box width="0px" flexShrink={0} /> {/* Sidebar space */}
@@ -27,7 +30,7 @@ const TaskBoard = () => {
         <Box
           height="50px"
           sx={{
-            background: 'linear-gradient(to right, #1E4DB7, #5B86E5, #ffffff)',
+            background: '#1E4DB7',
             mb: 2,
             borderRadius: '4px',
             mx: 2,
@@ -36,7 +39,7 @@ const TaskBoard = () => {
 
         {/* BOARD WRAPPER */}
         <Box flex={1} overflow="hidden" px={2}>
-          <Board />
+          <Board sprintId={sprintId} projectId={projectId}/>
         </Box>
       </Box>
     </Box>

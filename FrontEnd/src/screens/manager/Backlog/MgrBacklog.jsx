@@ -14,6 +14,7 @@ import {
   addBug,
   addStory,
   addTask,
+  createSprint,
   getAllInprogressProjects,
   getSprintByProjectId,
 } from "../../../services/manager/manager";
@@ -203,17 +204,26 @@ function MgrBacklog() {
     }
   };
 
-  const handleCreateSprint = (data) => {
-    console.log("Creating bug with data:", data);
-    console.log("Selected projectId:", formData.projectId);
+  const handleCreateSprint = async(data) => {
+    console.log("Creating Sprint with data:", data);
     const payload = {
       ...data,
       sprintId: "",
       projectId: "",
     };
-    console.log("Story Created:", payload);
-    // TODO: call your API here
-    setOpenModal(false);
+    console.log("Sprint with payload:", payload);
+    try{
+      // const response = await createSprint(payload);
+      console.log(response)
+      if(response)
+        toast.success("Sprint Created successfully.");
+      setOpenModal(false);
+    }
+    catch(ex)
+    {
+      console.error("Sprint error", ex);
+      toast.error("Sprint Creation Failed.")
+    }
   };
 
   const getModalProps = () => {
@@ -229,10 +239,17 @@ function MgrBacklog() {
         return {
           title: "Create Sprint",
           fields: sprintFields,
-          initialValues: { name: "", duration: "" },
-          onSubmit: handleCreateSprint,
+          initialValues: { 
+                sprintName: "",
+                description: "",
+                startDate: "",
+                endDate: "",
+                status: "BACKLOG",
+           },
+          onSubmit: handleCreateSprint
         };
-      case "task":
+
+      case "task":  
         return {
           title: "Create Task",
           fields: taskFields(inProgressProject, employees),

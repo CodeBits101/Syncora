@@ -18,4 +18,5 @@ public interface BugService {
 	List<BugRespDto> getBugByStatus(Long id);
 	ApiResponse deleteBug(Long id);
 	BugRespDto getBugById(Long id);
+//	List<BugRespDto> getBugBySprint(Long id);
 }
