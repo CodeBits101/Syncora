@@ -90,3 +90,22 @@ export const getEmployeeById = async () => {
     throw error;
   }
 };
+
+
+export const sendMail=async (data)=>{
+    try {
+    const token = getToken();
+    const response = await axios.post(
+      `${import.meta.env.VITE_SPRING_API}/mail/send`,data,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching user by ID:", error);
+    throw error;
+  }
+}

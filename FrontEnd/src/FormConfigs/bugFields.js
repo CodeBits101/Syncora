@@ -44,7 +44,7 @@ export const bugFields = (projects = [], employees = []) => [
   },
 ];
 
-export const updateBugFields = (projects = [], employees = []) => [
+export const updateBugFields = (employees = []) => [
   { name: "title", label: "Bug Title", type: "text", required: true },
 
   {
@@ -63,6 +63,10 @@ export const updateBugFields = (projects = [], employees = []) => [
     name: "projectName",
     label: "Project title",
     type: "readonly",
+  },
+  {
+    name: "projectId", // hidden field for storing id
+    type: "hidden",
   },
   {
     name: "description",

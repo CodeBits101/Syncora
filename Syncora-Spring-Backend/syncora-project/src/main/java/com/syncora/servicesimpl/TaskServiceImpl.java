@@ -119,7 +119,7 @@ public List<BacklogItemDto> getBacklogTasks(Long projectId) {
 	@Override
 	public ApiResponse updateTask(TaskReqDto dto, Long id) {
 		Task task = taskRepo.findById(id).orElseThrow(() -> new ResourceNotFoundException("task does not exist"));
-
+         System.out.println(dto.getStoryId());
 		Employee assignedToEmp = empRepo.findById(dto.getAssignedToId())
 				.orElseThrow(() -> new ResourceNotFoundException("employee does not exist to assign the task"));
 

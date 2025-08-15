@@ -15,6 +15,7 @@ public class BugRespDto extends CommonReqDto {
     private TaskPriority priority;
     
 	private String assignedTo;
+	private String assignToEmail; 
 	private String reportedBy;
 	private int reopenCount;
 	private String projectName;  

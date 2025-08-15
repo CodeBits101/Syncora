@@ -166,6 +166,27 @@ export const getStoriesByProjectIdAndSprintId = async (pid, sid) => {
   }
 };
 
+
+export const updateStory = async (id,data) => {
+  try {
+    const url = `${config.serverUrl}/stories/update/${id}`;
+
+    const token = localStorage.getItem("token");
+    console.log(token);
+
+    const response = await axios.put(url, data , {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (ex) {
+    console.log(`exception: `, ex);
+  }
+};
+
+
+
 //TASKS APIs-:
 
 export const addTask = async (data) => {
@@ -176,6 +197,25 @@ export const addTask = async (data) => {
     console.log(token);
 
     const response = await axios.post(url, data, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.log(`exception: `, error);
+  }
+};
+
+
+export const updateTask = async (id , data) => {
+  try {
+    const url = `${config.serverUrl}/tasks/update/${id}`;
+
+    const token = localStorage.getItem("token");
+    console.log(token);
+
+    const response = await axios.put(url, data, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -215,6 +255,24 @@ export const addBug = async (data) => {
     const token = localStorage.getItem("token");
 
     const response = await axios.post(url, data, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.log(`exception: `, error);
+  }
+};
+
+
+export const updateBug = async (id , data) => {
+  try {
+    const url = `${config.serverUrl}/bugs/update/${id}`;
+
+    const token = localStorage.getItem("token");
+
+    const response = await axios.put(url, data, {
       headers: {
         Authorization: `Bearer ${token}`,
       },

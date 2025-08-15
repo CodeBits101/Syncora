@@ -20,7 +20,8 @@ public class TaskRespDto extends CommonReqDto {
 	private TaskStatus status;
     private TaskPriority priority;
     
-	private String assignedTo; 
+	private String assignedTo;
+	private String assignToEmail; 
 	private String createdBy; 
 	private String projectName;  
 	private String sprintName; 
