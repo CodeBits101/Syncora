@@ -68,7 +68,7 @@ const Signup = () => {
     departmentId: "",
     managerId: "",
     doj: "",
-    empRole: "", //default role
+    empRole: "ROLE_MANAGER", //default role
   });
 
   const navigate = useNavigate();

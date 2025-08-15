@@ -44,8 +44,7 @@ export const taskFields = (projects = [], employees = []) => [
   },
 ];
 
-
-export const updateTaskFields = (projects = [], employees = []) => [
+export const updateTaskFields = (employees = [], task = {}) => [
   { name: "title", label: "Task Title", type: "text", required: true },
 
   {
@@ -63,8 +62,12 @@ export const updateTaskFields = (projects = [], employees = []) => [
   {
     name: "projectName", // renamed from storyPoint
     label: "Project title",
-    type: "text",
+    type: "readonly",
     required: true,
+  },
+  {
+    name: "projectId", // hidden field for storing id
+    type: "hidden",
   },
   {
     name: "description",
@@ -89,4 +92,3 @@ export const updateTaskFields = (projects = [], employees = []) => [
     required: true,
   },
 ];
-

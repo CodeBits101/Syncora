@@ -37,6 +37,13 @@ import {
   getTaskById,
 } from "./backlogService";
 import { toast, ToastContainer } from "react-toastify";
+import {
+  getEmployeesByProjectId,
+  updateBug,
+  updateStory,
+  updateTask,
+} from "../../services/manager/manager";
+import { formatToLocalDateTime } from "../../utils/formatToLocalDateTime";
 
 const typeIcons = {
   STORY: <BookmarkBorderOutlinedIcon fontSize="small" color="success" />,
@@ -64,6 +71,9 @@ export default function BacklogTable({
   const [showMainUI, setShowMainUI] = useState(false);
   const [logoutModalOpen, setLogoutModalOpen] = useState(false);
   const [selectedRow, setSelectedRow] = useState(null);
+  const [employees, setEmployees] = useState([]);
+  const [modalSubmitMethod, setModalSubmitMethod] = useState(null);
+  const [isUpdating, setIsUpdating] = useState(false);
 
   const [rows, setRows] = useState([]);
   const [filter, setFilter] = useState("all"); // 'all', 'story', 'task', 'bug'
@@ -84,8 +94,24 @@ export default function BacklogTable({
     if (selectedOption && showMainUI) {
       console.log("In useEffect");
       loadBacklogData();
+      fetchEmployees();
     }
   }, [selectedOption, showMainUI, loadStatus]);
+
+  console.log(selectedOption);
+
+  const fetchEmployees = async () => {
+    try {
+      const response = await getEmployeesByProjectId(selectedOption);
+      // Assuming response contains employees data
+      setEmployees(response);
+    } catch (error) {
+      console.error("Error fetching employees:", error);
+      toast.error("Failed to fetch employees.");
+    }
+  };
+
+  console.log(employees);
 
   const loadBacklogData = async () => {
     if (!selectedOption) {
@@ -178,7 +204,7 @@ export default function BacklogTable({
       toast.error("Error in deleting...");
     } finally {
       setLoading(false);
-      setLogoutModalOpen(false)
+      setLogoutModalOpen(false);
     }
   };
 
@@ -283,10 +309,141 @@ export default function BacklogTable({
     },
   ];
 
+  const handleUpdateStory = async (data) => {
+    console.log("Updating story with data:", data);
+    const startDateFormatted = formatToLocalDateTime(data.start_date);
+    const endDateFormatted = formatToLocalDateTime(data.end_date);
+
+    if (!startDateFormatted || !endDateFormatted) {
+      toast.error("Please select valid start and end dates.");
+      return;
+    }
+
+    const payload = {
+      ...data,
+      title: data.title,
+      description: data.description,
+      project: data.projectId,
+      createdBy: localStorage.getItem("empId") || Cookies.get("empId"),
+      startDate: startDateFormatted,
+      endDate: endDateFormatted,
+      actualStartDate: startDateFormatted,
+      actualEndDate: endDateFormatted,
+    };
+
+    console.log(payload);
+    try {
+      const response = await updateStory(data.id, payload);
+      console.log(response);
+      toast.success("Story updated successfuly...");
+    } catch (error) {
+      console.error("update story error:", error);
+      toast.error(
+        error.response.data.message || "Update story failed occurred"
+      );
+    } finally {
+      setModalOpen(false);
+      setTimeout(() => {
+        loadBacklogData();
+      }, 1500);
+    }
+  };
+
+  const handleUpdateTask = async (data) => {
+    const startDateFormatted = formatToLocalDateTime(data.start_date);
+    const endDateFormatted = formatToLocalDateTime(data.end_date);
+
+    // Validate dates here (optional — Yup can also handle this)
+    if (!startDateFormatted || !endDateFormatted) {
+      toast.error("Please select valid start and end dates.");
+      return;
+    }
+
+    const empId = localStorage.getItem("empId") || Cookies.get("empId");
+
+    const payload = {
+      ...data,
+      title: data.title.trim(),
+      description: data.description.trim(),
+      startDate: startDateFormatted,
+      endDate: endDateFormatted,
+      actualStartDate: startDateFormatted,
+      actualEndDate: endDateFormatted,
+      priority: data.priority,
+      assignedToId: data.assignedToId,
+      assignedById: empId,
+      createdById: empId,
+      projectId: data.projectId,
+      sprintId: data.sprintId || null,
+      storyId: data.storyId || null,
+      storyPoint: Number(data.storyPoint) || 0, // ensure it's a number
+    };
+    try {
+      const response = await updateTask(data.id, payload);
+      if (response) {
+        toast.success("Task Updated successfully!");
+      }
+    } catch (error) {
+      console.error("Task error:", error);
+      toast.error(error.response.data.message || "Task failed occurred");
+    } finally {
+      setModalOpen(false);
+      setTimeout(() => {
+        loadBacklogData();
+      }, 1500);
+    }
+  };
+
+  const handleUpdateBug = async (data) => {
+    console.log("Creating bug with data:", data);
+    console.log("Selected projectId:", data.projectId);
+
+    const startDateFormatted = formatToLocalDateTime(data.start_date);
+    const endDateFormatted = formatToLocalDateTime(data.end_date);
+
+    // Validate dates here (optional — Yup can also handle this)
+    if (!startDateFormatted || !endDateFormatted) {
+      toast.error("Please select valid start and end dates.");
+      return;
+    }
+
+    const payload = {
+      title: data.title.trim(),
+      description: data.description.trim(),
+      startDate: startDateFormatted,
+      endDate: endDateFormatted,
+      actualStartDate: startDateFormatted,
+      actualEndDate: endDateFormatted,
+      priority: data.priority,
+      assignedToId: data.assignedToId,
+      projectId: data.projectId,
+      sprintId: data.sprintId || null,
+      storyId: data.storyId || null,
+      storyPoint: Number(data.storyPoint) || 0,
+    };
+    try {
+      const response = await updateBug(data.id, payload);
+      console.log(response);
+      if (response) {
+        toast.success("Bug Updated successfully!");
+      }
+    } catch (error) {
+      console.error("Task error:", error);
+      toast.error(error.response.data.message || "Bug failed occurred");
+    } finally {
+      setModalOpen(false);
+      setTimeout(() => {
+        loadBacklogData();
+      }, 1500);
+    }
+  };
+
   const handleUpdate = async (row) => {
+    console.log(row);
     let fields = [];
     let title = "";
     let initialValues = {};
+    let onSubmitHandler = null;
 
     // Handle both new (STORY, TASK, BUG) and old (Story, Task, Bug) formats
 
@@ -309,13 +466,12 @@ export default function BacklogTable({
         // Remove old keys
         delete storyFrontendData.startDate;
         delete storyFrontendData.endDate;
-
-        // console.log(frontendData);
         initialValues = storyFrontendData;
-        // console.log(initialValues);
+        onSubmitHandler = (values) => handleUpdateStory(values);
+
         break;
       case "BUG":
-        fields = updateBugFields();
+        fields = updateBugFields(employees);
         title = "Edit Bug";
         const bugObj = await getBugById(row.backendId);
         const bugFrontendData = {
@@ -328,12 +484,12 @@ export default function BacklogTable({
         delete bugFrontendData.startDate;
         delete bugFrontendData.endDate;
 
-        // console.log(frontendData);
         initialValues = bugFrontendData;
-        // console.log(initialValues);
+        onSubmitHandler = (values) => handleUpdateBug(values);
+
         break;
       case "TASK":
-        fields = updateTaskFields();
+        fields = updateTaskFields(employees);
         title = "Edit Task";
         const taskObj = await getTaskById(row.backendId);
         const taskFrontendData = {
@@ -345,9 +501,8 @@ export default function BacklogTable({
         // Remove old keys
         delete taskFrontendData.startDate;
         delete taskFrontendData.endDate;
-        // console.log(frontendData);
         initialValues = taskFrontendData;
-        // console.log(initialValues);
+        onSubmitHandler = (values) => handleUpdateTask(values);
         break;
 
       default:
@@ -366,18 +521,11 @@ export default function BacklogTable({
     setProjectId(initialValues.projectId);
     setModalEntityType(row.type);
     setClickedTypeId(row.backendId);
+    setModalSubmitMethod(() => (values) => onSubmitHandler(values));
     setModalOpen(true);
   };
 
-  const handleModalSubmit = (updatedValues) => {
-    setRows((prevRows) =>
-      prevRows.map((row) =>
-        row.id === updatedValues.id ? { ...row, ...updatedValues } : row
-      )
-    );
-    setModalOpen(false);
-  };
-
+  console.log(modalSubmitMethod);
   // Show loading state
   if (loading) {
     return (
@@ -576,9 +724,11 @@ export default function BacklogTable({
         title={modalTitle}
         fields={modalFields}
         initialValues={modalInitialValues}
-        onSubmit={handleModalSubmit}
+        onSubmit={modalSubmitMethod}
         gridLayout={true}
         id={clickedTypeId}
+        fetchSprint={true}
+        submitLabel={isUpdating ? "Updating..." : "Update"}
       />
     </>
   );

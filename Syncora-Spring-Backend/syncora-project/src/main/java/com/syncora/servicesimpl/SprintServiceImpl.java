@@ -138,6 +138,7 @@ public class SprintServiceImpl implements SprintService {
 			        	            if (task.getAssignedTo() != null) {
 			        	                t.setAssignedTo(task.getAssignedTo().getEmpName());
 			        	                t.setAssignedToId(task.getAssignedTo().getId());
+			        	                t.setAssignToEmail(task.getAssignedTo().getEmail()) ; 
 			        	            }
 			        	            if (task.getCreatedBy() != null) {
 			        	                t.setCreatedBy(task.getCreatedBy().getEmpName());
@@ -180,6 +181,7 @@ public class SprintServiceImpl implements SprintService {
 			        	            if (bug.getAssignedTo() != null) {
 			        	                b.setAssignedTo(bug.getAssignedTo().getEmpName());
 			        	                b.setAssignedToId(bug.getAssignedTo().getId());
+			        	                b.setAssignToEmail(bug.getAssignedTo().getEmail());
 			        	            }
 			        	            if (bug.getReportedBy() != null) {
 			        	                b.setReportedBy(bug.getReportedBy().getEmpName());

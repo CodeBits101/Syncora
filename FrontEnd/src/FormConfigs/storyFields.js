@@ -39,8 +39,6 @@ export const storyFields = (projects = [], sprints = []) => [
   },
 ];
 
-
-
 export const updateStoryFields = (projects = [], sprints = []) => [
   {
     name: "title",
@@ -60,7 +58,7 @@ export const updateStoryFields = (projects = [], sprints = []) => [
   {
     name: "projectName", // renamed from storyPoint
     label: "Project Name",
-    type: "text",
+    type: "readonly",
     required: true,
   },
   {
@@ -78,4 +76,3 @@ export const updateStoryFields = (projects = [], sprints = []) => [
     InputLabelProps: { shrink: true },
   },
 ];
-

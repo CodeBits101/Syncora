@@ -33,7 +33,7 @@ import {
   getAllInprogressProjects,
   getProjectsCountByStatus,
   createProject,
-  getUnassignedEmpList
+  getUnassignedEmpList,
 } from "../../services/manager/manager";
 
 import { toast, ToastContainer } from "react-toastify";
@@ -143,7 +143,6 @@ function Projects() {
   const [projectCounts, setProjectCounts] = useState([]);
   const [empList, setEmployees] = useState([]);
 
-
   const fetchProjects = async () => {
     setLoading(true);
     try {
@@ -172,24 +171,24 @@ function Projects() {
   };
 
   const handleOpenModal = async () => {
-  try {
-    const data = await getUnassignedEmpList();
+    try {
+      const data = await getUnassignedEmpList();
 
-    setEmployees(
-      data.map(emp => ({
-        id: emp.id,
-        empName: emp.empName,
-        department: emp.department,
-        empRole: emp.empRole,
-        currentManager: emp.currentManager
-      }))
-    );
+      setEmployees(
+        data.map((emp) => ({
+          id: emp.id,
+          empName: emp.empName,
+          department: emp.department,
+          empRole: emp.empRole,
+          currentManager: emp.currentManager,
+        }))
+      );
 
-    setOpenModal(true);
-  } catch (error) {
-    console.error("Failed to load employees", error);
-  }
-};
+      setOpenModal(true);
+    } catch (error) {
+      console.error("Failed to load employees", error);
+    }
+  };
 
   const handleCreateProject = async (formData) => {
     try {
@@ -224,7 +223,7 @@ function Projects() {
         actualEndDate: endDateFormatted,
         projectStatus: "INPROGRESS",
         managerId: Number(managerId),
-        employeeIds: formData.empList || []
+        employeeIds: formData.empList || [],
       };
 
       await createProject(payload);
@@ -253,11 +252,7 @@ function Projects() {
     <ThemeProvider theme={theme}>
       <ToastContainer position="top-right" autoClose={1500} />
       <Box display="flex" justifyContent="flex-end" mb={2}>
-        <Button
-          variant="contained"
-          color="success"
-          onClick={handleOpenModal}
-        >
+        <Button variant="contained" color="success" onClick={handleOpenModal}>
           + Create Project
         </Button>
       </Box>

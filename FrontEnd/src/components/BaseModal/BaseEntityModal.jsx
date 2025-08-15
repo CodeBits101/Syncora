@@ -52,6 +52,7 @@ export default function EntityFormModal({
   gridLayout = false,
   id,
   submitLabel = "Create",
+  fetchSprint=false 
 }) {
   // export default function EntityFormModal({ open, handleClose, title, fields, initialValues, onSubmit, submitLabel = "Create"}) {
   // Build base validation schema dynamically from fields
@@ -102,6 +103,8 @@ export default function EntityFormModal({
       setSprintOptions([]);
     }
   };
+
+  
 
   const fetchStoriesBySprintIdandProjectId = async (pid, sid) => {
     try {
@@ -185,8 +188,14 @@ export default function EntityFormModal({
                           value={values[field.name]}
                           onChange={(e) => {
                             handleChange(e);
-                            if (field.name === "projectId") {
-                              fetchSprintByProjectId(e.target.value);
+                            if (field.name === "projectId" || fetchSprint) {
+                              if(fetchSprint){
+                                 fetchSprintByProjectId(values.projectId)   
+                              }
+                              else{
+                                   fetchSprintByProjectId(e.target.value);
+                              }
+                              
                             }
                             // If this is the project dropdown
                           }}
@@ -226,6 +235,7 @@ export default function EntityFormModal({
                           fullWidth
                           variant="outlined"
                           margin="normal"
+                          sx={{cursor:'not-allowed'}}
                         />
                       );
                     }
@@ -372,9 +382,7 @@ export default function EntityFormModal({
                       onChange={(e) => {
                         handleChange(e);
                         fetchStoriesBySprintIdandProjectId(
-                          values.projectId,
-                          e.target.value
-                        );
+                          values.projectId,e.target.value);
                       }}
                       onBlur={handleBlur}
                       error={touched.sprintId && Boolean(errors.sprintId)}
