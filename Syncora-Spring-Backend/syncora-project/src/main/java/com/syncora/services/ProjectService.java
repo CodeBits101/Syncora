@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.syncora.dtos.ApiResponse;
 import com.syncora.dtos.BackLogResponseDto;
+import com.syncora.dtos.ProjectDetailsRespDto;
 import com.syncora.dtos.ProjectReqDto;
 import com.syncora.dtos.ProjectResponseDto;
 import com.syncora.dtos.ProjectEditReqDto;
@@ -28,6 +29,8 @@ public interface ProjectService {
 	List<ProjectSelectionDto> getProjectByManagerId(Long managerId);
 
 	BackLogResponseDto getBackLogItems(Long id ,Long managerId);
+	
+	ProjectDetailsRespDto getProjectDetails(Long id, Long empId);
 	
 	
 

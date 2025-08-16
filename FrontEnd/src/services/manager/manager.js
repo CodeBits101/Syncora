@@ -508,3 +508,21 @@ export const getEmployeesByProjectId = async (id) => {
     console.log(`exception: `, ex);
   }
 };
+
+export const getProjectDetails = async (pid) => {
+  try {
+    const url = `${config.serverUrl}/projects/${pid}/details`;
+
+    const token = localStorage.getItem("token");
+
+    const response = await axios.get(url, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    return response.data;
+  } catch (ex) {
+    console.log(`exception: `, ex);
+  }
+};

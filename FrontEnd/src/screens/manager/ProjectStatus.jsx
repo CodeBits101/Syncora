@@ -72,7 +72,7 @@ const ProjectCard = ({ project, bgColor, status, onEdit, onDelete }) => {
           </Card.Link>
           <Card.Link
             className="hyperlink text-white"
-            onClick={() => navigate("/projectdetails")}
+            onClick={() => navigate(`/project/${project.id}`)}
           >
             View Project Details
           </Card.Link>

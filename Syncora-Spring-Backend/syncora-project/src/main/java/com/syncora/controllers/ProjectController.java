@@ -82,4 +82,12 @@ public class ProjectController {
 		
 	}
 	
+	@GetMapping("/{id}/details")
+	public ResponseEntity<?> getProjectDetails(@PathVariable Long id, @RequestHeader("Authorization") String authHeader)
+	{
+		Long empId = jwtUtls.getUserIdFromJwtToken(authHeader) ;
+
+		return ResponseEntity.status(HttpStatus.ACCEPTED).body(projectService.getProjectDetails(id, empId));
+	}
+	
 }

@@ -1,5 +1,4 @@
-import React from "react";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import DoneIcon from "@mui/icons-material/Done";
@@ -31,17 +30,17 @@ import {
   TableContainer,
   TablePagination,
 } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import {
   completeSprint,
   createSprint,
   deleteSprint,
   startSprint,
   updateSprint,
+  getSprintByProjectId,
 } from "../../services/manager/manager";
 import { toast, ToastContainer } from "react-toastify";
 import { formatDateForInput } from "./../../utils/dateFormatForInput";
-import { getSprintByProjectId } from "../../services/manager/manager";
 
 const Sprints = () => {
   const userRole = localStorage.getItem("role");
@@ -64,6 +63,8 @@ const Sprints = () => {
   });
 
   const navigate = useNavigate();
+  const location = useLocation();
+  const projectIdFromState = location.state?.projectId;
 
   const handleCreateSprint = async (data) => {
     const payload = {
@@ -90,9 +91,7 @@ const Sprints = () => {
       setLoading(true);
       setError("");
       const res = await getSprintByProjectId(projectId);
-      console.log("fetch data " + res.data);
       const sprintList = res || [];
-      // Group sprints by status
       const grouped = {
         ACTIVE: sprintList.filter((s) => s.sprintStatus === "ACTIVE"),
         BACKLOG: sprintList.filter((s) => s.sprintStatus === "BACKLOG"),
@@ -100,7 +99,6 @@ const Sprints = () => {
       };
       setSprints(grouped);
 
-      // Optional: If your API returns projectName in the response
       if (sprintList.length > 0 && sprintList[0]?.projectName) {
         setProjectName(sprintList[0].projectName);
       }
@@ -111,8 +109,6 @@ const Sprints = () => {
       setLoading(false);
     }
   };
-
-  // SetSprint Status to ACTIVE
 
   const handleStartSprint = async (sprintId, projectId) => {
     try {
@@ -126,10 +122,8 @@ const Sprints = () => {
     }
   };
 
-  //  set sprint status complete
   const handleCompleteSprint = async (sprintId, projectId) => {
     try {
-      console.log(projectId);
       setLoading(true);
       await completeSprint(sprintId);
       await fetchSprints(projectId);
@@ -160,7 +154,6 @@ const Sprints = () => {
 
   const handleUpdateSprint = async (values) => {
     try {
-      console.log(values.id);
       const projectId = selectedOption;
       await updateSprint(values);
       toast.success("Sprint updated successfully!");
@@ -174,37 +167,44 @@ const Sprints = () => {
     }
   };
 
+  // --- useEffect ---
   useEffect(() => {
-    if (selectedOption) {
+    if (projectIdFromState) {
+      // came from ProjectDetails
+      fetchSprints(projectIdFromState);
+      setSelectedOption(projectIdFromState);
+      setShowMainUI(true);
+      setShowModal(false);
+    }
+  }, [projectIdFromState]);
+
+  useEffect(() => {
+    if (selectedOption && !projectIdFromState) {
+      // selected from modal
       fetchSprints(selectedOption);
     }
   }, [selectedOption]);
 
   return (
     <>
-      <ChooseProjectModal
-        showModal={showModal}
-        showMainUI={showMainUI}
-        setSelectedOption={setSelectedOption}
-        selectedOption={selectedOption}
-        setShowModal={setShowModal}
-        setShowMainUI={setShowMainUI}
-      />
+      {!projectIdFromState && (
+        <ChooseProjectModal
+          showModal={showModal}
+          showMainUI={showMainUI}
+          setSelectedOption={setSelectedOption}
+          selectedOption={selectedOption}
+          setShowModal={setShowModal}
+          setShowMainUI={setShowMainUI}
+        />
+      )}
 
       {showMainUI && (
         <Box p={4} sx={{ backgroundColor: "#f6faffff", minHeight: "100vh" }}>
           <Box display="flex" justifyContent="space-between" mb={4}>
             <Typography variant="h5" sx={{ fontWeight: "bold" }}>
-              Project:{" "}
-              <span style={{ color: "#1976d2" }}>{selectedOption?.title}</span>{" "}
-              — Sprints
+              Project: <span style={{ color: "#1976d2" }}>{selectedOption?.title}</span> — Sprints
             </Typography>
-            <Box
-              display="flex"
-              sx={{ gap: 2 }}
-              justifyContent="flex-end"
-              mb={2}
-            >
+            <Box display="flex" sx={{ gap: 2 }} justifyContent="flex-end" mb={2}>
               {userRole === "ROLE_MANAGER" && (
                 <Button
                   variant="contained"
@@ -214,19 +214,20 @@ const Sprints = () => {
                   + Create Sprint
                 </Button>
               )}
-
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={() => setShowModal(true)}
-              >
-                <SiPolymerproject
-                  color="white"
-                  size={20}
-                  style={{ marginRight: "10px" }}
-                />
-                Choose Project
-              </Button>
+              {!projectIdFromState && (
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={() => setShowModal(true)}
+                >
+                  <SiPolymerproject
+                    color="white"
+                    size={20}
+                    style={{ marginRight: "10px" }}
+                  />
+                  Choose Project
+                </Button>
+              )}
             </Box>
           </Box>
 
@@ -327,34 +328,25 @@ const Sprints = () => {
                                     <TableRow
                                       key={`${item.type}-${item.id}`}
                                       sx={{
-                                        "&:hover": {
-                                          backgroundColor: "#f5f5f5",
-                                        },
+                                        "&:hover": { backgroundColor: "#f5f5f5" },
                                       }}
                                     >
                                       <TableCell>
                                         {item.type === "task" ? (
                                           <TaskIcon
                                             color="primary"
-                                            sx={{
-                                              verticalAlign: "middle",
-                                              mr: 1,
-                                            }}
+                                            sx={{ verticalAlign: "middle", mr: 1 }}
                                           />
                                         ) : (
                                           <BugReportIcon
                                             color="error"
-                                            sx={{
-                                              verticalAlign: "middle",
-                                              mr: 1,
-                                            }}
+                                            sx={{ verticalAlign: "middle", mr: 1 }}
                                           />
                                         )}
                                         {item.type === "task" ? "Task" : "Bug"}
                                       </TableCell>
                                       <TableCell>{item.title}</TableCell>
-                                      <TableCell>{item.status}</TableCell>{" "}
-                                      {/* Added status value */}
+                                      <TableCell>{item.status}</TableCell>
                                     </TableRow>
                                   ))}
                               </TableBody>
@@ -378,8 +370,7 @@ const Sprints = () => {
                         </Grid>
                       </Grid>
 
-                      {/* BUTTONS ROW */}
-                      {userRole == "ROLE_MANAGER" && (
+                      {userRole === "ROLE_MANAGER" && (
                         <Box
                           sx={{
                             mt: 3,
@@ -461,17 +452,16 @@ const Sprints = () => {
                           )}
                         </Box>
                       )}
-                      {/* Warning */}
+
                       {category === "BACKLOG" &&
-                        userRole == "ROLE_MANAGER" &&
+                        userRole === "ROLE_MANAGER" &&
                         sprints.ACTIVE.length > 0 && (
                           <Typography
                             variant="caption"
                             color="error"
                             sx={{ mt: 1, display: "block" }}
                           >
-                            Cannot start new sprint while another sprint is
-                            active
+                            Cannot start new sprint while another sprint is active
                           </Typography>
                         )}
                     </AccordionDetails>
