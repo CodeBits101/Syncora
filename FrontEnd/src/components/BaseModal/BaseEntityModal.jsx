@@ -213,7 +213,7 @@ export default function EntityFormModal({
                               >
                                 {field.name === "assignedToId"
                                   ? option.empName
-                                  : option.title || "Unknown"}
+                                  : option.title || option.sprintName || "Unknown"}
                               </MenuItem>
                             ))
                           ) : (

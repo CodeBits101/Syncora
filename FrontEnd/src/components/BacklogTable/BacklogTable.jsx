@@ -39,11 +39,13 @@ import {
 import { toast, ToastContainer } from "react-toastify";
 import {
   getEmployeesByProjectId,
+  getSprintByProjectId,
   updateBug,
   updateStory,
   updateTask,
 } from "../../services/manager/manager";
 import { formatToLocalDateTime } from "../../utils/formatToLocalDateTime";
+import NoData from '../../screens/main/NoData'
 
 const typeIcons = {
   STORY: <BookmarkBorderOutlinedIcon fontSize="small" color="success" />,
@@ -74,6 +76,7 @@ export default function BacklogTable({
   const [employees, setEmployees] = useState([]);
   const [modalSubmitMethod, setModalSubmitMethod] = useState(null);
   const [isUpdating, setIsUpdating] = useState(false);
+  const [sprints, setSprints] = useState([]);
 
   const [rows, setRows] = useState([]);
   const [filter, setFilter] = useState("all"); // 'all', 'story', 'task', 'bug'
@@ -95,10 +98,22 @@ export default function BacklogTable({
       console.log("In useEffect");
       loadBacklogData();
       fetchEmployees();
+      fetchSprints();
     }
   }, [selectedOption, showMainUI, loadStatus]);
 
   console.log(selectedOption);
+
+  const fetchSprints = async () => {
+    try {
+      const response = await getSprintByProjectId(selectedOption);
+      console.log(response)
+      setSprints(response);
+    } catch (error) {
+      console.error("Error fetching sprints:", error);
+      toast.error("Failed to fetch sprints.");
+    }
+  };
 
   const fetchEmployees = async () => {
     try {
@@ -324,6 +339,7 @@ export default function BacklogTable({
       title: data.title,
       description: data.description,
       project: data.projectId,
+      currentSprint: data.sprintId || null,
       createdBy: localStorage.getItem("empId") || Cookies.get("empId"),
       startDate: startDateFormatted,
       endDate: endDateFormatted,
@@ -452,7 +468,7 @@ export default function BacklogTable({
     //api call here, get type by id and provide the obj returned by the api call to initialValues
     switch (rowType) {
       case "STORY":
-        fields = updateStoryFields();
+        fields = updateStoryFields(sprints);
         title = "Edit Story";
         const storyObj = await getStoryById(row.backendId);
         const storyFrontendData = {
@@ -624,7 +640,7 @@ export default function BacklogTable({
                   Bugs
                 </ToggleButton>
 
-                <FaFilePdf
+                {filteredRows.length !==0 && <FaFilePdf
                   size={25}
                   color="red"
                   style={{
@@ -634,11 +650,12 @@ export default function BacklogTable({
                     cursor: "pointer",
                   }}
                   onClick={() => exportPDF(rows, columns)}
-                />
+                />}
               </ToggleButtonGroup>
             </Box>
 
             {/* DataGrid */}
+            {filteredRows.length === 0 && <p className="text-center fs-5 fw-bold">No Backlog Data for a moment</p>}
             <Box
               sx={{
                 boxShadow: 3,
@@ -647,6 +664,7 @@ export default function BacklogTable({
                 backgroundColor: "white",
               }}
             >
+              
               <DataGrid
                 rows={filteredRows}
                 columns={columns}
