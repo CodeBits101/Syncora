@@ -126,6 +126,12 @@ public ApiResponse updateStory(StoryReqDto dto, Long id)
 	Story story = storyRepo.findById(id).orElseThrow(()->
     new ResourceNotFoundException("Story does not exist"));
 	modelMapper.map(dto, story);
+	if(dto.getCurrentSprint()!= null) {
+		Sprint sprint = sprintRepo.findById(dto.getCurrentSprint())
+				.orElseThrow(()-> new ResourceNotFoundException("Sprint does not exist...")) ;
+		story.setCurrentSprint(sprint);
+		story.setStoryStatus(TaskStatus.TODO);
+	};
 	storyRepo.save(story);
 	return new ApiResponse("Story has been updated successfully...");
 }

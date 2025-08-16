@@ -39,7 +39,7 @@ export const storyFields = (projects = [], sprints = []) => [
   },
 ];
 
-export const updateStoryFields = (projects = [], sprints = []) => [
+export const updateStoryFields = (sprints = []) => [
   {
     name: "title",
     label: "Story Title",
@@ -60,6 +60,12 @@ export const updateStoryFields = (projects = [], sprints = []) => [
     label: "Project Name",
     type: "readonly",
     required: true,
+  },
+  {
+    name: "sprintId", // renamed from storyPoint
+    label: "Select Sprint",
+    type: "select",
+    options: sprints,
   },
   {
     name: "start_date",
