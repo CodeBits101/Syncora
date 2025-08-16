@@ -24,6 +24,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 
 const ProjectCard = ({ project, bgColor, status, onEdit, onDelete }) => {
   const navigate = useNavigate();
+  const role = localStorage.getItem('role');
   return (
     <Card className="project-card h-100" style={{ backgroundColor: bgColor }}>
       <Card.Body>
@@ -32,24 +33,25 @@ const ProjectCard = ({ project, bgColor, status, onEdit, onDelete }) => {
             {trimToWords(project.title, 3) || "No Project"}
           </Card.Title>
 
-          {/* Replaced Card.Text <p> with as="div" */}
-          <Card.Text as="div" className="mb-1 d-flex align-items-center">
-            <IconButton
-              size="medium"
-              onClick={() => onEdit(project)}
-              color="primary"
-            >
-              <EditIcon fontSize="medium" />
-            </IconButton>
-            <IconButton
-              size="medium"
-              onClick={() => onDelete(project.id)}
-              color="error"
-            >
-              <DeleteIcon fontSize="medium" />
-            </IconButton>
-            <ProjectStatusMap status={status} />
-          </Card.Text>
+          {role === 'ROLE_MANAGER' && (
+            <Card.Text as="div" className="mb-1 d-flex align-items-center">
+              <IconButton
+                size="medium"
+                onClick={() => onEdit(project)}
+                color="primary"
+              >
+                <EditIcon fontSize="medium" />
+              </IconButton>
+              <IconButton
+                size="medium"
+                onClick={() => onDelete(project.id)}
+                color="error"
+              >
+                <DeleteIcon fontSize="medium" />
+              </IconButton>
+              <ProjectStatusMap status={status} />
+            </Card.Text>
+          )}
         </div>
 
         <Card.Subtitle className="mb-2 text-white-50">
@@ -251,15 +253,15 @@ export default function ProjectStatus() {
         initialValues={
           selectedProject
             ? {
-                title: selectedProject.title || "",
-                description: selectedProject.description || "",
-                startDate: toDateInputValue(selectedProject.startDate) || "",
-                endDate: toDateInputValue(selectedProject.endDate) || "",
-                projectStatus: selectedProject.projectStatus || "INPROGRESS",
-                managerId: selectedProject.managerId || "",
-                employeesToAdd: [],
-                employeesToRemove: [],
-              }
+              title: selectedProject.title || "",
+              description: selectedProject.description || "",
+              startDate: toDateInputValue(selectedProject.startDate) || "",
+              endDate: toDateInputValue(selectedProject.endDate) || "",
+              projectStatus: selectedProject.projectStatus || "INPROGRESS",
+              managerId: selectedProject.managerId || "",
+              employeesToAdd: [],
+              employeesToRemove: [],
+            }
             : {}
         }
         submitLabel="Update"

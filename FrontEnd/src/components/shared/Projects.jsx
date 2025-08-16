@@ -142,6 +142,7 @@ function Projects() {
   const [loading, setLoading] = useState(true);
   const [projectCounts, setProjectCounts] = useState([]);
   const [empList, setEmployees] = useState([]);
+  const role = localStorage.getItem('role');
 
   const fetchProjects = async () => {
     setLoading(true);
@@ -252,9 +253,12 @@ function Projects() {
     <ThemeProvider theme={theme}>
       <ToastContainer position="top-right" autoClose={1500} />
       <Box display="flex" justifyContent="flex-end" mb={2}>
+        {role === 'ROLE_MANAGER' && (
         <Button variant="contained" color="success" onClick={handleOpenModal}>
           + Create Project
         </Button>
+        )}
+
       </Box>
 
       <Box sx={{ display: "flex", flexDirection: "row", gap: 2 }}>
