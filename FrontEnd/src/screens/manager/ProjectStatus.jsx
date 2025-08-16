@@ -18,13 +18,12 @@ import { editProjectFields } from "../../FormConfigs/projectFields";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import DeleteProjectModal from "../../components/shared/DeleteProjectModal";
-import { Box, IconButton } from "@mui/material";
+import { IconButton } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 
 const ProjectCard = ({ project, bgColor, status, onEdit, onDelete }) => {
   const navigate = useNavigate();
-  console.log(status);
   return (
     <Card className="project-card h-100" style={{ backgroundColor: bgColor }}>
       <Card.Body>
@@ -32,38 +31,40 @@ const ProjectCard = ({ project, bgColor, status, onEdit, onDelete }) => {
           <Card.Title className="fw-bold fs-5 text-white">
             {trimToWords(project.title, 3) || "No Project"}
           </Card.Title>
-          <Card.Text className="mb-1">
-            <div className="d-flex align-items-center">
-               <IconButton
-                size="medium"
-                onClick={() => onEdit(project)}
-                color="primary"
-              >
-                <EditIcon fontSize="medium" />
-              </IconButton>
-              <IconButton
-                size="medium"
-                onClick={() => {
-                  onDelete(project.id);
-                }}
-                color="error"
-              >
-                <DeleteIcon fontSize="medium" />
-              </IconButton>
-              <ProjectStatusMap status={status} />
-             
-            </div>
+
+          {/* Replaced Card.Text <p> with as="div" */}
+          <Card.Text as="div" className="mb-1 d-flex align-items-center">
+            <IconButton
+              size="medium"
+              onClick={() => onEdit(project)}
+              color="primary"
+            >
+              <EditIcon fontSize="medium" />
+            </IconButton>
+            <IconButton
+              size="medium"
+              onClick={() => onDelete(project.id)}
+              color="error"
+            >
+              <DeleteIcon fontSize="medium" />
+            </IconButton>
+            <ProjectStatusMap status={status} />
           </Card.Text>
         </div>
+
         <Card.Subtitle className="mb-2 text-white-50">
           {project.projectCode}
         </Card.Subtitle>
-        <Card.Text className="mb-1 text-white">
+
+        <Card.Text as="div" className="mb-1 text-white">
           <span className="fw-semibold">Manager Name:</span>{" "}
           {trimToWords(project.managerName, 1) || "No Manager"}
         </Card.Text>
 
-        <div className="d-flex justify-content-evenly align-items-center mt-2 " style={{marginLeft:'-7%'}}>
+        <div
+          className="d-flex justify-content-evenly align-items-center mt-2"
+          style={{ marginLeft: "-7%" }}
+        >
           <Card.Link
             className="hyperlink text-white"
             onClick={() => navigate("/scrumBoard")}
@@ -101,7 +102,6 @@ export default function ProjectStatus() {
     setErrorMsg("");
     try {
       const data = await getProjectsByStatus(status);
-      console.log(data);
       setProjects(data);
     } catch (err) {
       setErrorMsg("Failed to fetch projects. Please try again later.");
@@ -174,10 +174,7 @@ export default function ProjectStatus() {
         employeesToRemove: formValues.employeesToRemove || [],
       };
 
-      console.log("Updated project data:", payload);
-
       await updateProject(selectedProject.id, payload);
-
       await fetchProjects();
 
       setOpenEditModal(false);
@@ -242,6 +239,7 @@ export default function ProjectStatus() {
           </Row>
         )}
       </Container>
+
       <EntityFormModal
         open={openEditModal}
         handleClose={() => {

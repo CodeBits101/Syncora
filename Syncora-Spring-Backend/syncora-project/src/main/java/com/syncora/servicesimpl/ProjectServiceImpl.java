@@ -1,7 +1,5 @@
 package com.syncora.servicesimpl;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -19,22 +17,17 @@ import com.syncora.dtos.BackLogResponseDto;
 import com.syncora.dtos.BugRespDto;
 import com.syncora.dtos.CombinedReportDto;
 import com.syncora.dtos.EmployeeStatsDto;
-import com.syncora.dtos.ProjectBugsSummaryDto;
 import com.syncora.dtos.ProjectDetailsRespDto;
 import com.syncora.dtos.ProjectReqDto;
 import com.syncora.dtos.ProjectEditReqDto;
 import com.syncora.dtos.ProjectResponseDto;
 import com.syncora.dtos.ProjectSelectionDto;
 import com.syncora.dtos.ProjectStatusCountDto;
-import com.syncora.dtos.ProjectTasksSummaryDto;
-import com.syncora.dtos.SprintSummaryDto;
-import com.syncora.dtos.SprintTaskCountDto;
 import com.syncora.dtos.StoryResponseDto;
 import com.syncora.entities.Employee;
 import com.syncora.entities.Project;
 import com.syncora.enums.EmployeeType;
 import com.syncora.enums.ProjectStatus;
-import com.syncora.enums.SprintStatus;
 import com.syncora.enums.TaskStatus;
 import com.syncora.exceptions.ApiException;
 import com.syncora.exceptions.ResourceNotFoundException;
@@ -229,22 +222,18 @@ public class ProjectServiceImpl implements ProjectService{
 	
     @Override
     public ProjectDetailsRespDto getProjectDetails(Long id, Long empId) {
-        // Validate employee and project
         employeeRepo.findById(empId)
                 .orElseThrow(() -> new ResourceNotFoundException("Employee does not exist"));
         Project project = projectRepo.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Project does not exist"));
 
-        // Map project basic info
         ProjectDetailsRespDto detailsDto = new ProjectDetailsRespDto();
         detailsDto.setProject(mapToProjectResponseDto(project));
 
-        // One query for sprints + stories + tasks + bugs
         CombinedReportDto aggregated = reportRepo.getSummaryData(id);
         detailsDto.setSprintCounts(aggregated.getSprintCounts());
         detailsDto.setSummary(aggregated.getSummary());
 
-        // Separate queries for lists
         detailsDto.setCurrentSprintSummary(taskRepo.getTaskCountsByStatusForActiveSprint(id));
 
         List<TaskRespDto> inProgressTasks = Stream.concat(
@@ -264,32 +253,45 @@ public class ProjectServiceImpl implements ProjectService{
 
     private List<EmployeeStatsDto> getEmployeeStats(Long projectId) {
         Map<Long, EmployeeStatsDto> statsMap = new HashMap<>();
-        for (Object[] row : taskRepo.getTaskStatsByProject(projectId)) {
+
+        Project project = projectRepo.findById(projectId)
+                .orElseThrow(() -> new ResourceNotFoundException("Project does not exist"));
+
+        List<Employee> employees = employeeRepo.findByProject(project);
+        for (Employee emp : employees) {
             EmployeeStatsDto dto = new EmployeeStatsDto();
-            dto.setEmpId((Long) row[0]);
-            dto.setEmpName((String) row[1]);
-            dto.setDoj((LocalDate) row[2]);
-            dto.setCompletedCount(((Number) row[3]).longValue());
-            dto.setPendingCount(((Number) row[4]).longValue());
-            statsMap.put(dto.getEmpId(), dto);
+            dto.setEmpId(emp.getId());
+            dto.setEmpName(emp.getEmpName());
+            dto.setDoj(emp.getDoj());
+            dto.setCompletedCount(0L);
+            dto.setPendingCount(0L);
+            statsMap.put(emp.getId(), dto);
         }
+
+        for (Object[] row : taskRepo.getTaskStatsByProject(projectId)) {
+            Long empId = (Long) row[0];
+            EmployeeStatsDto dto = statsMap.get(empId);
+            if (dto != null) {
+                dto.setCompletedCount(((Number) row[3]).longValue());
+                dto.setPendingCount(((Number) row[4]).longValue());
+            }
+        }
+
         for (Object[] row : bugRepo.getBugStatsByProject(projectId)) {
             Long empId = (Long) row[0];
-            EmployeeStatsDto dto = statsMap.getOrDefault(empId, new EmployeeStatsDto());
-            dto.setEmpId(empId);
-            dto.setEmpName((String) row[1]);
-            dto.setDoj((LocalDate) row[2]);
-            dto.setCompletedCount(dto.getCompletedCount() + ((Number) row[3]).longValue());
-            dto.setPendingCount(dto.getPendingCount() + ((Number) row[4]).longValue());
-            statsMap.put(empId, dto);
+            EmployeeStatsDto dto = statsMap.get(empId);
+            if (dto != null) {
+                dto.setCompletedCount(dto.getCompletedCount() + ((Number) row[3]).longValue());
+                dto.setPendingCount(dto.getPendingCount() + ((Number) row[4]).longValue());
+            }
         }
+
         statsMap.values().forEach(dto -> {
             long total = dto.getCompletedCount() + dto.getPendingCount();
             dto.setPerformance(total > 0 ? Math.round(dto.getCompletedCount() * 100.0 / total) : 0.0);
         });
+
         return new ArrayList<>(statsMap.values());
     }
-
-	
 
 }
