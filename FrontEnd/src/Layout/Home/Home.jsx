@@ -33,7 +33,7 @@ const Home = ({ roleConfig }) => {
             p: 3,
             height: '100%',
             overflowY: 'auto',
-            overflowX: 'auto',
+            overflowX: 'hidden',
           }}
         >
           <Outlet />

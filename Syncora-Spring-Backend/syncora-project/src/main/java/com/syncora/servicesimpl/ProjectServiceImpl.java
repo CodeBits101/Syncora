@@ -1,8 +1,14 @@
 package com.syncora.servicesimpl;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -11,25 +17,28 @@ import org.springframework.transaction.annotation.Transactional;
 import com.syncora.dtos.ApiResponse;
 import com.syncora.dtos.BackLogResponseDto;
 import com.syncora.dtos.BugRespDto;
+import com.syncora.dtos.CombinedReportDto;
+import com.syncora.dtos.EmployeeStatsDto;
+import com.syncora.dtos.ProjectBugsSummaryDto;
+import com.syncora.dtos.ProjectDetailsRespDto;
 import com.syncora.dtos.ProjectReqDto;
 import com.syncora.dtos.ProjectEditReqDto;
 import com.syncora.dtos.ProjectResponseDto;
 import com.syncora.dtos.ProjectSelectionDto;
 import com.syncora.dtos.ProjectStatusCountDto;
+import com.syncora.dtos.ProjectTasksSummaryDto;
+import com.syncora.dtos.SprintSummaryDto;
+import com.syncora.dtos.SprintTaskCountDto;
 import com.syncora.dtos.StoryResponseDto;
 import com.syncora.entities.Employee;
 import com.syncora.entities.Project;
 import com.syncora.enums.EmployeeType;
 import com.syncora.enums.ProjectStatus;
+import com.syncora.enums.SprintStatus;
 import com.syncora.enums.TaskStatus;
 import com.syncora.exceptions.ApiException;
 import com.syncora.exceptions.ResourceNotFoundException;
-import com.syncora.repositories.BugRepo;
-import com.syncora.repositories.DeptRepo;
-import com.syncora.repositories.EmployeeRepo;
-import com.syncora.repositories.ProjectRepo;
-import com.syncora.repositories.StoryRepo;
-import com.syncora.repositories.TaskRepo;
+import com.syncora.repositories.*;
 import com.syncora.services.ProjectService;
 import com.syncora.services.TaskRespDto;
 
@@ -39,13 +48,16 @@ import lombok.AllArgsConstructor;
 @Transactional
 @AllArgsConstructor
 public class ProjectServiceImpl implements ProjectService{
+
+    private final SprintRepo sprintRepo;
 	
 	private final ProjectRepo projectRepo;
 	private final ModelMapper modelMapper;
 	private final EmployeeRepo employeeRepo;
-	private final StoryRepo storyRepo ;  
-	private final BugRepo bugRepo ;  
-	private final TaskRepo taskRepo ;  
+	private final StoryRepo storyRepo;  
+	private final BugRepo bugRepo;  
+	private final TaskRepo taskRepo;
+	private final ProjectReportRepository reportRepo;
 	
 
 	private ProjectResponseDto mapToProjectResponseDto(Project project) {
@@ -213,6 +225,71 @@ public class ProjectServiceImpl implements ProjectService{
 		
 		return new BackLogResponseDto(storyDTOs,bugDTOs,taskDTOs);
 	}
+	
+	
+    @Override
+    public ProjectDetailsRespDto getProjectDetails(Long id, Long empId) {
+        // Validate employee and project
+        employeeRepo.findById(empId)
+                .orElseThrow(() -> new ResourceNotFoundException("Employee does not exist"));
+        Project project = projectRepo.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Project does not exist"));
 
+        // Map project basic info
+        ProjectDetailsRespDto detailsDto = new ProjectDetailsRespDto();
+        detailsDto.setProject(mapToProjectResponseDto(project));
+
+        // One query for sprints + stories + tasks + bugs
+        CombinedReportDto aggregated = reportRepo.getSummaryData(id);
+        detailsDto.setSprintCounts(aggregated.getSprintCounts());
+        detailsDto.setSummary(aggregated.getSummary());
+
+        // Separate queries for lists
+        detailsDto.setCurrentSprintSummary(taskRepo.getTaskCountsByStatusForActiveSprint(id));
+
+        List<TaskRespDto> inProgressTasks = Stream.concat(
+                taskRepo.findInProgressTasksForActiveSprint(id).stream()
+                        .map(t -> modelMapper.map(t, TaskRespDto.class)),
+                bugRepo.findInProgressBugsForActiveSprint(id).stream()
+                        .map(b -> modelMapper.map(b, TaskRespDto.class))
+        ).collect(Collectors.toList());
+        detailsDto.setInProgressTasks(inProgressTasks);
+
+        detailsDto.setSprintDetails(sprintRepo.findSprintDetailsByProjectId(id));
+        detailsDto.setProjectProgress(Optional.ofNullable(storyRepo.getProjectStoryProgress(id)).orElse(0.0));
+        detailsDto.setEmpStats(getEmployeeStats(id));
+
+        return detailsDto;
+    }
+
+    private List<EmployeeStatsDto> getEmployeeStats(Long projectId) {
+        Map<Long, EmployeeStatsDto> statsMap = new HashMap<>();
+        for (Object[] row : taskRepo.getTaskStatsByProject(projectId)) {
+            EmployeeStatsDto dto = new EmployeeStatsDto();
+            dto.setEmpId((Long) row[0]);
+            dto.setEmpName((String) row[1]);
+            dto.setDoj((LocalDate) row[2]);
+            dto.setCompletedCount(((Number) row[3]).longValue());
+            dto.setPendingCount(((Number) row[4]).longValue());
+            statsMap.put(dto.getEmpId(), dto);
+        }
+        for (Object[] row : bugRepo.getBugStatsByProject(projectId)) {
+            Long empId = (Long) row[0];
+            EmployeeStatsDto dto = statsMap.getOrDefault(empId, new EmployeeStatsDto());
+            dto.setEmpId(empId);
+            dto.setEmpName((String) row[1]);
+            dto.setDoj((LocalDate) row[2]);
+            dto.setCompletedCount(dto.getCompletedCount() + ((Number) row[3]).longValue());
+            dto.setPendingCount(dto.getPendingCount() + ((Number) row[4]).longValue());
+            statsMap.put(empId, dto);
+        }
+        statsMap.values().forEach(dto -> {
+            long total = dto.getCompletedCount() + dto.getPendingCount();
+            dto.setPerformance(total > 0 ? Math.round(dto.getCompletedCount() * 100.0 / total) : 0.0);
+        });
+        return new ArrayList<>(statsMap.values());
+    }
+
+	
 
 }

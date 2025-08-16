@@ -139,9 +139,7 @@ function App() {
         <Route path="*" element={<NotFoundPage />} />
         <Route path="/unautho" element={<UnAuthorised />} />
 
-       <Route path="/project/:projectName" element = {<ProjectDetails/>} />
-
-        <Route path="/project/:projectName" element = {<ProjectDetails/>} />
+       <Route path="/project/:projectId" element = {<ProjectDetails/>} />
 
       </Routes>
       <ToastContainer
