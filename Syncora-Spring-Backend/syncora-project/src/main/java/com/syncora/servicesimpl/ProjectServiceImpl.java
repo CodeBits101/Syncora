@@ -238,9 +238,25 @@ public class ProjectServiceImpl implements ProjectService{
 
         List<TaskRespDto> inProgressTasks = Stream.concat(
                 taskRepo.findInProgressTasksForActiveSprint(id).stream()
-                        .map(t -> modelMapper.map(t, TaskRespDto.class)),
+                        .map(t -> {
+                        	TaskRespDto dto = modelMapper.map(t, TaskRespDto.class);
+                        	 if (t.getAssignedTo() != null) {
+                                 dto.setAssignedTo(t.getAssignedTo().getEmpName());
+                                 dto.setAssignToEmail(t.getAssignedTo().getEmail());
+                                 dto.setAssignedToId(t.getAssignedTo().getId());
+                             }
+                        return dto;
+                        }),
                 bugRepo.findInProgressBugsForActiveSprint(id).stream()
-                        .map(b -> modelMapper.map(b, TaskRespDto.class))
+                .map(b -> {
+                	TaskRespDto dto = modelMapper.map(b, TaskRespDto.class);
+                	 if (b.getAssignedTo() != null) {
+                         dto.setAssignedTo(b.getAssignedTo().getEmpName());
+                         dto.setAssignToEmail(b.getAssignedTo().getEmail());
+                         dto.setAssignedToId(b.getAssignedTo().getId());
+                     }
+                return dto;
+                })
         ).collect(Collectors.toList());
         detailsDto.setInProgressTasks(inProgressTasks);
 

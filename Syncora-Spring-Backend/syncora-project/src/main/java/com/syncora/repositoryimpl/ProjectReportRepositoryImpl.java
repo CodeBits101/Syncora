@@ -25,26 +25,26 @@ public class ProjectReportRepositoryImpl implements ProjectReportRepository {
     public CombinedReportDto getSummaryData(Long projectId) {
         Object[] row = (Object[]) em.createQuery("""
             SELECT 
-                COALESCE(SUM(CASE WHEN s.sprintStatus = 'COMPLETED' THEN 1 ELSE 0 END), 0),
-                COALESCE(SUM(CASE WHEN s.sprintStatus = 'BACKLOG' THEN 1 ELSE 0 END), 0),
+                COALESCE(COUNT(DISTINCT CASE WHEN s.sprintStatus = 'COMPLETED' THEN s.id END), 0),
+        		COALESCE(COUNT(DISTINCT CASE WHEN s.sprintStatus = 'BACKLOG' THEN s.id END), 0),
+    
+                COALESCE(COUNT(DISTINCT CASE WHEN st.storyStatus = 'BACKLOG' THEN st.id END), 0),
+        		COALESCE(COUNT(DISTINCT CASE WHEN st.storyStatus = 'TODO' THEN st.id END), 0),
+        		COALESCE(COUNT(DISTINCT CASE WHEN st.storyStatus = 'INPROGRESS' THEN st.id END), 0),
+        		COALESCE(COUNT(DISTINCT CASE WHEN st.storyStatus = 'TESTING' THEN st.id END), 0),
+        		COALESCE(COUNT(DISTINCT CASE WHEN st.storyStatus = 'DEPLOYMENT' THEN st.id END), 0),
 
-                COALESCE(SUM(CASE WHEN st.storyStatus = 'BACKLOG' THEN 1 ELSE 0 END), 0),
-                COALESCE(SUM(CASE WHEN st.storyStatus = 'TODO' THEN 1 ELSE 0 END), 0),
-                COALESCE(SUM(CASE WHEN st.storyStatus = 'INPROGRESS' THEN 1 ELSE 0 END), 0),
-                COALESCE(SUM(CASE WHEN st.storyStatus = 'TESTING' THEN 1 ELSE 0 END), 0),
-                COALESCE(SUM(CASE WHEN st.storyStatus = 'DEPLOYMENT' THEN 1 ELSE 0 END), 0),
+        		COALESCE(COUNT(DISTINCT CASE WHEN t.status = 'BACKLOG' THEN t.id END), 0),
+        		COALESCE(COUNT(DISTINCT CASE WHEN t.status = 'TODO' THEN t.id END), 0),
+        		COALESCE(COUNT(DISTINCT CASE WHEN t.status = 'INPROGRESS' THEN t.id END), 0),
+        		COALESCE(COUNT(DISTINCT CASE WHEN t.status = 'TESTING' THEN t.id END), 0),
+        		COALESCE(COUNT(DISTINCT CASE WHEN t.status = 'DEPLOYMENT' THEN t.id END), 0),
 
-                COALESCE(SUM(CASE WHEN t.status = 'BACKLOG' THEN 1 ELSE 0 END), 0),
-                COALESCE(SUM(CASE WHEN t.status = 'TODO' THEN 1 ELSE 0 END), 0),
-                COALESCE(SUM(CASE WHEN t.status = 'INPROGRESS' THEN 1 ELSE 0 END), 0),
-                COALESCE(SUM(CASE WHEN t.status = 'TESTING' THEN 1 ELSE 0 END), 0),
-                COALESCE(SUM(CASE WHEN t.status = 'DEPLOYMENT' THEN 1 ELSE 0 END), 0),
-
-                COALESCE(SUM(CASE WHEN b.status = 'BACKLOG' THEN 1 ELSE 0 END), 0),
-                COALESCE(SUM(CASE WHEN b.status = 'TODO' THEN 1 ELSE 0 END), 0),
-                COALESCE(SUM(CASE WHEN b.status = 'INPROGRESS' THEN 1 ELSE 0 END), 0),
-                COALESCE(SUM(CASE WHEN b.status = 'TESTING' THEN 1 ELSE 0 END), 0),
-                COALESCE(SUM(CASE WHEN b.status = 'DEPLOYMENT' THEN 1 ELSE 0 END), 0)
+        		COALESCE(COUNT(DISTINCT CASE WHEN b.status = 'BACKLOG' THEN b.id END), 0),
+        		COALESCE(COUNT(DISTINCT CASE WHEN b.status = 'TODO' THEN b.id END), 0),
+        		COALESCE(COUNT(DISTINCT CASE WHEN b.status = 'INPROGRESS' THEN b.id END), 0),
+        		COALESCE(COUNT(DISTINCT CASE WHEN b.status = 'TESTING' THEN b.id END), 0),
+        		COALESCE(COUNT(DISTINCT CASE WHEN b.status = 'DEPLOYMENT' THEN b.id END), 0)
             FROM Project p
             LEFT JOIN p.sprints s
             LEFT JOIN p.stories st
